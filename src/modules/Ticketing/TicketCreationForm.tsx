@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -13,7 +13,17 @@ import {
 
 // Sample categories and statuses (you can customize these)
 const categories = ['Login', 'UI/UX', 'API', 'Payment', 'Other'];
-const statuses = ['Open', 'In Progress', 'Resolved', 'Closed'];
+
+// Sample subcategories for each category
+const subcategories = {
+  Login: ['Forgot Password', 'Authentication Failure', 'Account Lock'],
+  'UI/UX': ['Page Layout', 'Color Scheme', 'Navigation Issues'],
+  API: ['Endpoint Issue', 'Integration Failure', 'API Documentation'],
+  Payment: ['Payment Failure', 'Refund Issue', 'Invoice Error'],
+  Other: ['General Inquiry', 'Feature Request', 'Bug Report'],
+};
+
+const statuses = ['Open', 'Resolved'];
 
 interface TicketCreationFormProps {
   onCreate: (ticket: any) => void; // Callback to pass the new ticket back to parent
@@ -24,11 +34,28 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
 }) => {
   const [ticket, setTicket] = useState({
     title: '',
-    description: '',
+    concern: '',
     category: '',
+    subcategory: '',
     status: 'Open',
-    tech: '',
   });
+
+  const [availableSubcategories, setAvailableSubcategories] = useState<
+    string[]
+  >([]);
+
+  // Update subcategories based on selected category
+  const handleCategoryChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const selectedCategory = e.target.value as string;
+    setTicket((prevState) => ({
+      ...prevState,
+      category: selectedCategory,
+      subcategory: '', // Reset subcategory when category changes
+    }));
+
+    // Update available subcategories based on selected category
+    setAvailableSubcategories(subcategories[selectedCategory] || []);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
@@ -50,10 +77,10 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     onCreate(newTicket); // Pass the new ticket to parent
     setTicket({
       title: '',
-      description: '',
+      concern: '',
       category: '',
+      subcategory: '',
       status: 'Open',
-      tech: '',
     }); // Reset form after submission
   };
 
@@ -77,10 +104,10 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
 
           <Grid item xs={12}>
             <TextField
-              label="Description"
-              name="description"
+              label="Concern"
+              name="concern"
               fullWidth
-              value={ticket.description}
+              value={ticket.concern}
               onChange={handleChange}
               required
               multiline
@@ -94,7 +121,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               <Select
                 name="category"
                 value={ticket.category}
-                onChange={handleChange}
+                onChange={handleCategoryChange}
                 label="Category"
                 required
               >
@@ -103,6 +130,30 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
                     {category}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Subcategory</InputLabel>
+              <Select
+                name="subcategory"
+                value={ticket.subcategory}
+                onChange={handleChange}
+                label="Subcategory"
+                required
+                disabled={!ticket.category} // Disable subcategory until category is selected
+              >
+                {availableSubcategories.length > 0 ? (
+                  availableSubcategories.map((subcategory) => (
+                    <MenuItem key={subcategory} value={subcategory}>
+                      {subcategory}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No subcategories available</MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>
@@ -124,17 +175,6 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Assigned Technician"
-              name="tech"
-              fullWidth
-              value={ticket.tech}
-              onChange={handleChange}
-              required
-            />
           </Grid>
 
           <Grid item xs={12}>

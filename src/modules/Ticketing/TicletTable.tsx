@@ -10,7 +10,7 @@ import {
   Paper,
 } from '@mui/material';
 
-// Updated Ticket interface with a 'status' field
+// Updated Ticket interface with 'status' field
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -24,6 +24,13 @@ interface Ticket {
 }
 
 const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
+  // Optional: Map status codes to readable values
+  const statusMap: Record<string, string> = {
+    a: 'Open',
+    r: 'Resolved',
+    p: 'In Progress', // Example: Add more statuses as needed
+  };
+
   return (
     <TableContainer
       component={Paper}
@@ -73,8 +80,10 @@ const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
               <TableCell align="left">{ticket.department}</TableCell>
               <TableCell align="left">{ticket.section}</TableCell>
               <TableCell align="left">{ticket.tech}</TableCell>
-              {/* Display Status */}
-              <TableCell align="left">{ticket.status}</TableCell>
+              {/* Display Status with mapped readable value */}
+              <TableCell align="left">
+                {statusMap[ticket.status] || 'Unknown'}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
