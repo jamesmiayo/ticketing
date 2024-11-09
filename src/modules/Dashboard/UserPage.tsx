@@ -1,35 +1,27 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material'; // We only need Box and Typography
+import { Box } from '@mui/material';
 import UserCard from '../../components/common/UserCard';
 
-// Sample user data
-const user = {
-  name: 'James Miayo',
-  branch: 'Head office',
-  position: 'Fullstack developer',
-  number: '1239456890',
-  computer: 'Dell XPS 13',
-  userType: 'Tech',
-};
+interface UserPageProps {
+  user: {
+    name: string;
+    branch: string;
+    position: string;
+    number: string;
+    computer: string;
+    userType: string;
+  };
+}
 
-const UserPage: React.FC = () => {
+const UserPage: React.FC<UserPageProps> = ({ user }) => {
+  if (!user) {
+    return <div>Loading...</div>; // Show loading state if user data is not available yet
+  }
+
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        User Details
-      </Typography>
-
-      {/* Centering the UserCard using Box */}
-      <Box
-        sx={{
-          display: 'flex', // Use flexbox layout
-          justifyContent: 'left', // Center the content horizontally
-          alignItems: 'center', // Center the content vertically (in case of a tall screen)
-        }}
-      >
-        <UserCard user={user} /> {/* Pass the user data as prop */}
-      </Box>
-    </div>
+    <Box sx={{ padding: 3 }}>
+      <UserCard user={user} /> {/* Pass the user data as prop to UserCard */}
+    </Box>
   );
 };
 

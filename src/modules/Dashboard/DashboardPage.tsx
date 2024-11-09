@@ -1,16 +1,17 @@
 import React from 'react';
-
 import Box from '@mui/material/Box';
-import Sidebar from '../../components/navigation/SideBar';
 import TicketPage from '../Ticketing/TicketPage';
 import UserPage from './UserPage';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  onLogout: () => void; // Accept the onLogout prop
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   return (
     <Box display="flex">
-      <Sidebar />
       <Box flex={1}>
-        <UserPage />
+        {/* <UserPage /> */}
         <Box p={3}>
           <TicketPage />
         </Box>
