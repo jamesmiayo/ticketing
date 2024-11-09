@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-import TicketTable from './TicletTable';
+import TicketTable from './TicketTable';
 // Import TicketTable component
 
 interface Ticket {
