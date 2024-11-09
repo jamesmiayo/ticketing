@@ -1,12 +1,26 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
-import Stack from '@mui/material/Stack';
-import userImage from '../../assets/images/user.png';
+import React from 'react';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Typography,
+  Stack,
+} from '@mui/material';
+import userImage from '../../assets/images/user.png'; // Your user image path
 
-export default function UserCard() {
+// Define User type
+interface User {
+  name: string;
+  branch: string;
+  position: string;
+  number: string;
+  computer: string;
+  userType: string;
+}
+
+// UserCard Component to display individual user info
+const UserCard: React.FC<{ user: User }> = ({ user }) => {
   return (
     <Card sx={{ maxWidth: '100%' }}>
       <CardActionArea>
@@ -14,46 +28,46 @@ export default function UserCard() {
           <CardMedia
             component="img"
             height="250"
-            image={userImage}
+            image={userImage} // Replace with your actual image
             alt="user image"
           />
           <CardContent sx={{ width: '100%' }}>
             <Typography gutterBottom variant="h6" component="div">
-              Details
-            </Typography>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Name:
-              <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
-                James Miayo
-              </span>
+              {user.name}
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Branch:
               <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
-                Head office
+                {user.branch}
               </span>
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Position:
               <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
-                Fullstack developer
+                {user.position}
               </span>
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Number:
               <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
-                1239456890
+                {user.number}
               </span>
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Computer:
               <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
-                Dell XPS 13
+                {user.computer}
+              </span>
+            </Typography>
+
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              User Type:
+              <span style={{ color: 'text.secondary', marginLeft: '8px' }}>
+                {user.userType}
               </span>
             </Typography>
           </CardContent>
@@ -61,4 +75,6 @@ export default function UserCard() {
       </CardActionArea>
     </Card>
   );
-}
+};
+
+export default UserCard;

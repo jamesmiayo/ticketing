@@ -10,6 +10,7 @@ import {
   Paper,
 } from '@mui/material';
 
+// Updated Ticket interface with a 'status' field
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -19,6 +20,7 @@ interface Ticket {
   department: string;
   section: string;
   tech: string;
+  status: string; // Add status field
 }
 
 const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
@@ -54,6 +56,10 @@ const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
             <TableCell align="left">
               <Typography variant="h6">Assigned Tech</Typography>
             </TableCell>
+            {/* Add Status Column */}
+            <TableCell align="left">
+              <Typography variant="h6">Status</Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,6 +73,8 @@ const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
               <TableCell align="left">{ticket.department}</TableCell>
               <TableCell align="left">{ticket.section}</TableCell>
               <TableCell align="left">{ticket.tech}</TableCell>
+              {/* Display Status */}
+              <TableCell align="left">{ticket.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>

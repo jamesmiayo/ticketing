@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import TicketList from './TicketList'; // Import the TicketList component
-import TicketCreationForm from './TicketCreationForm'; // Import the TicketCreationForm component
+import TicketList from './TicketList'; // Import Ticket List component for card view
+import TicketCreationForm from './TicketCreationForm'; // Import the Ticket Creation Form component
 import {
   Button,
   Dialog,
@@ -9,9 +9,22 @@ import {
   DialogTitle,
 } from '@mui/material';
 import TicketTable from './TicletTable';
+// Import TicketTable component
+
+interface Ticket {
+  ticketNo: string;
+  dateTime: string;
+  title: string;
+  concern: string;
+  category: string;
+  department: string;
+  section: string;
+  tech: string;
+  status: string; // Ensure all tickets have a status field
+}
 
 const TicketPage: React.FC = () => {
-  const [tickets, setTickets] = useState([
+  const [tickets, setTickets] = useState<Ticket[]>([
     {
       ticketNo: 'T001',
       dateTime: '2024-11-09 10:00 AM',
@@ -21,6 +34,7 @@ const TicketPage: React.FC = () => {
       department: 'IT Support',
       section: 'Backend',
       tech: 'John Doe',
+      status: 'Open', // Example status
     },
     {
       ticketNo: 'T002',
@@ -31,6 +45,7 @@ const TicketPage: React.FC = () => {
       department: 'Frontend',
       section: 'Design',
       tech: 'Jane Smith',
+      status: 'In Progress', // Example status
     },
     {
       ticketNo: 'T003',
@@ -41,13 +56,14 @@ const TicketPage: React.FC = () => {
       department: 'Finance',
       section: 'API Integration',
       tech: 'Tom Lee',
+      status: 'Resolved', // Example status
     },
   ]);
 
   const [open, setOpen] = useState(false); // Modal open state
 
   // Handle new ticket creation
-  const handleCreateTicket = (newTicket: any) => {
+  const handleCreateTicket = (newTicket: Ticket) => {
     setTickets((prevTickets) => [...prevTickets, newTicket]); // Add the new ticket to the tickets list
     setOpen(false); // Close the modal after creating the ticket
   };
@@ -59,8 +75,9 @@ const TicketPage: React.FC = () => {
   return (
     <div>
       <h1>Ticket Overview</h1>
+      {/* Render the Ticket List (Card View) */}
+      <TicketList /> {/* Pass tickets to display in card format */}
       {/* Button to open the Create Ticket modal */}
-      <TicketList /> {/* Render Ticket Cards */}
       <Button
         variant="contained"
         color="primary"
@@ -69,6 +86,7 @@ const TicketPage: React.FC = () => {
       >
         Create Ticket
       </Button>
+      {/* Render the Ticket Table */}
       <TicketTable tickets={tickets} />{' '}
       {/* Render the ticket table with updated tickets */}
       {/* Modal for Ticket Creation */}
