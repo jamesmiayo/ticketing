@@ -1,17 +1,17 @@
-import React from 'react'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
+import React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 
-import ActionAreaCard from '../common/Card'
+import UserCard from '../common/UserCard';
 
 const Header: React.FC = () => {
   return (
     <AppBar position="static" color="light">
       <Toolbar>
-        <ActionAreaCard />
+        <UserCard />
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

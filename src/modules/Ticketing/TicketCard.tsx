@@ -1,31 +1,35 @@
-import React from 'react'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+// TicketCard.tsx
+import React from 'react';
+import { Card, Typography, Box } from '@mui/material';
 
 interface TicketCardProps {
-  title: string
-  status: string
-  priority: string
+  title: string;
+  count: any;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({ title, status, priority }) => {
+const TicketCard: React.FC<TicketCardProps> = ({ title, count }) => {
   return (
-    <Card sx={{ marginBottom: 2 }}>
-      <CardContent>
+    <Card
+      sx={{
+        width: 150,
+        height: 150,
+        borderRadius: '50%', // Make the card circular
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        boxShadow: 3, // Optional: add a shadow effect
+        transition: 'transform 0.3s ease',
+        ':hover': {
+          transform: 'scale(1.1)', // Slight scale effect on hover
+        },
+      }}
+    >
+      <Box textAlign="center">
         <Typography variant="h6">{title}</Typography>
-        <Box display="flex" justifyContent="space-between" mt={2}>
-          <Typography variant="body2" color="text.secondary">
-            Status: {status}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Priority: {priority}
-          </Typography>
-        </Box>
-      </CardContent>
+        <Typography variant="body2">{count}</Typography>
+      </Box>
     </Card>
-  )
-}
+  );
+};
 
-export default TicketCard
+export default TicketCard;

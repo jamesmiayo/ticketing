@@ -1,33 +1,57 @@
-import React from 'react'
-import TicketCard from './TicketCard'
+// TicketList.tsx
+import React from 'react';
+import { Box } from '@mui/material';
+import TicketCard from './TicketCard';
 
 const tickets = [
-  { title: 'Fix login issue', status: 'Open', priority: 'High' },
+  { title: 'Total Tickets', count: '23' },
   {
-    title: 'Update user profile page',
-    status: 'In Progress',
-    priority: 'Medium',
+    title: 'Open',
+    count: '5',
   },
   {
-    title: 'Review payment gateway integration',
-    status: 'Resolved',
-    priority: 'Low',
+    title: 'In progress',
+    count: '5',
   },
-]
+  {
+    title: 'On Hold',
+    count: '2',
+  },
+  {
+    title: 'Pending',
+    count: '2',
+  },
+  {
+    title: 'Cancelled',
+    count: '2',
+  },
+  {
+    title: 'Completed',
+    count: '2',
+  },
+  {
+    title: 'Closed',
+    count: '2',
+  },
+];
 
 const TicketList: React.FC = () => {
   return (
-    <div>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 2, // Space between cards
+        flexWrap: 'wrap',
+        p: 3,
+      }}
+    >
       {tickets.map((ticket, index) => (
-        <TicketCard
-          key={index}
-          title={ticket.title}
-          status={ticket.status}
-          priority={ticket.priority}
-        />
+        <TicketCard key={index} title={ticket.title} count={ticket.count} />
       ))}
-    </div>
-  )
-}
+    </Box>
+  );
+};
 
-export default TicketList
+export default TicketList;
