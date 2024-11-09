@@ -10,40 +10,18 @@ import {
   Paper,
 } from '@mui/material';
 
-const tickets = [
-  {
-    ticketNo: 'T001',
-    dateTime: '2024-11-09 10:00 AM',
-    title: 'Fix login issue',
-    concern: 'Authentication Failure',
-    category: 'Login',
-    department: 'IT Support',
-    section: 'Backend',
-    tech: 'John Doe',
-  },
-  {
-    ticketNo: 'T002',
-    dateTime: '2024-11-09 11:30 AM',
-    title: 'Update user profile page',
-    concern: 'UI Issue',
-    category: 'UI/UX',
-    department: 'Frontend',
-    section: 'Design',
-    tech: 'Jane Smith',
-  },
-  {
-    ticketNo: 'T003',
-    dateTime: '2024-11-09 02:15 PM',
-    title: 'Review payment gateway integration',
-    concern: 'Payment Failure',
-    category: 'Payment',
-    department: 'Finance',
-    section: 'API Integration',
-    tech: 'Tom Lee',
-  },
-];
+interface Ticket {
+  ticketNo: string;
+  dateTime: string;
+  title: string;
+  concern: string;
+  category: string;
+  department: string;
+  section: string;
+  tech: string;
+}
 
-const TicketTable: React.FC = () => {
+const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
   return (
     <TableContainer
       component={Paper}
