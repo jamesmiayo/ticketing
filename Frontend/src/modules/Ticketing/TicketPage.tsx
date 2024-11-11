@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import TicketList from './TicketList'; // Import Ticket List component for card view
-import TicketCreationForm from './TicketCreationForm'; // Import the Ticket Creation Form component
+import React, { useState } from 'react'
+import TicketList from './TicketList' // Import Ticket List component for card view
+import TicketCreationForm from './TicketCreationForm' // Import the Ticket Creation Form component
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@mui/material';
-import TicketTable from './TicketTable';
+} from '@mui/material'
+import TicketTable from './TicketTable'
 // Import TicketTable component
 
 interface Ticket {
-  ticketNo: string;
-  dateTime: string;
-  title: string;
-  concern: string;
-  category: string;
-  department: string;
-  section: string;
-  tech: string;
-  status: string; // Ensure all tickets have a status field
+  ticketNo: string
+  dateTime: string
+  title: string
+  concern: string
+  category: string
+  department: string
+  section: string
+  tech: string
+  status: string // Ensure all tickets have a status field
 }
 
 const TicketPage: React.FC = () => {
@@ -58,19 +58,19 @@ const TicketPage: React.FC = () => {
       tech: 'Tom Lee',
       status: 'Resolved', // Example status
     },
-  ]);
+  ])
 
-  const [open, setOpen] = useState(false); // Modal open state
+  const [open, setOpen] = useState(false) // Modal open state
 
   // Handle new ticket creation
   const handleCreateTicket = (newTicket: Ticket) => {
-    setTickets((prevTickets) => [...prevTickets, newTicket]); // Add the new ticket to the tickets list
-    setOpen(false); // Close the modal after creating the ticket
-  };
+    setTickets((prevTickets) => [...prevTickets, newTicket]) // Add the new ticket to the tickets list
+    setOpen(false) // Close the modal after creating the ticket
+  }
 
   // Open and close the modal
-  const handleOpen = () => setOpen(true); // Open the modal
-  const handleClose = () => setOpen(false); // Close the modal
+  const handleOpen = () => setOpen(true) // Open the modal
+  const handleClose = () => setOpen(false) // Close the modal
 
   return (
     <div>
@@ -103,7 +103,7 @@ const TicketPage: React.FC = () => {
         </DialogActions>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default TicketPage;
+export default TicketPage

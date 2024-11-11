@@ -10,12 +10,9 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
-import CategoryList from '../../listing/CategoryList'
+import CategorySelector from '../../listing/CategoryList'
 
-// Sample categories and statuses (you can customize these)
-const categories = ['Login', 'UI/UX', 'API', 'Payment', 'Other']
-
-// Sample subcategories for each category
+// Sample subcategories for each category (from your previous data structure)
 const subcategories = {
   Login: ['Forgot Password', 'Authentication Failure', 'Account Lock'],
   'UI/UX': ['Page Layout', 'Color Scheme', 'Navigation Issues'],
@@ -46,16 +43,15 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   >([])
 
   // Update subcategories based on selected category
-  const handleCategoryChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const selectedCategory = e.target.value as string
+  const handleCategoryChange = (category: string) => {
     setTicket((prevState) => ({
       ...prevState,
-      category: selectedCategory,
+      category,
       subcategory: '', // Reset subcategory when category changes
     }))
 
     // Update available subcategories based on selected category
-    setAvailableSubcategories(subcategories[selectedCategory] || [])
+    setAvailableSubcategories(subcategories[category] || [])
   }
 
   const handleChange = (
@@ -82,15 +78,11 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       category: '',
       subcategory: '',
       status: 'Open',
-    }) 
+    })
   }
 
   return (
     <Box sx={{ maxWidth: 600, margin: 'auto', padding: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Create New Ticket
-      </Typography>
-
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -118,31 +110,8 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <CategoryList />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Subcategory</InputLabel>
-              <Select
-                name="subcategory"
-                value={ticket.subcategory}
-                onChange={handleChange}
-                label="Subcategory"
-                required
-                disabled={!ticket.category} // Disable subcategory until category is selected
-              >
-                {availableSubcategories.length > 0 ? (
-                  availableSubcategories.map((subcategory) => (
-                    <MenuItem key={subcategory} value={subcategory}>
-                      {subcategory}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem disabled>No subcategories available</MenuItem>
-                )}
-              </Select>
-            </FormControl>
+            {/* Category Selector */}
+            <CategorySelector onCategorySelect={handleCategoryChange} />
           </Grid>
 
           <Grid item xs={12} sm={6}>
