@@ -27,10 +27,11 @@ class LdapAuthenticationService
         if (empty($user)) {
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
+
         $connection = Container::getDefaultConnection();
 
         if (!$connection->auth()->attempt($user->getDn(), $this->request->password)) {
-            return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials.'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['status' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid credentials.'], Response::HTTP_BAD_REQUEST);
         }
 
         $role = Role::where('name', $user['description'][0])->first();

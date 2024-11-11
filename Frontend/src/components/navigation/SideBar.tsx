@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import { Button } from '@mui/material';
 import { useAuth } from "../../context/AuthContext";
+import { useExecuteToast } from '../../context/ToastContext';
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -17,6 +18,18 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   const { logoutUser } = useAuth();
+  const toast = useExecuteToast();
+
+  const logout = async () => {
+    try{
+      const response = await logoutUser();
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
+    }catch(e){
+      console.log(e)
+    }
+  }
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <Box sx={{ width: 240, backgroundColor: '#f5f5f5' }}>
@@ -36,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </List>
         <Divider />
         <Button
-          onClick={logoutUser}
+          onClick={logout}
           color="primary"
           variant="contained"
           sx={{ margin: 2 }}

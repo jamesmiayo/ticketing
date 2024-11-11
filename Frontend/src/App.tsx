@@ -5,6 +5,8 @@ import PublicRoute from "./pages/public/publicRoute";
 import LoginPage from "./modules/Login/LoginPage";
 import DashboardPage from "./modules/Dashboard/DashboardPage";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
+import { LoaderProvider } from "./context/LoaderContext";
 
 const privateRoutes = [
   {
@@ -16,28 +18,32 @@ const privateRoutes = [
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
-          />
+      <ToastProvider>
+        <LoaderProvider>
+          <Router>
+            <Routes>
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
 
-          {privateRoutes.map((route, index) => (
-            <Route
-              key={`private-${index}`}
-              path={route.path}
-              element={<PrivateRoute>{route.element}</PrivateRoute>}
-            />
-          ))}
-        </Routes>
-      </Router>
+              {privateRoutes.map((route, index) => (
+                <Route
+                  key={`private-${index}`}
+                  path={route.path}
+                  element={<PrivateRoute>{route.element}</PrivateRoute>}
+                />
+              ))}
+            </Routes>
+          </Router>
+        </LoaderProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }
 
-export default App
+export default App;
