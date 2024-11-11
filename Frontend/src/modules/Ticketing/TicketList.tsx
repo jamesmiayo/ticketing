@@ -6,8 +6,8 @@ import { OverviewAPI } from '../../api/services/getOverview'
 
 // Define the structure of each ticket status item
 interface TicketStatus {
-  title: string
-  count: number
+  label: any
+  value: number
 }
 
 const TicketList: React.FC = () => {
@@ -17,7 +17,6 @@ const TicketList: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Fetching data...')
         const result = await OverviewAPI.getAllData()
         if (result && Array.isArray(result.total_ticket_count)) {
           setData(result.total_ticket_count)
@@ -50,7 +49,7 @@ const TicketList: React.FC = () => {
       }}
     >
       {data.map((status, index) => (
-        <TicketCard key={index} title={status.title} count={status.count} />
+        <TicketCard key={index} title={status.label} count={status.value} />
       ))}
     </Box>
   )
