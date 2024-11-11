@@ -1,19 +1,19 @@
 // App.js
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivateRoute from "./pages/private/privateRoute";
-import PublicRoute from "./pages/public/publicRoute";
-import LoginPage from "./modules/Login/LoginPage";
-import DashboardPage from "./modules/Dashboard/DashboardPage";
-import { AuthProvider } from "./context/AuthContext";
-import { ToastProvider } from "./context/ToastContext";
-import { LoaderProvider } from "./context/LoaderContext";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import PrivateRoute from './pages/private/privateRoute'
+import PublicRoute from './pages/public/publicRoute'
+import LoginPage from './modules/Login/LoginPage'
+import DashboardPage from './modules/Dashboard/DashboardPage'
+import { AuthProvider } from './context/AuthContext'
+import { ToastProvider } from './context/ToastContext'
+import { LoaderProvider } from './context/LoaderContext'
 
 const privateRoutes = [
   {
-    path: "/dashboard",
+    path: '/dashboard',
     element: <DashboardPage />,
   },
-];
+]
 
 function App() {
   return (
@@ -43,7 +43,7 @@ function App() {
         </LoaderProvider>
       </ToastProvider>
     </AuthProvider>
-  );
+  )
 }
 
-export default App;
+export default App
