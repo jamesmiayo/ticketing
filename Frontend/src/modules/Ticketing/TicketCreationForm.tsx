@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   TextField,
   Button,
@@ -9,10 +9,10 @@ import {
   Box,
   Grid,
   Typography,
-} from '@mui/material';
+} from '@mui/material'
 
 // Sample categories and statuses (you can customize these)
-const categories = ['Login', 'UI/UX', 'API', 'Payment', 'Other'];
+const categories = ['Login', 'UI/UX', 'API', 'Payment', 'Other']
 
 // Sample subcategories for each category
 const subcategories = {
@@ -21,12 +21,12 @@ const subcategories = {
   API: ['Endpoint Issue', 'Integration Failure', 'API Documentation'],
   Payment: ['Payment Failure', 'Refund Issue', 'Invoice Error'],
   Other: ['General Inquiry', 'Feature Request', 'Bug Report'],
-};
+}
 
-const statuses = ['Open', 'Resolved'];
+const statuses = ['Open', 'Resolved']
 
 interface TicketCreationFormProps {
-  onCreate: (ticket: any) => void; // Callback to pass the new ticket back to parent
+  onCreate: (ticket: any) => void // Callback to pass the new ticket back to parent
 }
 
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
@@ -38,51 +38,51 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     category: '',
     subcategory: '',
     status: 'Open',
-  });
+  })
 
   const [availableSubcategories, setAvailableSubcategories] = useState<
     string[]
-  >([]);
+  >([])
 
   // Update subcategories based on selected category
   const handleCategoryChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    const selectedCategory = e.target.value as string;
+    const selectedCategory = e.target.value as string
     setTicket((prevState) => ({
       ...prevState,
       category: selectedCategory,
       subcategory: '', // Reset subcategory when category changes
-    }));
+    }))
 
     // Update available subcategories based on selected category
-    setAvailableSubcategories(subcategories[selectedCategory] || []);
-  };
+    setAvailableSubcategories(subcategories[selectedCategory] || [])
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setTicket((prevState) => ({
       ...prevState,
       [name as string]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     const newTicket = {
       ...ticket,
       ticketNo: `T${Date.now()}`,
       dateTime: new Date().toLocaleString(),
-    };
-    onCreate(newTicket); // Pass the new ticket to parent
+    }
+    onCreate(newTicket) // Pass the new ticket to parent
     setTicket({
       title: '',
       concern: '',
       category: '',
       subcategory: '',
       status: 'Open',
-    }); // Reset form after submission
-  };
+    }) // Reset form after submission
+  }
 
   return (
     <Box sx={{ maxWidth: 600, margin: 'auto', padding: 3 }}>
@@ -185,7 +185,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
         </Grid>
       </form>
     </Box>
-  );
-};
+  )
+}
 
-export default TicketCreationForm;
+export default TicketCreationForm
