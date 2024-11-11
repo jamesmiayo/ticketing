@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -7,42 +7,36 @@ import {
   Container,
   InputAdornment,
   IconButton,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { LoginAPI } from '../../api/services/login';
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-interface LoginPageProps {
-  onLogin: (user: any) => void; // Function to pass user data upon login
+interface FormData {
+  username: string;
+  password: string;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
-
+const LoginPage: React.FC<any> = () => {
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  const [error, setError] = useState("");
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try{
-      const response = await LoginAPI.login({
-        username: formData.username,
-        password: formData.password,
-      });
-    }catch(e){
-      console.log(e)
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await loginUser(data.username, data.password);
+      console.log(response);
+      navigate('/dashboard');
+    } catch (e) {
+      console.log(e);
+      setError("Login failed. Please check your credentials.");
     }
   };
 
@@ -50,57 +44,71 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           marginTop: 8,
         }}
       >
         <Typography variant="h5">Login</Typography>
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           sx={{
             mt: 1,
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
           }}
         >
           {error && <Typography color="error">{error}</Typography>}
 
-          <TextField
-            label="Username"
+          <Controller
             name="username"
-            variant="outlined"
-            fullWidth
-            value={formData.username}
-            onChange={handleInputChange}
-            required
+            control={control}
+            defaultValue=""
+            rules={{ required: "Username is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Username"
+                variant="outlined"
+                fullWidth
+                error={!!errors.username}
+                helperText={errors.username ? errors.username.message : ""}
+              />
+            )}
           />
 
-          <TextField
-            label="Password"
+          <Controller
             name="password"
-            type={showPassword ? 'text' : 'password'}
-            variant="outlined"
-            fullWidth
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleTogglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+            control={control}
+            defaultValue=""
+            rules={{ required: "Password is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                error={!!errors.password}
+                helperText={errors.password ? errors.password.message : ""}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
 
           <Button

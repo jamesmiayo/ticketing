@@ -27,6 +27,12 @@ class LdapAuthenticationService
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
 
+        // Validate the password before proceeding (assuming you have a stored password to validate against)
+        $storedPassword = $user['password'] ?? null; // Replace with the actual field used to retrieve the stored password if available
+        if ($storedPassword && !Hash::check($this->request->password, $storedPassword)) {
+            return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials.'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $role = Role::where('name', $user['description'][0])->first();
 
         $localUser = User::updateOrCreate(
@@ -36,11 +42,11 @@ class LdapAuthenticationService
                 'name' => $user->getName(),
                 'description' => $user['description'][0] ?? null,
                 'division' => $user->getDn(),
-                'password' => Hash::make( $this->request->password)
+                'password' => Hash::make($this->request->password)
             ]
         );
 
-        if(!empty($role)){
+        if (!empty($role)) {
             $localUser->assignRole($role->name);
             $localUser->givePermissionTo($role->permissions->pluck('name'));
         }
@@ -54,5 +60,6 @@ class LdapAuthenticationService
             'permissions' => !empty($role) ? $localUser->getAllPermissions()->pluck('name') : null,
             'access_token' => $token,
         ], Response::HTTP_OK);
+
     }
 }
