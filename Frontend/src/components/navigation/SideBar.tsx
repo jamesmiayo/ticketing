@@ -8,38 +8,45 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
+import { useAuth } from "../../context/AuthContext";
 
 interface SidebarProps {
-  onLogout: () => void;
+  children?: React.ReactNode;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ children }) => {
+  const { logoutUser } = useAuth();
   return (
-    <Box sx={{ width: 240, backgroundColor: '#f5f5f5', height: '100vh' }}>
-      <List>
-        <ListItem button component={Link} to="/">
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem button component={Link} to="/user">
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="Profile" />
-        </ListItem>
-      </List>
-      <Divider />
-      <Button
-        onClick={onLogout}
-        color="primary"
-        variant="contained"
-        sx={{ margin: 2 }}
-      >
-        Logout
-      </Button>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      <Box sx={{ width: 240, backgroundColor: '#f5f5f5' }}>
+        <List>
+          <ListItem button component={Link} to="/">
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem button component={Link} to="/user">
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+        </List>
+        <Divider />
+        <Button
+          onClick={logoutUser}
+          color="primary"
+          variant="contained"
+          sx={{ margin: 2 }}
+        >
+          Logout
+        </Button>
+      </Box>
+      <Box sx={{ flexGrow: 1 }}>
+        {children} 
+      </Box>
     </Box>
   );
 };
