@@ -1,13 +1,14 @@
 // TicketCard.tsx
-import React from 'react';
-import { Card, Typography, Box } from '@mui/material';
+import React from 'react'
+import { Card, Typography, Box } from '@mui/material'
 
 interface TicketCardProps {
-  title: string;
-  count: any;
+  title: string
+  count: any
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({ title, count }) => {
+  console.log(title)
   return (
     <Card
       sx={{
@@ -29,7 +30,7 @@ const TicketCard: React.FC<TicketCardProps> = ({ title, count }) => {
         <Typography variant="body2">{count}</Typography>
       </Box>
     </Card>
-  );
-};
+  )
+}
 
-export default TicketCard;
+export default TicketCard
