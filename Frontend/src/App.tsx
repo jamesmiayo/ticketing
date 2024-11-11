@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-} from 'react-router-dom';
-import Dashboard from './modules/Dashboard/DashboardPage';
-import LoginPage from './modules/Login/LoginPage';
-import Sidebar from './components/navigation/SideBar'; // Sidebar component
-import UserPage from './modules/Dashboard/UserPage'; // User page for profile details
+} from 'react-router-dom'
+import Dashboard from './modules/Dashboard/DashboardPage'
+import LoginPage from './modules/Login/LoginPage'
+import Sidebar from './components/navigation/SideBar' // Sidebar component
+import UserPage from './modules/Dashboard/UserPage' // User page for profile details
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userData, setUserData] = useState<any>(null); // Store user data after login
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const [userData, setUserData] = useState<any>(null) // Store user data after login
 
   // Function to handle login logic
   const handleLogin = (user: any) => {
-    setIsLoggedIn(true);
-    setUserData(user); // Store user data on successful login
-  };
+    setIsLoggedIn(true)
+    setUserData(user) // Store user data on successful login
+  }
 
   // Function to handle logout logic
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserData(null); // Clear user data on logout
-  };
+    setIsLoggedIn(false)
+    setUserData(null) // Clear user data on logout
+  }
 
   return (
     <Router>
@@ -43,19 +43,14 @@ const App: React.FC = () => {
 
         {/* Dashboard Route - Protected Route */}
         <Route
-          path="/"
+          path="/dashboard"
           element={
-            isLoggedIn ? (
-              <div style={{ display: 'flex' }}>
-                {/* Sidebar is visible when logged in */}
-                <Sidebar onLogout={handleLogout} />
-                <div style={{ flex: 1 }}>
-                  <Dashboard onLogout={handleLogout} />
-                </div>
+            <div style={{ display: 'flex' }}>
+              <Sidebar onLogout={handleLogout} />
+              <div style={{ flex: 1 }}>
+                <Dashboard onLogout={handleLogout} />
               </div>
-            ) : (
-              <Navigate to="/login" /> // Redirect to login if not logged in
-            )
+            </div>
           }
         />
 
@@ -79,7 +74,7 @@ const App: React.FC = () => {
         />
       </Routes>
     </Router>
-  );
-};
+  )
+}
 
-export default App;
+export default App
