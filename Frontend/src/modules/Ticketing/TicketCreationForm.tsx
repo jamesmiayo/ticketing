@@ -10,6 +10,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material'
+import CategoryList from '../../listing/CategoryList'
 
 // Sample categories and statuses (you can customize these)
 const categories = ['Login', 'UI/UX', 'API', 'Payment', 'Other']
@@ -89,6 +90,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       <Typography variant="h5" gutterBottom>
         Create New Ticket
       </Typography>
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -116,22 +118,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Category</InputLabel>
-              <Select
-                name="category"
-                value={ticket.category}
-                onChange={handleCategoryChange}
-                label="Category"
-                required
-              >
-                {categories.map((category) => (
-                  <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <CategoryList />
           </Grid>
 
           <Grid item xs={12} sm={6}>

@@ -8,7 +8,6 @@ interface TicketCardProps {
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({ title, count }) => {
-  console.log(title)
   return (
     <Card
       sx={{

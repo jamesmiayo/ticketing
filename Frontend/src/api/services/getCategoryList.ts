@@ -7,6 +7,7 @@ export const getCategoryAPI = {
         url: '/maintenance/category',
         method: 'GET',
       })
+      console.log('this', response.data)
       return response.data.data
     } catch (error) {
       console.error('Error fetching data:', error)
