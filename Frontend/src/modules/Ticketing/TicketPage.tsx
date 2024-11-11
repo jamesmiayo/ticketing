@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
+import TableComponents from '../../components/common/TableComponents';
 import TicketTable from './TicketTable';
 // Import TicketTable component
 
@@ -71,7 +72,11 @@ const TicketPage: React.FC = () => {
   // Open and close the modal
   const handleOpen = () => setOpen(true); // Open the modal
   const handleClose = () => setOpen(false); // Close the modal
-
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'name', headerName: 'Name', width: 150 },
+    { field: 'age', headerName: 'Age', width: 110 },
+  ];
   return (
     <div>
       <h1>Ticket Overview</h1>
