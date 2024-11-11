@@ -21,10 +21,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
-    Route::resource('branch', BranchController::class);
-    Route::resource('department', DepartmentController::class);
-    Route::resource('section', SectionController::class);
-    Route::resource('category', CategoryController::class);
+        Route::resource('branch', BranchController::class);
+        Route::resource('department', DepartmentController::class);
+        Route::resource('section', SectionController::class);
+        Route::resource('category', CategoryController::class);
+        Route::resource('sub-category', CategoryController::class);
     });
 
     //tickets routes
@@ -33,4 +34,3 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('ticket-hdr', TicketHdrController::class);
     });
 });
-

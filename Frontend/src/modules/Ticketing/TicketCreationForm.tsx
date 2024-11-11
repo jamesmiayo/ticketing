@@ -81,7 +81,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       category: '',
       subcategory: '',
       status: 'Open',
-    }) // Reset form after submission
+    }) 
   }
 
   return (

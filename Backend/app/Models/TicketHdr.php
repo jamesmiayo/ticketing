@@ -18,7 +18,7 @@ class TicketHdr extends Model
         'body'
     ];
 
-    protected $with = ['user:id,branch_id,name', 'category:id,category_description' , 'user.branch:id,branch_description'];
+    protected $with = ['user:id,branch_id,name', 'sub_category:id,category_id,subcategory_description' , 'sub_category.category:id,category_description' , 'user.branch:id,branch_description'];
 
     protected $appends = ['ticket_status'];
 
@@ -32,8 +32,8 @@ class TicketHdr extends Model
         return $this->belongsTo(User::class, 'emp_id');
     }
 
-    public function category() {
-        return $this->belongsTo(Category::class, 'category_id');
+    public function sub_category() {
+        return $this->belongsTo(SubCategory::class, 'subcategory_id');
     }
 
     public function ticket_logs()

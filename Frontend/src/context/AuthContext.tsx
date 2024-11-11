@@ -76,10 +76,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <AuthContext.Provider
       value={{ user, isAuthenticated, loading, loginUser, logoutUser }}
