@@ -7,11 +7,16 @@ import DashboardPage from './modules/Dashboard/DashboardPage'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
 import { LoaderProvider } from './context/LoaderContext'
+import UserPage from './modules/UsersProfile/UserPage'
 
 const privateRoutes = [
   {
     path: '/dashboard',
     element: <DashboardPage />,
+  },
+  {
+    path: '/users',
+    element: <UserPage />,
   },
 ]
 
