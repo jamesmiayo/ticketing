@@ -1,10 +1,10 @@
-import React from 'react';
-import Box from '@mui/material/Box';
-import TicketPage from '../Ticketing/TicketPage';
-import UserPage from './UserPage';
+import React from 'react'
+import Box from '@mui/material/Box'
+import TicketPage from '../Ticketing/TicketPage'
+import UserPage from './UserPage'
 
 interface DashboardProps {
-  onLogout: () => void; // Accept the onLogout prop
+  onLogout: () => void // Accept the onLogout prop
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
@@ -17,7 +17,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard
