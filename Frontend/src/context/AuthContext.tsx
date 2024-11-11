@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { LoginAPI } from "../api/services/login";
 import { LogoutAPI } from "../api/services/logout";
+import { useExecuteToast } from "./ToastContext";
 
 interface AuthContextType {
   user: any | null;
@@ -21,6 +22,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [user, setUser] = useState<any | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const toast = useExecuteToast();
 
   useEffect(() => {
     const initializeAuthState = () => {
@@ -46,7 +48,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const loginUser = async (username: string, password: string) => {
     try {
       const response = await LoginAPI.login({ username, password });
-
       if (response.access_token) {
         localStorage.setItem("token", response.access_token);
         localStorage.setItem("userData", JSON.stringify(response.user));
@@ -55,7 +56,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       } else {
         throw new Error("Invalid login response");
       }
-
       return { message: response.message };
     } catch (error: any) {
       console.error("Login failed", error);
@@ -65,11 +65,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
   const logoutUser = async () => {
     try {
-      await LogoutAPI.logout();
+      const response = await LogoutAPI.logout();
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
       setUser(null);
       setIsAuthenticated(false);
+      return { message: response.message };
     } catch (error) {
       console.error("Logout failed", error);
     }

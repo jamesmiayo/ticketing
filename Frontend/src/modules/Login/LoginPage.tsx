@@ -7,11 +7,14 @@ import {
   Container,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useExecuteToast } from "../../context/ToastContext";
+import { useLoader } from "../../context/LoaderContext"; 
 
 interface FormData {
   username: string;
@@ -21,7 +24,13 @@ interface FormData {
 const LoginPage: React.FC<any> = () => {
   const navigate = useNavigate();
   const { loginUser } = useAuth();
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const toast = useExecuteToast();
+  const { isLoading, showLoader, hideLoader } = useLoader();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
@@ -30,13 +39,22 @@ const LoginPage: React.FC<any> = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    showLoader();
     try {
       const response = await loginUser(data.username, data.password);
-      console.log(response);
-      navigate('/dashboard');
-    } catch (e) {
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
+      navigate("/dashboard");
+    } catch (e: any) {
+      if (e.response && e.response.status === 400) {
+        setError("Invalid username or password. Please try again.");
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
       console.log(e);
-      setError("Login failed. Please check your credentials.");
+    } finally {
+      hideLoader();
     }
   };
 
@@ -116,8 +134,10 @@ const LoginPage: React.FC<any> = () => {
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
+            disabled={isLoading} 
+            startIcon={isLoading ? <CircularProgress size={20} /> : null} 
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </Box>
       </Box>
