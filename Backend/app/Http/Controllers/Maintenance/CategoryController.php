@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $data = Category::with('sub_category')->latest()->get();
+        $data = Category::with('sub_category:id,category_id,subcategory_id,subcategory_description')->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
