@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             CategorySeeder::class,
             DefaultAccountSeeder::class,
+            TicketHdrSeeder::class,
         ]);
     }
 }

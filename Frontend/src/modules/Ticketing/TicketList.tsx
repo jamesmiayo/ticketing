@@ -33,26 +33,32 @@ const TicketList: React.FC = () => {
     fetchData()
   }, [])
 
-  if (loading) {
-    return <CircularProgress />
-  }
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: 2,
-        flexWrap: 'wrap',
-        p: 3,
-      }}
-    >
-      {data.map((status, index) => (
-        <TicketCard key={index} title={status.label} count={status.value} />
-      ))}
-    </Box>
-  )
+    <>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            flexWrap: 'wrap',
+            p: 3,
+          }}
+        >
+          {data && data.length > 0 ? (
+            data.map((status, index) => (
+              <TicketCard key={index} title={status.label} count={status.value} />
+            ))
+          ) : (
+            <div>No data available</div> // Optional: Message for empty data
+          )}
+        </Box>
+      )}
+    </>
+  );
 }
 
 export default TicketList

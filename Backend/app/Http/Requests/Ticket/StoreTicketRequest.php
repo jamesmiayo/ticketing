@@ -4,7 +4,6 @@ namespace App\Http\Requests\Ticket;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-
 class StoreTicketRequest extends FormRequest
 {
     /**
@@ -23,7 +22,7 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required',
+            'subcategory_id' => 'required',
             'title' => 'required',
             'body' => 'required',
         ];
@@ -33,7 +32,7 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             'emp_id' => Auth::user()->id,
-            'category_id' => $this->category_id,
+            'subcategory_id' => $this->subcategory_id,
             'title' => $this->title,
             'body' => $this->body,
             'status' => $this->status,

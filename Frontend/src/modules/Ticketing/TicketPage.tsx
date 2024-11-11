@@ -7,8 +7,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@mui/material'
-import TicketTable from './TicketTable'
+} from '@mui/material';
+import TicketTable from './TicketTable';
 // Import TicketTable component
 
 interface Ticket {
@@ -69,15 +69,13 @@ const TicketPage: React.FC = () => {
   }
 
   // Open and close the modal
-  const handleOpen = () => setOpen(true) // Open the modal
-  const handleClose = () => setOpen(false) // Close the modal
+  const handleOpen = () => setOpen(true); // Open the modal
+  const handleClose = () => setOpen(false); // Close the modal
 
   return (
     <div>
       <h1>Ticket Overview</h1>
-      {/* Render the Ticket List (Card View) */}
-      <TicketList /> {/* Pass tickets to display in card format */}
-      {/* Button to open the Create Ticket modal */}
+      <TicketList /> 
       <Button
         variant="contained"
         color="primary"
@@ -86,10 +84,7 @@ const TicketPage: React.FC = () => {
       >
         Create Ticket
       </Button>
-      {/* Render the Ticket Table */}
-      <TicketTable tickets={tickets} />{' '}
-      {/* Render the ticket table with updated tickets */}
-      {/* Modal for Ticket Creation */}
+      <TicketTable/>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Ticket</DialogTitle>
         <DialogContent>

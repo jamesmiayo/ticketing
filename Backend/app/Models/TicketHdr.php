@@ -12,7 +12,7 @@ class TicketHdr extends Model
 
     protected $fillable = [
         'emp_id',
-        'category_id',
+        'subcategory_id',
         'status',
         'title',
         'body'

@@ -1,8 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { LoginAPI } from "../api/services/login";
 import { LogoutAPI } from "../api/services/logout";
-import { useExecuteToast } from "./ToastContext";
-
 interface AuthContextType {
   user: any | null;
   isAuthenticated: boolean;
@@ -22,7 +20,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [user, setUser] = useState<any | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const toast = useExecuteToast();
 
   useEffect(() => {
     const initializeAuthState = () => {
