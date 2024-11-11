@@ -8,6 +8,7 @@ use LdapRecord\Models\Entry;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use LdapRecord\Container;
 
 class LdapAuthenticationService
 {
@@ -26,10 +27,9 @@ class LdapAuthenticationService
         if (empty($user)) {
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
+        $connection = Container::getDefaultConnection();
 
-        // Validate the password before proceeding (assuming you have a stored password to validate against)
-        $storedPassword = $user['password'] ?? null; // Replace with the actual field used to retrieve the stored password if available
-        if ($storedPassword && !Hash::check($this->request->password, $storedPassword)) {
+        if (!$connection->auth()->attempt($user->getDn(), $this->request->password)) {
             return response()->json(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Invalid credentials.'], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -60,6 +60,5 @@ class LdapAuthenticationService
             'permissions' => !empty($role) ? $localUser->getAllPermissions()->pluck('name') : null,
             'access_token' => $token,
         ], Response::HTTP_OK);
-
     }
 }
