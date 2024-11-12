@@ -50,13 +50,10 @@ export const CategoryList: React.FC<{
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
     const categoryId = parseInt(event.target.value);
-    console.log(categoryId, categories);
     const category =
       categories.find((cat) => cat.category_id == categoryId) || null;
     setSelectedCategoryId(event.target.value);
-    console.log('Selected Category:', category?.sub_category);
     onCategorySelect(category);
-    console.log('list', category);
   };
 
   return (
@@ -64,6 +61,7 @@ export const CategoryList: React.FC<{
       <InputLabel>Category</InputLabel>
       <Select
         value={selectedCategoryId}
+        name="category"
         onChange={(e) => handleCategoryChange(e)}
         label="Category"
       >
@@ -93,6 +91,7 @@ export const SubcategoryList: React.FC<{
     <FormControl fullWidth margin="normal">
       <InputLabel>Subcategory</InputLabel>
       <Select
+        name="sub_category"
         value={selectedSubcategory}
         onChange={handleSubcategoryChange}
         label="Subcategory"
@@ -110,17 +109,15 @@ export const SubcategoryList: React.FC<{
   );
 };
 
-// Main Component to use CategoryList and SubcategoryList
 const CategorySelector: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
 
-  // Handles when a category is selected and updates state
   const handleCategorySelect = (category: Category | null) => {
     setSelectedCategory(category);
-    setSelectedSubcategory(''); // Clear the subcategory selection when the category changes
+    setSelectedSubcategory(''); 
   };
 
   return (
@@ -128,12 +125,11 @@ const CategorySelector: React.FC = () => {
       <Grid>
         {' '}
         <CategoryList onCategorySelect={handleCategorySelect} />
-        {/* Render Subcategory dropdown only if a category is selected */}
         {selectedCategory && selectedCategory.sub_category && (
           <SubcategoryList
-            subcategories={selectedCategory.sub_category} // Pass the subcategories of the selected category
+            subcategories={selectedCategory.sub_category}
             selectedSubcategory={selectedSubcategory}
-            onSubcategoryChange={setSelectedSubcategory} // Handle subcategory selection
+            onSubcategoryChange={setSelectedSubcategory} 
           />
         )}
       </Grid>
