@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TicketList from "./TicketList"; // Import Ticket List component for card view
 import TicketCreationForm from "./TicketCreationForm"; // Import the Ticket Creation Form component
 import {
+  Box,
   Button,
   Card,
   Dialog,
@@ -73,22 +74,21 @@ const TicketPage: React.FC = () => {
     <div>
       <h1>Ticket Overview</h1>
       <TicketList />
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleOpen}
+    >
+      Create Ticket
+    </Button>
+  </Box>
       {loading ? (
-        <Card sx={{ width: "100%", display: "flex", margin: "20px" }}>
+        <Card sx={{ width: "100%", display: "flex"}}>
           <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
         </Card>
       ) : (
         <>
-          <div className="flex justify-end">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpen}
-              sx={{ mb: 2, ml: 2 }}
-            >
-              Create Ticket
-            </Button>
-          </div>
           <TicketTable tickets={data} />
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle>Create New Ticket</DialogTitle>

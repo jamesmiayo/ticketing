@@ -25,6 +25,7 @@ class StoreTicketRequest extends FormRequest
             'subcategory_id' => 'required',
             'title' => 'required',
             'body' => 'required',
+            'b_status' => 'required',
         ];
     }
 
@@ -36,7 +37,7 @@ class StoreTicketRequest extends FormRequest
             'subcategory_id' => $this->subcategory_id,
             'title' => $this->title,
             'body' => $this->body,
-            'b_status' => $this->status,
+            'b_status' => $this->b_status,
         ];
     }
 
@@ -44,7 +45,7 @@ class StoreTicketRequest extends FormRequest
     {
         return [
             'ticket_id' => $ticket_id,
-            'status' => $this->status,
+            'status' => $this->b_status,
             'emp_id' => null,
             'updated_by' => Auth::user()->id,
         ];

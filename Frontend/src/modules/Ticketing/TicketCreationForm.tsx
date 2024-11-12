@@ -39,6 +39,7 @@ const test = [
   { value: '2', label: 'Category 2' },
   { value: '3', label: 'Category 3' },
 ]
+
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
   refetch,
@@ -60,12 +61,12 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
         ...data,
         status: data.status,
       };
-      // await ticketApi.createTicket(newTicket);
+      await ticketApi.createTicket(newTicket);
 
-      // onCreate(newTicket);
-      // refetch();
+      onCreate(newTicket);
+      refetch();
 
-      // reset(); // Reset the form fields
+      reset(); // Reset the form fields
     } catch (error) {
       console.error('Error creating ticket:', error);
     }

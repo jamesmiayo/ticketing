@@ -35,7 +35,7 @@ export const ticketApi = {
           title,
           body: concern,
           subcategory_id: '2',
-          status,
+          b_status:status,
         },
       });
       return response.data;
