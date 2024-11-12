@@ -39,7 +39,6 @@ const test = [
   { value: '2', label: 'Category 2' },
   { value: '3', label: 'Category 3' },
 ]
-
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
   refetch,
