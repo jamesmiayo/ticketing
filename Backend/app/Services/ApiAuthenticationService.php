@@ -17,8 +17,7 @@ class ApiAuthenticationService
 
     public function authenticate(): JsonResponse
     {
-        $user = User::where('email', $this->request->email)->first();
-
+        $user = User::where('username', $this->request->username)->first();
         if (!$user || !$user->checkPassword($this->request->password)) {
             return new JsonResponse(['error' => 'Invalid credentials'], Response::HTTP_UNAUTHORIZED);
         }

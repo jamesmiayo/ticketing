@@ -31,6 +31,7 @@ class StoreTicketRequest extends FormRequest
     public function getTicketHdr(): array
     {
         return [
+            'ticket_id' => mt_rand(1000, 9999),
             'emp_id' => Auth::user()->id,
             'subcategory_id' => $this->subcategory_id,
             'title' => $this->title,

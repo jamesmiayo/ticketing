@@ -1,11 +1,16 @@
 // src/services/axiosConfig.ts
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosError,
+} from 'axios';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${localStorage.getItem("token")}`
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
   },
   timeout: 10000,
 });
@@ -25,7 +30,6 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {

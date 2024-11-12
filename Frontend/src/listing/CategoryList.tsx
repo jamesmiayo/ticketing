@@ -1,62 +1,63 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-} from '@mui/material'
-import { getCategoryAPI } from '../api/services/getCategoryList'
+} from '@mui/material';
+import { getCategoryAPI } from '../api/services/getCategoryList';
 
 export interface Subcategory {
-  subcategory_id: number
-  subcategory_description: string
+  subcategory_id: number;
+  subcategory_description: string;
 }
 
 export interface Category {
-  category_id: number
-  category_description: string
-  sub_category: Subcategory[] // Includes subcategories
+  category_id: number;
+  category_description: string;
+  sub_category: Subcategory[]; // Includes subcategories
 }
 
 // Function to fetch category data with subcategories
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
-    const data = await getCategoryAPI.getAllData()
-    console.log('Fetched categories with subcategories:', data) // Log fetched data for debugging
-    return data
+    const data = await getCategoryAPI.getAllData();
+    console.log('Fetched categories with subcategories:', data); // Log fetched data for debugging
+    return data;
   } catch (error) {
-    console.error('Error fetching categories:', error)
-    return []
+    console.error('Error fetching categories:', error);
+    return [];
   }
-}
+};
 
 // CategoryList Component
 export const CategoryList: React.FC<{
-  onCategorySelect: (category: Category | null) => void
+  onCategorySelect: (category: Category | null) => void;
 }> = ({ onCategorySelect }) => {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
-      const categories = await fetchCategories()
-      setCategories(categories)
-    }
+      const categories = await fetchCategories();
+      setCategories(categories);
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const handleCategoryChange = (event: SelectChangeEvent<string>) => {
-    const categoryId = parseInt(event.target.value)
-    console.log(categoryId, categories)
+    const categoryId = parseInt(event.target.value);
+    console.log(categoryId, categories);
     const category =
-      categories.find((cat) => cat.category_id == categoryId) || null
-    setSelectedCategoryId(event.target.value)
-    console.log('Selected Category:', category?.sub_category)
-    onCategorySelect(category)
-    console.log('list', category)
-  }
+      categories.find((cat) => cat.category_id == categoryId) || null;
+    setSelectedCategoryId(event.target.value);
+    console.log('Selected Category:', category?.sub_category);
+    onCategorySelect(category);
+    console.log('list', category);
+  };
 
   return (
     <FormControl fullWidth>
@@ -76,18 +77,17 @@ export const CategoryList: React.FC<{
         ))}
       </Select>
     </FormControl>
-  )
-}
+  );
+};
 
-// SubcategoryList Component
 export const SubcategoryList: React.FC<{
-  subcategories: Subcategory[]
-  selectedSubcategory: string
-  onSubcategoryChange: (subcategory: string) => void
+  subcategories: Subcategory[];
+  selectedSubcategory: string;
+  onSubcategoryChange: (subcategory: string) => void;
 }> = ({ subcategories, selectedSubcategory, onSubcategoryChange }) => {
   const handleSubcategoryChange = (event: SelectChangeEvent<string>) => {
-    onSubcategoryChange(event.target.value)
-  }
+    onSubcategoryChange(event.target.value);
+  };
 
   return (
     <FormControl fullWidth margin="normal">
@@ -107,36 +107,38 @@ export const SubcategoryList: React.FC<{
         ))}
       </Select>
     </FormControl>
-  )
-}
+  );
+};
 
 // Main Component to use CategoryList and SubcategoryList
 const CategorySelector: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
-  )
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('')
+  );
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
 
   // Handles when a category is selected and updates state
   const handleCategorySelect = (category: Category | null) => {
-    setSelectedCategory(category)
-    setSelectedSubcategory('') // Clear the subcategory selection when the category changes
-  }
+    setSelectedCategory(category);
+    setSelectedSubcategory(''); // Clear the subcategory selection when the category changes
+  };
 
   return (
     <>
-      <CategoryList onCategorySelect={handleCategorySelect} />
-
-      {/* Render Subcategory dropdown only if a category is selected */}
-      {selectedCategory && selectedCategory.subcategories && (
-        <SubcategoryList
-          subcategories={selectedCategory.subcategories} // Pass the subcategories of the selected category
-          selectedSubcategory={selectedSubcategory}
-          onSubcategoryChange={setSelectedSubcategory} // Handle subcategory selection
-        />
-      )}
+      <Grid>
+        {' '}
+        <CategoryList onCategorySelect={handleCategorySelect} />
+        {/* Render Subcategory dropdown only if a category is selected */}
+        {selectedCategory && selectedCategory.sub_category && (
+          <SubcategoryList
+            subcategories={selectedCategory.sub_category} // Pass the subcategories of the selected category
+            selectedSubcategory={selectedSubcategory}
+            onSubcategoryChange={setSelectedSubcategory} // Handle subcategory selection
+          />
+        )}
+      </Grid>
     </>
-  )
-}
+  );
+};
 
-export default CategorySelector
+export default CategorySelector;

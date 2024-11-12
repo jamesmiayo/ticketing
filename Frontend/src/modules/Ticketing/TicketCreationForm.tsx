@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
@@ -8,23 +8,17 @@ import {
   MenuItem,
   Box,
   Grid,
-  Typography,
-} from '@mui/material'
-import CategorySelector from '../../listing/CategoryList'
+} from '@mui/material';
+import CategorySelector from '../../listing/CategoryList';
+import { ticketApi } from '../../api/services/ticket';
 
-// Sample subcategories for each category (from your previous data structure)
-const subcategories = {
-  Login: ['Forgot Password', 'Authentication Failure', 'Account Lock'],
-  'UI/UX': ['Page Layout', 'Color Scheme', 'Navigation Issues'],
-  API: ['Endpoint Issue', 'Integration Failure', 'API Documentation'],
-  Payment: ['Payment Failure', 'Refund Issue', 'Invoice Error'],
-  Other: ['General Inquiry', 'Feature Request', 'Bug Report'],
-}
-
-const statuses = ['Open', 'Resolved']
+const statusOptions = [
+  { value: '0', label: 'Open' },
+  { value: '6', label: 'Resolved' },
+];
 
 interface TicketCreationFormProps {
-  onCreate: (ticket: any) => void // Callback to pass the new ticket back to parent
+  onCreate: (ticket: any) => void; // Callback to pass the new ticket back to parent
 }
 
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
@@ -36,11 +30,11 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     category: '',
     subcategory: '',
     status: 'Open',
-  })
+  });
 
   const [availableSubcategories, setAvailableSubcategories] = useState<
     string[]
-  >([])
+  >([]);
 
   // Update subcategories based on selected category
   const handleCategoryChange = (category: string) => {
@@ -48,38 +42,53 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       ...prevState,
       category,
       subcategory: '', // Reset subcategory when category changes
-    }))
+    }));
 
     // Update available subcategories based on selected category
-    setAvailableSubcategories(subcategories[category] || [])
-  }
+    setAvailableSubcategories(subcategories[category] || []);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
   ) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setTicket((prevState) => ({
       ...prevState,
       [name as string]: value,
-    }))
-  }
+    }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const newTicket = {
-      ...ticket,
-      ticketNo: `T${Date.now()}`,
-      dateTime: new Date().toLocaleString(),
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Prepare the ticket data for API request
+      const newTicket = {
+        ...ticket,
+        status: ticket.status.value,
+        ticketid: `T${Date.now()}`, // Generate a unique ticket ID
+        dateTime: new Date().toLocaleString(), // Aphpdd dateTime for logging
+      };
+      // Call the API to create the ticket
+      console.log(newTicket);
+      await ticketApi.createTicket(newTicket);
+
+      // Optionally, call the onCreate function to notify the parent component
+      onCreate(newTicket);
+
+      // Reset the form after successful ticket creation
+      setTicket({
+        title: '',
+        concern: '',
+        category: '',
+        subcategory: 'asdsa',
+        status: 'Open',
+      });
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      // Optionally, show a message to the user indicating an error
     }
-    onCreate(newTicket) // Pass the new ticket to parent
-    setTicket({
-      title: '',
-      concern: '',
-      category: '',
-      subcategory: '',
-      status: 'Open',
-    })
-  }
+  };
 
   return (
     <Box sx={{ maxWidth: 600, margin: 'auto', padding: 3 }}>
@@ -124,9 +133,9 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
                 label="Status"
                 required
               >
-                {statuses.map((status) => (
+                {statusOptions.map((status) => (
                   <MenuItem key={status} value={status}>
-                    {status}
+                    {status.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -141,7 +150,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
         </Grid>
       </form>
     </Box>
-  )
-}
+  );
+};
 
-export default TicketCreationForm
+export default TicketCreationForm;
