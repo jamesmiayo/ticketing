@@ -15,6 +15,7 @@ const TicketList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const result = await OverviewAPI.getAllData();
@@ -46,7 +47,7 @@ const TicketList: React.FC = () => {
             p: 3,
           }}
         >
-          {[...Array(6)].map((_, index) => (
+          {[...Array(8)].map((_, index) => (
             <Skeleton key={index} variant="circular" width={150} height={150} />
           ))}
         </Box>

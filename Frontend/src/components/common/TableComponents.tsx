@@ -11,15 +11,15 @@ const TableComponents = <T,>({ columns, rows }: DataGridProps<T>) => {
       <DataGrid
         rows={rows}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5, 10, 20]}
+        pagination={false} 
+        hideFooter 
         sx={{
           '& .MuiDataGrid-cell': {
-            textAlign: 'center', 
+            textAlign: 'center',
           },
           '& .MuiDataGrid-columnHeaderTitle': {
-            fontWeight: 'bold', 
-            textAlign: 'center', 
+            fontWeight: 'bold',
+            textAlign: 'center',
           },
         }}
       />

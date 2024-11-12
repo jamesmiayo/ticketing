@@ -3,16 +3,15 @@ import TicketList from "./TicketList"; // Import Ticket List component for card 
 import TicketCreationForm from "./TicketCreationForm"; // Import the Ticket Creation Form component
 import {
   Button,
+  Card,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Skeleton,
 } from "@mui/material";
-import TableComponents from "../../components/common/TableComponents";
 import TicketTable from "./TicketTable";
-// Import TicketTable component
-
+import { ticketApi } from "../../api/services/ticket";
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -26,99 +25,87 @@ interface Ticket {
 }
 
 const TicketPage: React.FC = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([
-    {
-      ticketNo: "T001",
-      dateTime: "2024-11-09 10:00 AM",
-      title: "Fix login issue",
-      concern: "Authentication Failure",
-      category: "Login",
-      department: "IT Support",
-      section: "Backend",
-      tech: "John Doe",
-      status: "Open", // Example status
-    },
-    {
-      ticketNo: "T002",
-      dateTime: "2024-11-09 11:30 AM",
-      title: "Update user profile page",
-      concern: "UI Issue",
-      category: "UI/UX",
-      department: "Frontend",
-      section: "Design",
-      tech: "Jane Smith",
-      status: "In Progress", // Example status
-    },
-    {
-      ticketNo: "T003",
-      dateTime: "2024-11-09 02:15 PM",
-      title: "Review payment gateway integration",
-      concern: "Payment Failure",
-      category: "Payment",
-      department: "Finance",
-      section: "API Integration",
-      tech: "Tom Lee",
-      status: "Resolved", // Example status
-    },
-  ]);
-
-  const [open, setOpen] = useState(false); // Modal open state
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const buttonLoadingTimer = setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-
-    // Cleanup timer
-    return () => clearTimeout(buttonLoadingTimer);
-  }, []);
-
-  // Handle new ticket creation
-  const handleCreateTicket = (newTicket: Ticket) => {
-    setTickets((prevTickets) => [...prevTickets, newTicket]); // Add the new ticket to the tickets list
-    setOpen(false); // Close the modal after creating the ticket
-  };
+  const [open, setOpen] = useState(false);
 
   // Open and close the modal
-  const handleOpen = () => setOpen(true); // Open the modal
-  const handleClose = () => setOpen(false); // Close the modal
-  const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "age", headerName: "Age", width: 110 },
-  ];
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [data, setData] = useState([]);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const result = await ticketApi.getTicketData();
+      if (result) {
+        const formattedTickets = result.map((ticket: any) => ({
+          id: ticket.id,
+          ticket_id: ticket.ticket_id || "N/A",
+          requestedBy: ticket.user?.name || "N/A",
+          title: ticket.title || "N/A",
+          category:
+            ticket.sub_category?.category?.category_description || "N/A",
+          subCategory: ticket.sub_category?.subcategory_description || "N/A",
+          status: ticket?.ticket_logs_latest?.ticket_status || "Unknown",
+          created_at: ticket?.ticket_logs_latest?.created_at,
+          assignee: ticket?.ticket_logs_latest?.assignee?.name || "No assignee",
+          updated_by:
+            ticket?.ticket_logs_latest?.updated_by?.name || "No assignee",
+        }));
+        setData(formattedTickets);
+      } else {
+        console.warn("Unexpected data structure:", result);
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div>
       <h1>Ticket Overview</h1>
       <TicketList />
       {loading ? (
-        <div className="mb-5">
-          <Skeleton variant="rectangular" width={150} />
-        </div>
+        <Card sx={{ width: "100%", display: "flex", margin: "20px" }}>
+          <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
+        </Card>
       ) : (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpen}
-          sx={{ marginBottom: 2 }}
-        >
-          Create Ticket
-        </Button>
+        <>
+          <div className="flex justify-end">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpen}
+              sx={{ mb: 2, ml: 2 }}
+            >
+              Create Ticket
+            </Button>
+          </div>
+          <TicketTable tickets={data} />
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Create New Ticket</DialogTitle>
+            <DialogContent>
+              <TicketCreationForm
+                onCreate={() => setOpen(false)}
+                refetch={fetchData}
+              />{" "}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="secondary">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
       )}
-      <TicketTable />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create New Ticket</DialogTitle>
-        <DialogContent>
-          <TicketCreationForm onCreate={handleCreateTicket} />{" "}
-          {/* Pass the ticket creation handler */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };
