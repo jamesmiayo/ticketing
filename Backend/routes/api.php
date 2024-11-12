@@ -13,6 +13,7 @@ use App\Http\Controllers\Ticket\TicketLogController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('validate-token', [AuthController::class, 'checkToken']);
 });
 
 Route::middleware(['auth'])->group(function () {
