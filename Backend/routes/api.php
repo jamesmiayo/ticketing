@@ -35,3 +35,4 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('ticket-hdr', TicketHdrController::class);
     });
 });
+

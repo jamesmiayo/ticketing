@@ -62,16 +62,27 @@ class DashboardController extends Controller
         $statuses = GlobalConstants::getStatusesType();
 
         $ticketCounts = [];
+        $totalTickets = 0;
+
         foreach ($statuses as $status => $label) {
-            $ticketCounts[$label] = $this->ticketHdr
+            $count = $this->ticketHdr
                 ->whereHas('ticket_logs_latest', function ($query) use ($status) {
                     $query->where('status', $status);
                 })
                 ->count();
+
+            $ticketCounts[$label] = $count;
+            $totalTickets += $count;
         }
+
         $formattedCounts = array_map(function($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
+
+        $formattedCounts[] = [
+            'label' => 'Total Tickets',
+            'value' => $totalTickets,
+        ];
 
         return $formattedCounts;
     }

@@ -3,8 +3,12 @@ import { useAuth } from "../../context/AuthContext";
 import Sidebar from "../../components/navigation/SideBar";
 
 const PrivateRoute = ({ children }: any) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated , loading } = useAuth();
   
+  if (loading) {
+    return ; 
+  }
+
   return isAuthenticated ? (
     <Sidebar>
       {children}

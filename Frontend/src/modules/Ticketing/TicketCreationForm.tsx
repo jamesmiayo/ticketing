@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
   TextField,
   Button,
@@ -8,137 +8,122 @@ import {
   MenuItem,
   Box,
   Grid,
-} from "@mui/material";
-import CategorySelector from "../../listing/CategoryList";
-import { ticketApi } from "../../api/services/ticket";
-
-const statusOptions = [
-  { value: "0", label: "Open" },
-  { value: "6", label: "Resolved" },
-];
+} from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import CategorySelector from '../../listing/CategoryList';
+import { ticketApi } from '../../api/services/ticket';
+import { ticketValidationSchema } from '../../schema/Ticket/createTicketSchema';
+import SelectItem from '../../components/common/SelectItem';
 
 interface TicketCreationFormProps {
-  onCreate: (ticket: any) => void; // Callback to pass the new ticket back to parent
+  onCreate: (ticket: any) => void;
+  refetch: any;
 }
 
+interface TicketFormInputs {
+  title: string;
+  concern: string;
+  category: string;
+  sub_category: string;
+  status: string;
+}
+
+const statusOptions = [
+  { value: '0', label: 'Open' },
+  { value: '6', label: 'Completed' },
+];
+
+const test = [
+  { value: '1', label: 'Category 1' },
+  { value: '2', label: 'Category 2' },
+  { value: '3', label: 'Category 3' },
+]
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
+  refetch,
 }) => {
-  const [ticket, setTicket] = useState({
-    title: "",
-    concern: "",
-    category: "",
-    subcategory: "",
-    status: "Open",
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<TicketFormInputs>({
+    resolver: yupResolver(ticketValidationSchema), 
   });
 
-  const [availableSubcategories, setAvailableSubcategories] = useState<
-    string[]
-  >([]);
-
-  // Update subcategories based on selected category
-  const handleCategoryChange = (category: string) => {
-    setTicket((prevState) => ({
-      ...prevState,
-      category,
-      subcategory: "", // Reset subcategory when category changes
-    }));
-
-    // Update available subcategories based on selected category
-    setAvailableSubcategories(subcategories[category] || []);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
-  ) => {
-    const { name, value } = e.target;
-    setTicket((prevState) => ({
-      ...prevState,
-      [name as string]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (data:any) => {
+    console.log(data);
     try {
-      // Prepare the ticket data for API request
       const newTicket = {
-        ...ticket,
-        status: ticket.status.value,
-        ticketid: `T${Date.now()}`, // Generate a unique ticket ID
-        dateTime: new Date().toLocaleString(), // Aphpdd dateTime for logging
+        ...data,
+        status: data.status,
       };
-      // Call the API to create the ticket
-      console.log(newTicket);
       await ticketApi.createTicket(newTicket);
 
-      // Optionally, call the onCreate function to notify the parent component
       onCreate(newTicket);
+      refetch();
 
-      // Reset the form after successful ticket creation
-      setTicket({
-        title: "",
-        concern: "",
-        category: "",
-        subcategory: "asdsa",
-        status: "Open",
-      });
+      reset(); // Reset the form fields
     } catch (error) {
-      console.error("Error creating ticket:", error);
-      // Optionally, show a message to the user indicating an error
+      console.error('Error creating ticket:', error);
     }
   };
-
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
-      <form onSubmit={handleSubmit}>
+    <Box sx={{ maxWidth: 600, margin: 'auto', padding: 3 }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               label="Ticket Title"
-              name="title"
+              {...register('title')}
               fullWidth
-              value={ticket.title}
-              onChange={handleChange}
-              required
+              error={!!errors.title}
+              helperText={errors.title?.message}
             />
           </Grid>
 
           <Grid item xs={12}>
             <TextField
               label="Concern"
-              name="concern"
+              {...register('concern')}
               fullWidth
-              value={ticket.concern}
-              onChange={handleChange}
-              required
+              error={!!errors.concern}
+              helperText={errors.concern?.message}
               multiline
               rows={4}
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
-            {/* Category Selector */}
-            <CategorySelector onCategorySelect={handleCategoryChange} />
+          <SelectItem label="Category" control={control} options={test} name="category"/>
+          <SelectItem label="Sub Category" control={control} options={test} name="sub_category"/> 
           </Grid>
+          {/* <Grid item xs={12} sm={6}>
+            <CategorySelector />
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
+            <FormControl fullWidth error={!!errors.status}>
               <InputLabel>Status</InputLabel>
-              <Select
+              <Controller
                 name="status"
-                value={ticket.status}
-                onChange={handleChange}
-                label="Status"
-                required
-              >
-                {statusOptions.map((status) => (
-                  <MenuItem key={status} value={status}>
-                    {status.label}
-                  </MenuItem>
-                ))}
-              </Select>
+                control={control}
+                render={({ field }) => (
+                  <Select {...field} label="Status">
+                    {statusOptions.map((status) => (
+                      <MenuItem key={status.value} value={status.value}>
+                        {status.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.status && (
+                <Box sx={{ color: 'red', fontSize: '0.75rem', marginTop: 0.5 }}>
+                  {errors.status.message}
+                </Box>
+              )}
             </FormControl>
           </Grid>
 
