@@ -17,7 +17,12 @@ class TicketStatus extends Model
         'status',
     ];
     protected $with = ['tickets:id,title,status,created_at', 'assignee:id,name', 'updated_by:id,name'];
+
     protected $appends = ['ticket_status'];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d h:i A',
+    ];
 
     public function getTicketStatusAttribute()
     {

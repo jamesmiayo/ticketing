@@ -25,7 +25,7 @@ class DashboardController extends Controller
         return response()->json([
             'status' => Response::HTTP_OK,
             'total_ticket' => $this->ticketHdr->count(),
-            'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
+            'total_ticket_count' => $this->getTicketCountsByStatus(),
             'total_ticket_branch' => $this->getTicketPerBranch(),
             'total_ticket_category' => $this->getTicketPerCategory(),
             'total_today_created_ticket' =>  $this->getTicketPerDay(),
@@ -52,22 +52,23 @@ class DashboardController extends Controller
 
         return [
             'total_created' => $this->ticketHdr->whereDate('created_at', $today)->count(),
-            'total_open' => $this->ticketHdr->whereDate('created_at', $today)->where('status', GlobalConstants::OPEN)->count(),
-            'total_resolved' => $this->ticketHdr->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED)->count(),
+            'total_open' => $this->ticketHdr->whereDate('created_at', $today)->where('b_status', true)->count(),
+            'total_resolved' => $this->ticketHdr->whereDate('created_at', $today)->where('b_status',false)->count(),
         ];
     }
 
-    public function getTicketCountsByStatus($data): array
+    public function getTicketCountsByStatus(): array
     {
         $statuses = GlobalConstants::getStatusesType();
 
         $ticketCounts = [];
         foreach ($statuses as $status => $label) {
-            $ticketCounts[$label] = $data->filter(function ($item) use ($status) {
-                return $item->status == $status;
-            })->count();
+            $ticketCounts[$label] = $this->ticketHdr
+                ->whereHas('ticket_logs_latest', function ($query) use ($status) {
+                    $query->where('status', $status);
+                })
+                ->count();
         }
-
         $formattedCounts = array_map(function($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);

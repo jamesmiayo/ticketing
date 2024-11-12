@@ -1,5 +1,5 @@
 // App.js
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom'
 import PrivateRoute from './pages/private/privateRoute'
 import PublicRoute from './pages/public/publicRoute'
 import LoginPage from './modules/Login/LoginPage'
@@ -14,10 +14,6 @@ const privateRoutes = [
     path: '/dashboard',
     element: <DashboardPage />,
   },
-  {
-    path: '/users',
-    element: <UserPage />,
-  },
 ]
 
 function App() {
@@ -25,9 +21,8 @@ function App() {
     <AuthProvider>
       <ToastProvider>
         <LoaderProvider>
-          <Router>
+          <BrowserRouter>
             <Routes>
-              
               <Route
                 path="/login"
                 element={
@@ -45,7 +40,7 @@ function App() {
                 />
               ))}
             </Routes>
-          </Router>
+          </BrowserRouter>
         </LoaderProvider>
       </ToastProvider>
     </AuthProvider>

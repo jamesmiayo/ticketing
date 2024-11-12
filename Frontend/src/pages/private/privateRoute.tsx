@@ -4,12 +4,14 @@ import Sidebar from "../../components/navigation/SideBar";
 
 const PrivateRoute = ({ children }: any) => {
   const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-
-  return <Sidebar>{children}</Sidebar>;
+  
+  return isAuthenticated ? (
+    <Sidebar>
+      {children}
+    </Sidebar>
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 export default PrivateRoute;

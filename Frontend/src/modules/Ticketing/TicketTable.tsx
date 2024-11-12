@@ -36,7 +36,7 @@ export default function TicketTable() {
     { field: 'ticket_id', headerName: 'Ticket ID', width: 140 },
     { field: 'requestedBy', headerName: 'Requested By', width: 180 },
     { field: 'assignee', headerName: 'Assignee', width: 140 },
-    { field: 'title', headerName: 'Title', width: 180 },
+    { field: 'title', headerName: 'Title', width: 220 },
     { field: 'category', headerName: 'Category', width: 180 },
     { field: 'subCategory', headerName: 'Sub Category', width: 180 },
     { field: 'status', headerName: 'Status', width: 110 },
