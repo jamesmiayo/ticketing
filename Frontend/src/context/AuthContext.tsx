@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { LoginAPI } from "../api/services/login";
 import { LogoutAPI } from "../api/services/logout";
+import { validateToken } from "../api/services/validateToken";
 interface AuthContextType {
   user: any | null;
   isAuthenticated: boolean;
@@ -22,19 +23,24 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initializeAuthState = () => {
+    const initializeAuthState = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        setIsAuthenticated(true);
-        const userData = localStorage.getItem("userData");
-        const parsedUserData =
-          userData && typeof userData === "string"
-            ? JSON.parse(userData)
-            : null;
-        setUser(parsedUserData);
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
+        const isValid = await validateToken();
+        if (isValid) {
+          setIsAuthenticated(true);
+          const userData = localStorage.getItem("userData");
+          const parsedUserData =
+            userData && typeof userData === "string"
+              ? JSON.parse(userData)
+              : null;
+          setUser(parsedUserData);
+        } else {
+          setIsAuthenticated(false);
+          setUser(null);
+          localStorage.removeItem("token");
+          localStorage.removeItem("userData");
+        }
       }
       setLoading(false);
     };

@@ -14,7 +14,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useExecuteToast } from "../../context/ToastContext";
-import { useLoader } from "../../context/LoaderContext"; 
+import { useLoader } from "../../context/LoaderContext";
 
 interface FormData {
   username: string;
@@ -134,10 +134,10 @@ const LoginPage: React.FC<any> = () => {
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
-            disabled={isLoading} 
-            startIcon={isLoading ? <CircularProgress size={20} /> : null} 
+            disabled={isLoading}
+            startIcon={isLoading ? <CircularProgress size={20} /> : null}
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </Box>
       </Box>

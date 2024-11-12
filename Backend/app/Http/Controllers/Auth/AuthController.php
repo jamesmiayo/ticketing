@@ -35,7 +35,7 @@ class AuthController extends Controller
         $personalAccessToken = PersonalAccessToken::findToken($token);
 
         if ($personalAccessToken) {
-            return new JsonResponse(['status' => Response::HTTP_OK, 'isValid' => true], Response::HTTP_OK);
+            return new JsonResponse(['isValid' => true], Response::HTTP_OK);
         }else{
             return new JsonResponse(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Token expired'], Response::HTTP_UNAUTHORIZED);
         }
