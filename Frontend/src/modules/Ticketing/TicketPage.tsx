@@ -1,99 +1,116 @@
-import React, { useState } from 'react'
-import TicketList from './TicketList' // Import Ticket List component for card view
-import TicketCreationForm from './TicketCreationForm' // Import the Ticket Creation Form component
+import React, { useEffect, useState } from "react";
+import TicketList from "./TicketList"; // Import Ticket List component for card view
+import TicketCreationForm from "./TicketCreationForm"; // Import the Ticket Creation Form component
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-} from '@mui/material';
-import TableComponents from '../../components/common/TableComponents';
-import TicketTable from './TicketTable';
+  Skeleton,
+} from "@mui/material";
+import TableComponents from "../../components/common/TableComponents";
+import TicketTable from "./TicketTable";
 // Import TicketTable component
 
 interface Ticket {
-  ticketNo: string
-  dateTime: string
-  title: string
-  concern: string
-  category: string
-  department: string
-  section: string
-  tech: string
-  status: string // Ensure all tickets have a status field
+  ticketNo: string;
+  dateTime: string;
+  title: string;
+  concern: string;
+  category: string;
+  department: string;
+  section: string;
+  tech: string;
+  status: string; // Ensure all tickets have a status field
 }
 
 const TicketPage: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([
     {
-      ticketNo: 'T001',
-      dateTime: '2024-11-09 10:00 AM',
-      title: 'Fix login issue',
-      concern: 'Authentication Failure',
-      category: 'Login',
-      department: 'IT Support',
-      section: 'Backend',
-      tech: 'John Doe',
-      status: 'Open', // Example status
+      ticketNo: "T001",
+      dateTime: "2024-11-09 10:00 AM",
+      title: "Fix login issue",
+      concern: "Authentication Failure",
+      category: "Login",
+      department: "IT Support",
+      section: "Backend",
+      tech: "John Doe",
+      status: "Open", // Example status
     },
     {
-      ticketNo: 'T002',
-      dateTime: '2024-11-09 11:30 AM',
-      title: 'Update user profile page',
-      concern: 'UI Issue',
-      category: 'UI/UX',
-      department: 'Frontend',
-      section: 'Design',
-      tech: 'Jane Smith',
-      status: 'In Progress', // Example status
+      ticketNo: "T002",
+      dateTime: "2024-11-09 11:30 AM",
+      title: "Update user profile page",
+      concern: "UI Issue",
+      category: "UI/UX",
+      department: "Frontend",
+      section: "Design",
+      tech: "Jane Smith",
+      status: "In Progress", // Example status
     },
     {
-      ticketNo: 'T003',
-      dateTime: '2024-11-09 02:15 PM',
-      title: 'Review payment gateway integration',
-      concern: 'Payment Failure',
-      category: 'Payment',
-      department: 'Finance',
-      section: 'API Integration',
-      tech: 'Tom Lee',
-      status: 'Resolved', // Example status
+      ticketNo: "T003",
+      dateTime: "2024-11-09 02:15 PM",
+      title: "Review payment gateway integration",
+      concern: "Payment Failure",
+      category: "Payment",
+      department: "Finance",
+      section: "API Integration",
+      tech: "Tom Lee",
+      status: "Resolved", // Example status
     },
-  ])
+  ]);
 
-  const [open, setOpen] = useState(false) // Modal open state
+  const [open, setOpen] = useState(false); // Modal open state
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const buttonLoadingTimer = setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+
+    // Cleanup timer
+    return () => clearTimeout(buttonLoadingTimer);
+  }, []);
 
   // Handle new ticket creation
   const handleCreateTicket = (newTicket: Ticket) => {
-    setTickets((prevTickets) => [...prevTickets, newTicket]) // Add the new ticket to the tickets list
-    setOpen(false) // Close the modal after creating the ticket
-  }
+    setTickets((prevTickets) => [...prevTickets, newTicket]); // Add the new ticket to the tickets list
+    setOpen(false); // Close the modal after creating the ticket
+  };
 
   // Open and close the modal
   const handleOpen = () => setOpen(true); // Open the modal
   const handleClose = () => setOpen(false); // Close the modal
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'age', headerName: 'Age', width: 110 },
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Name", width: 150 },
+    { field: "age", headerName: "Age", width: 110 },
   ];
   return (
     <div>
       <h1>Ticket Overview</h1>
-      <TicketList /> 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-        sx={{ marginBottom: 2 }}
-      >
-        Create Ticket
-      </Button>
-      <TicketTable/>
+      <TicketList />
+      {loading ? (
+        <div className="mb-5">
+          <Skeleton variant="rectangular" width={150} />
+        </div>
+      ) : (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          sx={{ marginBottom: 2 }}
+        >
+          Create Ticket
+        </Button>
+      )}
+      <TicketTable />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Ticket</DialogTitle>
         <DialogContent>
-          <TicketCreationForm onCreate={handleCreateTicket} />{' '}
+          <TicketCreationForm onCreate={handleCreateTicket} />{" "}
           {/* Pass the ticket creation handler */}
         </DialogContent>
         <DialogActions>
@@ -103,7 +120,7 @@ const TicketPage: React.FC = () => {
         </DialogActions>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default TicketPage
+export default TicketPage;

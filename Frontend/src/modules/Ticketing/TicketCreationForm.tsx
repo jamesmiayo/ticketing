@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -8,13 +8,13 @@ import {
   MenuItem,
   Box,
   Grid,
-} from '@mui/material';
-import CategorySelector from '../../listing/CategoryList';
-import { ticketApi } from '../../api/services/ticket';
+} from "@mui/material";
+import CategorySelector from "../../listing/CategoryList";
+import { ticketApi } from "../../api/services/ticket";
 
 const statusOptions = [
-  { value: '0', label: 'Open' },
-  { value: '6', label: 'Resolved' },
+  { value: "0", label: "Open" },
+  { value: "6", label: "Resolved" },
 ];
 
 interface TicketCreationFormProps {
@@ -25,11 +25,11 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
 }) => {
   const [ticket, setTicket] = useState({
-    title: '',
-    concern: '',
-    category: '',
-    subcategory: '',
-    status: 'Open',
+    title: "",
+    concern: "",
+    category: "",
+    subcategory: "",
+    status: "Open",
   });
 
   const [availableSubcategories, setAvailableSubcategories] = useState<
@@ -41,7 +41,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     setTicket((prevState) => ({
       ...prevState,
       category,
-      subcategory: '', // Reset subcategory when category changes
+      subcategory: "", // Reset subcategory when category changes
     }));
 
     // Update available subcategories based on selected category
@@ -78,20 +78,20 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
 
       // Reset the form after successful ticket creation
       setTicket({
-        title: '',
-        concern: '',
-        category: '',
-        subcategory: 'asdsa',
-        status: 'Open',
+        title: "",
+        concern: "",
+        category: "",
+        subcategory: "asdsa",
+        status: "Open",
       });
     } catch (error) {
-      console.error('Error creating ticket:', error);
+      console.error("Error creating ticket:", error);
       // Optionally, show a message to the user indicating an error
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: 'auto', padding: 3 }}>
+    <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
