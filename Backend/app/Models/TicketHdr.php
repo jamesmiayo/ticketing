@@ -21,21 +21,19 @@ class TicketHdr extends Model
         'body'
     ];
 
-    protected $with = ['user:id,branch_id,name','ticket_logs_latest', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'user.branch:id,branch_description'];
+    protected $with = ['user:id,branch_id,name','sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'user.branch:id,branch_description'];
 
     protected $appends = ['ticket_status'];
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s', // Custom format
+    ];
 
     public function getTicketStatusAttribute()
     {
         return GlobalConstants::getStatusType($this->b_status);
     }
 
-    public function created_at()
-    {
-        return Attribute::make(
-            get: fn($value) => $value ? Carbon::parse($value)->format('Y-m-d\TH:i:s.u\Z') : null
-        );
-    }
 
     public function user()
     {
@@ -44,7 +42,7 @@ class TicketHdr extends Model
 
     public function ticket_statuses()
     {
-        return $this->hasMany(TicketStatus::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(TicketStatus::class , 'ticket_id' , 'id');
     }
 
     public function sub_category()
@@ -60,7 +58,7 @@ class TicketHdr extends Model
 
     public static function getTicketLog()
     {
-        $query = self::query();
+        $query = self::with('ticket_logs_latest');
         return $query;
     }
 }
