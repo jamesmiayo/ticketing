@@ -31,6 +31,7 @@ class GlobalConstants
         return static::getStatusesType()[$Type] ?? null;
     }
 
+
 //      Response::HTTP_OK; // 200
 // Response::HTTP_CREATED; // 201
 // Response::HTTP_NO_CONTENT; // 204

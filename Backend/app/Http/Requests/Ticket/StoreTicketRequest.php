@@ -36,7 +36,17 @@ class StoreTicketRequest extends FormRequest
             'subcategory_id' => $this->subcategory_id,
             'title' => $this->title,
             'body' => $this->body,
+            'b_status' => $this->status,
+        ];
+    }
+
+    public function getTicketStatus($ticket_id): array
+    {
+        return [
+            'ticket_id' => $ticket_id,
             'status' => $this->status,
+            'emp_id' => null,
+            'updated_by' => Auth::user()->id,
         ];
     }
 }

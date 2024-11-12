@@ -17,11 +17,12 @@ class TicketHdrFactory extends Factory
     public function definition(): array
     {
         return [
+            'ticket_id' => mt_rand(1000, 9999),
             'emp_id' => 1,
             'subcategory_id' => 1,
             'title' => $this->faker->sentence,
             'body' => $this->faker->paragraph,
-            'status' => $this->faker->randomElement(['0', '1', '2']),
+            'b_status' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ];

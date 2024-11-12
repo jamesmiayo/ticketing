@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\TicketHdr;
-
+use App\Models\TicketStatus;
 class TicketHdrSeeder extends Seeder
 {
     /**
@@ -13,6 +13,15 @@ class TicketHdrSeeder extends Seeder
      */
     public function run(): void
     {
-        TicketHdr::factory()->count(10)->create();
+        $ticketHdrs = TicketHdr::factory()->count(10)->create();
+
+        foreach ($ticketHdrs as $ticket) {
+            TicketStatus::create([
+                'ticket_id' => $ticket->id,
+                'emp_id' =>null,
+                'updated_by' =>  1,
+                'status' =>  1,
+            ]);
+        }
     }
 }

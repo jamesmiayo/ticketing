@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('ticket_hdrs', function (Blueprint $table) {
             $table->id();
+            $table->string('ticket_id');
             $table->unsignedBigInteger('emp_id');
             $table->foreign('emp_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('subcategory_id');
             $table->foreign('subcategory_id')->references('id')->on('sub_categories')->onDelete('cascade');
             $table->string('title');
             $table->longText('body');
-            $table->string('status')->default('0')->nullable();
+            $table->string('b_status')->default('1');
             $table->timestamps();
         });
     }

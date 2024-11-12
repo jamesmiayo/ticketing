@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ticket;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\StoreTicketRequest;
 use App\Models\TicketHdr;
+use App\Models\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -36,6 +37,7 @@ class TicketHdrController extends Controller
     public function store(StoreTicketRequest $request)
     {
         $data = TicketHdr::create($request->getTicketHdr());
+        TicketStatus::create($request->getTicketStatus($data->id));
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
