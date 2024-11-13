@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use LdapRecord\Container;
-
+use Illuminate\Support\Arr;
 class LdapAuthenticationService
 {
 
@@ -59,6 +59,7 @@ class LdapAuthenticationService
             'message' => 'Login successful.',
             'user' => $localUser,
             'permissions' => !empty($role) ? $localUser->getAllPermissions()->pluck('name') : null,
+            'role' =>  $localUser->roles->map(fn($item) => Arr::except($item, 'pivot')) || 'user',
             'access_token' => $token,
         ], Response::HTTP_OK);
     }

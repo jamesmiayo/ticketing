@@ -1,9 +1,10 @@
 import * as Yup from 'yup';
+import { warningMessage } from '../validator';
 
 export const ticketValidationSchema = Yup.object().shape({
-  title: Yup.string().optional(),
+  title: Yup.string().required(warningMessage),
   concern: Yup.string().optional(),
-  category: Yup.string().optional(),
-  sub_category: Yup.string().optional(),
-  status: Yup.string().optional(),
+  category: Yup.string().required(warningMessage),
+  subcategory_id: Yup.string().required(warningMessage),
+  status: Yup.string().required(warningMessage),
 });

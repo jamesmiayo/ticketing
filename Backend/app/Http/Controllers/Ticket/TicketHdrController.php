@@ -11,7 +11,6 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\TicketLogService;
 use Illuminate\Support\Facades\Auth;
-
 class TicketHdrController extends Controller
 {
 
@@ -38,7 +37,7 @@ class TicketHdrController extends Controller
     {
         $data = TicketHdr::create($request->getTicketHdr());
         TicketStatus::create($request->getTicketStatus($data->id));
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Ticket Created Successfully'], Response::HTTP_OK);
     }
 
     /**
