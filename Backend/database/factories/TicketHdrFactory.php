@@ -22,7 +22,7 @@ class TicketHdrFactory extends Factory
             'subcategory_id' => 1,
             'title' => $this->faker->sentence,
             'body' => $this->faker->paragraph,
-            'b_status' => 1,
+            'b_status' => $this->faker->randomElement(['0', '1', '2']),
             'created_at' => now(),
             'updated_at' => now(),
         ];

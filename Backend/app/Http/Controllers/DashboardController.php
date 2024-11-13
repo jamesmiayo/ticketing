@@ -22,28 +22,20 @@ class DashboardController extends Controller
 
     public function __invoke(): JsonResponse
     {
-        return response()->json([
-            'status' => Response::HTTP_OK,
-            'total_ticket' => $this->ticketHdr->count(),
-            'total_ticket_count' => $this->getTicketCountsByStatus(),
-            'total_ticket_branch' => $this->getTicketPerBranch(),
-            'total_ticket_category' => $this->getTicketPerCategory(),
-            'total_today_created_ticket' =>  $this->getTicketPerDay(),
-        ], Response::HTTP_OK);
-        // if (Auth::user()->can('Can View Dashboard') && Auth::user()->hasRoles('Admin')) {
-        //     return response()->json([
-        //         'status' => Response::HTTP_OK,
-        //         'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
-        //         'total_ticket_branch' => $this->getTicketPerBranch(),
-        //         'total_ticket_category' => $this->getTicketPerCategory(),
-        //         'total_today_created_ticket' =>  $this->getTicketPerDay(),
-        //     ], Response::HTTP_OK);
-        // } else {
-        //     return response()->json([
-        //         'status' => Response::HTTP_OK,
-        //         'data' => $this->ticketHdr->where('emp_id', Auth::user()->id)->latest()->get(),
-        //     ], Response::HTTP_OK);
-        // }
+        if (Auth::user()->can('Can View Dashboard') || Auth::user()->hasRole('Supervisor')) {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
+                'total_ticket_branch' => $this->getTicketPerBranch(),
+                'total_ticket_category' => $this->getTicketPerCategory(),
+                'total_today_created_ticket' =>  $this->getTicketPerDay(),
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'status' => Response::HTTP_OK,
+                'data' => $this->ticketHdr->where('emp_id', Auth::user()->id)->latest()->get(),
+            ], Response::HTTP_OK);
+        }
     }
 
     public function getTicketPerDay(): array

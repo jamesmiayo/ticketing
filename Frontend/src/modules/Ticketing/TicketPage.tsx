@@ -71,17 +71,13 @@ const TicketPage: React.FC = () => {
     <div>
       <h1>Ticket Overview</h1>
       <TicketList />
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={handleOpen}
-    >
-      Create Ticket
-    </Button>
-  </Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleOpen}>
+          Create Ticket
+        </Button>
+      </Box>
       {loading ? (
-        <Card sx={{ width: "100%", display: "flex"}}>
+        <Card sx={{ width: "100%", display: "flex" }}>
           <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
         </Card>
       ) : (

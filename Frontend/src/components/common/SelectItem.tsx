@@ -1,21 +1,23 @@
-import { Controller } from 'react-hook-form'
+import { Controller } from 'react-hook-form';
 import {
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   FormHelperText,
-} from '@mui/material'
+} from '@mui/material';
 
 const SelectItem = ({
   label,
   name,
   control,
-  error,
+  errors,
   options,
   defaultValue,
   onChange,
 }: any) => {
+  const error = errors?.[name]; 
+  console.log(errors);
   return (
     <FormControl size="small" variant="outlined" fullWidth error={!!error}>
       <InputLabel>{label}</InputLabel>
@@ -30,8 +32,8 @@ const SelectItem = ({
               label={label}
               value={field.value || ''}
               onChange={(e) => {
-                field.onChange(e)
-                if (onChange) onChange(e.target.value)
+                field.onChange(e);
+                if (onChange) onChange(e.target.value);
               }}
             >
               {options.map((option: any) => (
@@ -45,7 +47,7 @@ const SelectItem = ({
         )}
       />
     </FormControl>
-  )
-}
+  );
+};
 
-export default SelectItem
+export default SelectItem;
