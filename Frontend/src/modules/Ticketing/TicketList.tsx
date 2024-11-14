@@ -13,7 +13,6 @@ interface TicketStatus {
 const TicketList: React.FC = () => {
   const [data, setData] = useState<TicketStatus[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<boolean>(true);
 
   const fetchData = async () => {
     setLoading(true);

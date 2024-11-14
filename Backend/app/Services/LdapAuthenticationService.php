@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use LdapRecord\Container;
 use Illuminate\Support\Arr;
+
 class LdapAuthenticationService
 {
 
