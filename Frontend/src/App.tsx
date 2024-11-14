@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  BrowserRouter,
 } from "react-router-dom";
 import PrivateRoute from "./pages/private/privateRoute";
 import PublicRoute from "./pages/public/publicRoute";
@@ -12,7 +11,6 @@ import DashboardPage from "./modules/Dashboard/DashboardPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
-import UserPage from "./modules/UsersProfile/UserPage";
 import TicketInformationPage from "./modules/TicketInformation/TicketInformationPage";
 import UserDashboardPage from "./modules/UserDashboard/UserDashboardPage";
 
@@ -36,8 +34,9 @@ function App() {
     <AuthProvider>
       <ToastProvider>
         <LoaderProvider>
-          <BrowserRouter>
+          <Router> 
             <Routes>
+            <Route index element={<LoginPage />} />
               <Route
                 path="/login"
                 element={
@@ -55,7 +54,7 @@ function App() {
                 />
               ))}
             </Routes>
-          </BrowserRouter>
+          </Router>
         </LoaderProvider>
       </ToastProvider>
     </AuthProvider>

@@ -27,6 +27,11 @@ class TicketHdrController extends Controller
     public function index(): JsonResponse
     {
         $data = TicketHdr::getTicketLog()->latest()->get();
+
+        if (!Auth::user()->can('Can View Dashboard') || !Auth::user()->hasRole('Admin')) {
+            $data = $data->where('emp_id' , Auth::user()->id);
+        }
+
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 

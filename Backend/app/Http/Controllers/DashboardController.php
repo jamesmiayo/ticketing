@@ -25,7 +25,7 @@ class DashboardController extends Controller
         if (Auth::user()->can('Can View Dashboard') || Auth::user()->hasRole('Supervisor')) {
             return response()->json([
                 'status' => Response::HTTP_OK,
-                'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
+                'total_ticket_count' => $this->getTicketCountsByStatus(),
                 'total_ticket_branch' => $this->getTicketPerBranch(),
                 'total_ticket_category' => $this->getTicketPerCategory(),
                 'total_today_created_ticket' =>  $this->getTicketPerDay(),
@@ -33,6 +33,7 @@ class DashboardController extends Controller
         } else {
             return response()->json([
                 'status' => Response::HTTP_OK,
+                'total_ticket_count' => $this->getTicketCountsByStatus(),
                 'data' => $this->ticketHdr->where('emp_id', Auth::user()->id)->latest()->get(),
             ], Response::HTTP_OK);
         }
@@ -51,14 +52,15 @@ class DashboardController extends Controller
 
     public function getTicketCountsByStatus(): array
     {
+        $tickets = Auth::user()->hasRole('Supervisor') ? $this->ticketHdr : $this->ticketHdr->where('emp_id' , Auth::user()->id);
+
         $statuses = GlobalConstants::getStatusesType();
 
         $ticketCounts = [];
         $totalTickets = 0;
 
         foreach ($statuses as $status => $label) {
-            $count = $this->ticketHdr
-                ->whereHas('ticket_logs_latest', function ($query) use ($status) {
+            $count = $tickets->whereHas('ticket_logs_latest', function ($query) use ($status) {
                     $query->where('status', $status);
                 })
                 ->count();

@@ -13,7 +13,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { MdDashboard } from "react-icons/md";
 import { BsTicketDetailed } from "react-icons/bs";
 
-const Sidebar: React.FC = ({ children }) => {
+const Sidebar: React.FC = ({ children }:any) => {
   const { logoutUser } = useAuth();
   const toast = useExecuteToast();
   const navigate = useNavigate();
@@ -45,7 +45,6 @@ const Sidebar: React.FC = ({ children }) => {
       behavior: "smooth",
     });
   };
-
   return (
     <Box sx={{ display: "flex", height: "100vh", backgroundColor: "#f4f6f8" }}>
       <Box
