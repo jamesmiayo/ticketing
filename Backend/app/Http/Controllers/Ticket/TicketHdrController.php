@@ -55,4 +55,18 @@ class TicketHdrController extends Controller
         $this->ticketLogServices->log($ticketHdr->id , Auth::user() , $ticketHdr->status);
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Ticket status updated'], Response::HTTP_OK);
     }
-}
+
+    /**
+ * Display the specified ticket by ticket_id.
+ */
+    public function show(string $ticket_id): JsonResponse
+        {
+            $ticket = TicketHdr::where('ticket_id', $ticket_id)->first();
+
+            if (!$ticket) {
+                return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);
+            }
+
+            return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $ticket], Response::HTTP_OK);
+        }
+    }
