@@ -65,7 +65,7 @@ class TicketHdrController extends Controller
  */
     public function show(string $ticket_id): JsonResponse
         {
-            $ticket = TicketHdr::where('ticket_id', $ticket_id)->first();
+            $ticket = TicketHdr::getSpecificTicket()->where('ticket_id', $ticket_id)->first();
 
             if (!$ticket) {
                 return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);
