@@ -38,8 +38,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
         } else {
           setIsAuthenticated(false);
           setUser(null);
-          localStorage.removeItem("token");
-          localStorage.removeItem("userData");
+          localStorage.clear();
         }
       }
       setLoading(false);
@@ -51,9 +50,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const loginUser = async (username: string, password: string) => {
     try {
       const response = await LoginAPI.login({ username, password });
+      console.log(response);
       if (response.access_token) {
         localStorage.setItem("token", response.access_token);
         localStorage.setItem("userData", JSON.stringify(response.user));
+        localStorage.setItem("permissions", response.permissions);
+        localStorage.setItem("role", response.role);
         setUser(response.user);
         setIsAuthenticated(true);
       } else {

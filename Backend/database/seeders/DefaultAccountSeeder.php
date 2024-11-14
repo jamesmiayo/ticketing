@@ -14,7 +14,7 @@ class DefaultAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Supervisor', 'Manager', 'Tech'];
+        $roles = ['Supervisor', 'Manager', 'Tech' , 'User'];
 
         foreach ($roles as $roleName) {
             Role::create(['name' => $roleName]);
