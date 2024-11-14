@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 import { useAuth } from "../../context/AuthContext"; // Adjust import paths as necessary
 import { useExecuteToast } from "../../context/ToastContext";
 import { MdDashboard } from "react-icons/md";
+import { BsTicketDetailed } from "react-icons/bs";
 
 const Sidebar: React.FC = ({ children }) => {
   const { logoutUser } = useAuth();
@@ -20,8 +21,8 @@ const Sidebar: React.FC = ({ children }) => {
 
   const navItems = [
     { title: "Dashboard", path: "/dashboard", icon: <MdDashboard /> },
-    { title: "Ticket", path: "/ticket", icon: "" },
-    { title: "Ticket Information", path: "/ticket-information", icon: "" },
+    { title: "Your Dashboard", path: "/your-dashboard", icon: <MdDashboard /> },
+    { title: "Ticket", path: "/ticket", icon: <BsTicketDetailed /> },
   ];
 
   const handleLogout = async () => {
