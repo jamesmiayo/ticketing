@@ -13,14 +13,14 @@ const TicketCard: React.FC<TicketCardProps> = ({ title, count }) => {
       sx={{
         width: 150,
         height: 150,
-        borderRadius: '50%', // Make the card circular
+        borderRadius: '50%', 
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        boxShadow: 3, // Optional: add a shadow effect
+        boxShadow: 3,
         transition: 'transform 0.3s ease',
         ':hover': {
-          transform: 'scale(1.1)', // Slight scale effect on hover
+          transform: 'scale(1.1)', 
         },
       }}
     >

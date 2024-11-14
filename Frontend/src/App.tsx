@@ -13,6 +13,8 @@ import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
 import TicketInformationPage from "./modules/TicketInformation/TicketInformationPage";
 import UserDashboardPage from "./modules/UserDashboard/UserDashboardPage";
+import TicketPage from "./modules/Ticketing/TicketPage";
+import MaintenancePage from "./modules/Maintenance/MaintenancePage";
 
 const privateRoutes = [
   {
@@ -26,6 +28,14 @@ const privateRoutes = [
   {
     path: "/your-dashboard",
     element: <UserDashboardPage />,
+  },
+  {
+    path: "/ticket",
+    element: <TicketPage />,
+  },
+  {
+    path: "/maintenance",
+    element: <MaintenancePage />,
   },
 ];
 

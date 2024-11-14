@@ -34,8 +34,8 @@ const TicketPage: React.FC = () => {
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const result = await ticketApi.getTicketData();
       if (result) {
         const formattedTickets = result.map((ticket: any) => ({
@@ -69,36 +69,27 @@ const TicketPage: React.FC = () => {
 
   return (
     <div>
-      <h1>Ticket Overview</h1>
-      <TicketList />
+      <h1>Ticket List</h1>
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Button variant="contained" color="primary" onClick={handleOpen}>
           Create Ticket
         </Button>
       </Box>
-      {loading ? (
-        <Card sx={{ width: "100%", display: "flex" }}>
-          <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
-        </Card>
-      ) : (
-        <>
-          <TicketTable tickets={data} />
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Create New Ticket</DialogTitle>
-            <DialogContent>
-              <TicketCreationForm
-                onCreate={() => setOpen(false)}
-                refetch={fetchData}
-              />{" "}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="secondary">
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      )}
+      <TicketTable tickets={data} isLoading={loading} isOptions={true} />
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Create New Ticket</DialogTitle>
+        <DialogContent>
+          <TicketCreationForm
+            onCreate={() => setOpen(false)}
+            refetch={fetchData}
+          />{" "}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -21,8 +21,9 @@ const Sidebar: React.FC = ({ children }:any) => {
 
   const navItems = [
     { title: "Dashboard", path: "/dashboard", icon: <MdDashboard /> },
-    { title: "Your Dashboard", path: "/your-dashboard", icon: <MdDashboard /> },
     { title: "Ticket", path: "/ticket", icon: <BsTicketDetailed /> },
+    { title: "Profile", path: "/your-dashboard", icon: <MdDashboard /> },
+    { title: "Maintenance", path: "/maintenance", icon: <MdDashboard /> },
   ];
 
   const handleLogout = async () => {
