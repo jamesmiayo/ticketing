@@ -80,6 +80,7 @@ const TableComponents = <T,>({
         </form>
 
         <DataGrid
+          style={{ backgroundColor: "#FFFFFF" }}
           rows={rows}
           columns={columns}
           hideFooter
