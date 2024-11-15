@@ -19,6 +19,7 @@ const TicketPage: React.FC = () => {
   const [data, setData] = useState([]);
   const query = useQuery();
   const [page, setPage] = useState(parseInt(query.get("page") || "1"));
+  const [maxPage, setMaxPage] = useState("");
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -51,6 +52,8 @@ const TicketPage: React.FC = () => {
             ticket?.ticket_logs_latest?.updated_by?.name || "No assignee",
         }));
         setData(formattedTickets);
+        const maxPage = result.last_page;
+        setMaxPage(maxPage);
       } else {
         console.warn("Unexpected data structure:", result);
       }
@@ -124,6 +127,7 @@ const TicketPage: React.FC = () => {
               errors: errors,
             },
           ]}
+          maxCount={maxPage}
           onSubmit={handleSubmit(onSubmit)} // Pass submit handler
         />
       </Box>

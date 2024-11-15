@@ -24,6 +24,7 @@ export default function TicketTable({
   pageProps,
   customInputs,
   onSubmit,
+  maxCount,
 }: any) {
   const navigate = useNavigate();
 
@@ -71,6 +72,7 @@ export default function TicketTable({
           height={500}
           customInputs={customInputs}
           onSubmit={onSubmit}
+          maxCount={maxCount}
         />
       )}
     </>

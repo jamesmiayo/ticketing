@@ -1,12 +1,8 @@
-import { Box, IconButton, Grid, Button } from "@mui/material";
+import { Box, Grid, Button, Pagination, Stack } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import {
-  IoIosArrowDropleftCircle,
-  IoIosArrowDroprightCircle,
-} from "react-icons/io";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import InputComponent from "./InputComponent"; // Importing your custom InputComponent
+import InputComponent from "./InputComponent";
 
 interface DataGridProps<T> {
   columns: GridColDef[];
@@ -23,8 +19,9 @@ interface DataGridProps<T> {
     multiline?: boolean;
     rows?: number;
     rest?: any;
-  }[]; // Updated type for custom inputs
-  onSubmit: () => void; // Submit handler passed from parent
+  }[];
+  onSubmit: () => void;
+  maxCount: string;
 }
 
 const TableComponents = <T,>({
@@ -36,19 +33,15 @@ const TableComponents = <T,>({
   width = "100%",
   customInputs = [],
   onSubmit,
+  maxCount,
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
 
-  const handleNext = () => {
-    const newPage = page + 1;
-    setPage(newPage);
-    setSearchParams({ page: newPage.toString() });
-    onPageChange(newPage);
-  };
-
-  const handlePrev = () => {
-    const newPage = Math.max(page - 1, 1);
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    newPage: number
+  ) => {
     setPage(newPage);
     setSearchParams({ page: newPage.toString() });
     onPageChange(newPage);
@@ -98,47 +91,24 @@ const TableComponents = <T,>({
             },
           }}
         />
+
         <Box
           sx={{
             display: "flex",
-            justifyContent: "end",
+            justifyContent: "center",
             alignItems: "center",
             marginTop: "10px",
           }}
         >
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <IconButton
-              aria-label="Previous page"
-              onClick={handlePrev}
-              disabled={page === 1} // Disable when on first page
-              sx={{
-                bgcolor: "background.paper",
-                boxShadow: 2,
-                "&:hover": {
-                  bgcolor: "background.paper",
-                  boxShadow: 4,
-                },
-                transition: "box-shadow 0.3s ease-in-out",
-              }}
-            >
-              <IoIosArrowDropleftCircle />
-            </IconButton>
-            <IconButton
-              aria-label="Next page"
-              onClick={handleNext}
-              sx={{
-                bgcolor: "background.paper",
-                boxShadow: 2,
-                "&:hover": {
-                  bgcolor: "background.paper",
-                  boxShadow: 4,
-                },
-                transition: "box-shadow 0.3s ease-in-out",
-              }}
-            >
-              <IoIosArrowDroprightCircle />
-            </IconButton>
-          </Box>
+          <Stack spacing={2}>
+            <Pagination
+              count={Number(maxCount)}
+              page={page}
+              onChange={handlePageChange}
+              shape="rounded"
+              variant="outlined"
+            />
+          </Stack>
         </Box>
       </div>
     </>
