@@ -92,6 +92,8 @@ const TicketPage: React.FC = () => {
             ticket?.ticket_logs_latest?.updated_by?.name || "No assignee",
         }));
         setData(formattedTickets);
+        const maxPage = result.last_page;
+        setMaxPage(maxPage);
       } else {
         console.warn("Unexpected data structure:", result);
       }
