@@ -22,6 +22,8 @@ export default function TicketTable({
   isOptions = false,
   onPageChange,
   pageProps,
+  customInputs,
+  onSubmit,
 }: any) {
   const navigate = useNavigate();
 
@@ -67,6 +69,8 @@ export default function TicketTable({
           onPageChange={onPageChange}
           pageProps={pageProps}
           height={500}
+          customInputs={customInputs}
+          onSubmit={onSubmit}
         />
       )}
     </>

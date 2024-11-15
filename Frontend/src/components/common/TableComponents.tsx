@@ -1,4 +1,4 @@
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Grid, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import {
   IoIosArrowDropleftCircle,
@@ -6,6 +6,7 @@ import {
 } from "react-icons/io";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import InputComponent from "./InputComponent"; // Importing your custom InputComponent
 
 interface DataGridProps<T> {
   columns: GridColDef[];
@@ -14,6 +15,16 @@ interface DataGridProps<T> {
   width?: string;
   onPageChange: (page: number) => void;
   pageProps: string;
+  customInputs?: {
+    name: string;
+    label: string;
+    register: any;
+    errors: any;
+    multiline?: boolean;
+    rows?: number;
+    rest?: any;
+  }[]; // Updated type for custom inputs
+  onSubmit: () => void; // Submit handler passed from parent
 }
 
 const TableComponents = <T,>({
@@ -23,6 +34,8 @@ const TableComponents = <T,>({
   pageProps,
   height = 400,
   width = "100%",
+  customInputs = [],
+  onSubmit,
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -31,19 +44,46 @@ const TableComponents = <T,>({
     const newPage = page + 1;
     setPage(newPage);
     setSearchParams({ page: newPage.toString() });
-    onPageChange(newPage); // Notify parent of page change
+    onPageChange(newPage);
   };
 
   const handlePrev = () => {
     const newPage = Math.max(page - 1, 1);
     setPage(newPage);
     setSearchParams({ page: newPage.toString() });
-    onPageChange(newPage); // Notify parent of page change
+    onPageChange(newPage);
   };
 
   return (
     <>
       <div style={{ height: height, width: width }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
+          <Grid container spacing={2} mb={4}>
+            {customInputs.map((inputProps, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <InputComponent {...inputProps} />
+              </Grid>
+            ))}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                marginLeft: "12px",
+              }}
+            >
+              <Button variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </Box>
+          </Grid>
+        </form>
+
         <DataGrid
           rows={rows}
           columns={columns}
