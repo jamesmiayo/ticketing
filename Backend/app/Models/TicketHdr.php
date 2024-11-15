@@ -71,9 +71,14 @@ class TicketHdr extends Model
         return $this->hasOne(TicketStatus::class, 'ticket_id')->where('status', GlobalConstants::COMPLETED)->latestOfMany();
     }
 
-    public static function getTicketLog()
+    public static function getTicketLog($searchParams)
     {
         $query = self::with('ticket_logs_latest');
+
+        if (array_key_exists('ticket_id', $searchParams)) {
+            $query->ticketId($searchParams['ticket_id']);
+        }
+
         return $query;
     }
 
@@ -85,5 +90,10 @@ class TicketHdr extends Model
             },
         ]);
         return $query;
+    }
+
+    public function scopeTicketId($query, $ticket_id)
+    {
+        return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
     }
 }

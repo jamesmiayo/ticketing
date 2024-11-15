@@ -47,11 +47,12 @@ interface ApiResponse<T> {
 }
 
 export const ticketApi = {
-  getTicketData: async function (page: string, title: string) {
+  getTicketData: async function (data: any, page?: string) {
     try {
       const response = await apiClient.request({
-        url: `/ticket/ticket-hdr?page=${page || ""}&title=${title || ""}`,
+        url: `/ticket/ticket-hdr`,
         method: "GET",
+        params: { page: page, ticket_id: data?.ticket_id },
       });
       return response.data.data;
     } catch (error) {

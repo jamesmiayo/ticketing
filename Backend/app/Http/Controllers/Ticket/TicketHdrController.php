@@ -24,9 +24,9 @@ class TicketHdrController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $data = TicketHdr::getTicketLog()->latest();
+        $data = TicketHdr::getTicketLog($request->all())->latest();
 
         if (!Auth::user()->can('Can View Dashboard') || !Auth::user()->hasRole('Supervisor')) {
             $data = $data->where('emp_id' , Auth::user()->id);

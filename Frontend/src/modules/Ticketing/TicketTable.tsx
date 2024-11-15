@@ -59,11 +59,6 @@ export default function TicketTable({
   ];
   return (
     <>
-      {isLoading ? (
-        <Card sx={{ width: "100%", display: "flex" }}>
-          <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
-        </Card>
-      ) : (
         <TableComponents
           columns={columns}
           rows={tickets}
@@ -73,8 +68,8 @@ export default function TicketTable({
           customInputs={customInputs}
           onSubmit={onSubmit}
           maxCount={maxCount}
+          isLoading={isLoading}
         />
-      )}
     </>
   );
 }
