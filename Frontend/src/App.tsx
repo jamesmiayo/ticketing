@@ -1,43 +1,23 @@
 // App.js
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  BrowserRouter,
-} from "react-router-dom";
-import PrivateRoute from "./pages/private/privateRoute";
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import PrivateRoute from "./pages/private/privateRoute.tsx";
 import PublicRoute from "./pages/public/publicRoute";
 import LoginPage from "./modules/Login/LoginPage";
-import DashboardPage from "./modules/Dashboard/DashboardPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
-import UserPage from "./modules/UsersProfile/UserPage";
-import TicketInformationPage from "./modules/TicketInformation/TicketInformationPage";
-import UserDashboardPage from "./modules/UserDashboard/UserDashboardPage";
-
-const privateRoutes = [
-  {
-    path: "/dashboard",
-    element: <DashboardPage />,
-  },
-  {
-    path: "/ticket-information",
-    element: <TicketInformationPage />,
-  },
-  {
-    path: "/your-dashboard",
-    element: <UserDashboardPage />,
-  },
-];
+import { usePrivateRoutes } from "./pages/private/PrivateRoute.ts";
 
 function App() {
+  const newPrivateRoutes = usePrivateRoutes();
+
   return (
     <AuthProvider>
       <ToastProvider>
         <LoaderProvider>
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true }}>
             <Routes>
+              <Route index element={<LoginPage />} />
               <Route
                 path="/login"
                 element={
@@ -47,13 +27,16 @@ function App() {
                 }
               />
 
-              {privateRoutes.map((route, index) => (
-                <Route
-                  key={`private-${index}`}
-                  path={route.path}
-                  element={<PrivateRoute>{route.element}</PrivateRoute>}
-                />
-              ))}
+              {newPrivateRoutes.privateRoutes.map(
+                (route) =>
+                  route.show && (
+                    <Route
+                      key={String(route.id)}
+                      path={route.path}
+                      element={<PrivateRoute component={route.component} />}
+                    />
+                  )
+              )}
             </Routes>
           </BrowserRouter>
         </LoaderProvider>

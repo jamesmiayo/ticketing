@@ -11,7 +11,6 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\TicketLogService;
 use Illuminate\Support\Facades\Auth;
-
 class TicketHdrController extends Controller
 {
 
@@ -27,8 +26,13 @@ class TicketHdrController extends Controller
      */
     public function index(): JsonResponse
     {
-        $data = TicketHdr::getTicketLog()->latest()->get();
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+        $data = TicketHdr::getTicketLog()->latest();
+
+        if (!Auth::user()->can('Can View Dashboard') || !Auth::user()->hasRole('Supervisor')) {
+            $data = $data->where('emp_id' , Auth::user()->id);
+        }
+
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data->get()], Response::HTTP_OK);
     }
 
     /**
@@ -38,7 +42,7 @@ class TicketHdrController extends Controller
     {
         $data = TicketHdr::create($request->getTicketHdr());
         TicketStatus::create($request->getTicketStatus($data->id));
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Ticket Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -61,7 +65,7 @@ class TicketHdrController extends Controller
  */
     public function show(string $ticket_id): JsonResponse
         {
-            $ticket = TicketHdr::where('ticket_id', $ticket_id)->first();
+            $ticket = TicketHdr::getSpecificTicket()->where('ticket_id', $ticket_id)->first();
 
             if (!$ticket) {
                 return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);

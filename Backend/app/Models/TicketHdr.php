@@ -21,13 +21,23 @@ class TicketHdr extends Model
         'body'
     ];
 
-    protected $with = ['user:id,branch_id,name','sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'user.branch:id,branch_description'];
+    protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description','sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
 
-    protected $appends = ['ticket_status'];
+    protected $appends = ['ticket_status', 'time_finished'];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s', // Custom format
+        'created_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function getTimeFinishedAttribute()
+    {
+        $latestTicketLog = $this->ticket_logs_latest;
+
+        if ($latestTicketLog) {
+            return $this->created_at->diff($latestTicketLog->created_at)->format('%d days, %h hours, %i minutes, %s seconds');
+        }
+        return 'No related logs';
+    }
 
     public function getTicketStatusAttribute()
     {
@@ -35,14 +45,14 @@ class TicketHdr extends Model
     }
 
 
-    public function user()
+    public function requestor()
     {
         return $this->belongsTo(User::class, 'emp_id');
     }
 
     public function ticket_statuses()
     {
-        return $this->hasMany(TicketStatus::class , 'ticket_id' , 'id');
+        return $this->hasMany(TicketStatus::class, 'ticket_id', 'id')->with('updated_by:id,name', 'assignee:id,name');
     }
 
     public function sub_category()
@@ -53,12 +63,27 @@ class TicketHdr extends Model
 
     public function ticket_logs_latest()
     {
-        return $this->hasOne(TicketStatus::class , 'ticket_id')->latest();
+        return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name')->latestOfMany();
+    }
+
+    public function ticket_logs_completed()
+    {
+        return $this->hasOne(TicketStatus::class, 'ticket_id')->where('status', GlobalConstants::COMPLETED)->latestOfMany();
     }
 
     public static function getTicketLog()
     {
         $query = self::with('ticket_logs_latest');
+        return $query;
+    }
+
+    public static function getSpecificTicket(){
+        $query = self::with([
+            'ticket_logs_latest',
+            'ticket_statuses' => function ($query) {
+                $query->orderBy('id', 'desc');
+            },
+        ]);
         return $query;
     }
 }

@@ -14,23 +14,23 @@ const TicketList: React.FC = () => {
   const [data, setData] = useState<TicketStatus[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  const fetchData = async () => {
     setLoading(true);
-    const fetchData = async () => {
-      try {
-        const result = await OverviewAPI.getAllData();
-        if (result && Array.isArray(result.total_ticket_count)) {
-          setData(result.total_ticket_count);
-        } else {
-          console.warn("Unexpected data structure:", result);
-        }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setLoading(false);
+    try {
+      const result = await OverviewAPI.getAllData();
+      if (result && Array.isArray(result.total_ticket_count)) {
+        setData(result.total_ticket_count);
+      } else {
+        console.warn("Unexpected data structure:", result);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 

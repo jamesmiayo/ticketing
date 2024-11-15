@@ -84,8 +84,8 @@ export const ticketApi = {
         data: {
           title,
           body: concern,
-          subcategory_id: "2",
-          b_status: status,
+          subcategory_id,
+          b_status:status,
         },
       });
       return response.data;
