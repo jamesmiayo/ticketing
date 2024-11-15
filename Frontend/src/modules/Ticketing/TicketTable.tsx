@@ -16,10 +16,16 @@ interface Ticket {
   status: string;
 }
 
-export default function TicketTable({ tickets, isLoading, isOptions = false }: any) {
+export default function TicketTable({
+  tickets,
+  isLoading,
+  isOptions = false,
+  onPageChange,
+  pageProps,
+}: any) {
   const navigate = useNavigate();
 
-  const handleViewClick = (params:any) => {
+  const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
@@ -55,7 +61,12 @@ export default function TicketTable({ tickets, isLoading, isOptions = false }: a
           <Skeleton variant="rectangular" sx={{ flexGrow: 1, height: 500 }} />
         </Card>
       ) : (
-        <TableComponents columns={columns} rows={tickets} />
+        <TableComponents
+          columns={columns}
+          rows={tickets}
+          onPageChange={onPageChange}
+          pageProps={pageProps}
+        />
       )}
     </>
   );

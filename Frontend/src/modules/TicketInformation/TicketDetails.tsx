@@ -22,7 +22,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ticketApi, TicketInformation } from "../../api/services/ticket";
 
-function useQuery() {
+export function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 

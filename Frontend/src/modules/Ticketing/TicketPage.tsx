@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
+import { useQuery } from "../TicketInformation/TicketDetails";
 
 interface Ticket {
   ticketNo: string;
@@ -26,17 +27,19 @@ interface Ticket {
 const TicketPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  // Open and close the modal
+  const [data, setData] = useState([]);
+  const query = useQuery();
+  const [page, setPage] = useState(parseInt(query.get("page") || "1"));
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [data, setData] = useState([]);
 
-  const fetchData = async () => {
+  const fetchData = async (page: number) => {
     try {
       setLoading(true);
-      const result = await ticketApi.getTicketData();
+      const result = await ticketApi.getTicketData(page);
       if (result) {
-        const formattedTickets = result.map((ticket: any) => ({
+        const formattedTickets = result.data.map((ticket: any) => ({
           id: ticket.id,
           ticket_id: ticket.ticket_id || "N/A",
           requestedBy: ticket.user?.name || "N/A",
@@ -62,8 +65,13 @@ const TicketPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]); // Refetch data when page changes
+
+  // Handler for page change from TableComponents
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   return (
     <div>
@@ -73,14 +81,20 @@ const TicketPage: React.FC = () => {
           Create Ticket
         </Button>
       </Box>
-      <TicketTable tickets={data} isLoading={loading} isOptions={true} />
+      <TicketTable
+        tickets={data}
+        isLoading={loading}
+        isOptions={true}
+        onPageChange={handlePageChange} // Pass page change handler to TableComponents
+        pageProps={page}
+      />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create New Ticket</DialogTitle>
         <DialogContent>
           <TicketCreationForm
             onCreate={() => setOpen(false)}
-            refetch={fetchData}
-          />{" "}
+            refetch={() => fetchData(page)} // Refetch data on ticket creation
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">

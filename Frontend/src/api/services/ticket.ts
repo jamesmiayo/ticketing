@@ -47,10 +47,10 @@ interface ApiResponse<T> {
 }
 
 export const ticketApi = {
-  getTicketData: async function () {
+  getTicketData: async function (page: string) {
     try {
       const response = await apiClient.request({
-        url: "/ticket/ticket-hdr",
+        url: `/ticket/ticket-hdr?page=${page}`,
         method: "GET",
       });
       return response.data.data;
@@ -85,7 +85,7 @@ export const ticketApi = {
           title,
           body: concern,
           subcategory_id,
-          b_status:status,
+          b_status: status,
         },
       });
       return response.data;
