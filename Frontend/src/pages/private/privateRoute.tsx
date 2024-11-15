@@ -2,9 +2,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Sidebar from "../../components/navigation/SideBar";
 
-const PrivateRoute = ({ children }: any) => {
+const PrivateRoute = ({ component: Component } :any) => {
   const token = localStorage.getItem("token");
-  return token ? <Sidebar>{children}</Sidebar> : <Navigate to="/login" />;
+  return token ? <Sidebar><Component /></Sidebar> : <Navigate to="/login" />;
   // const { isAuthenticated , loading } = useAuth();
 
   // return isAuthenticated ? (

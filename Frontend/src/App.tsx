@@ -1,52 +1,23 @@
 // App.js
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
-import PrivateRoute from "./pages/private/privateRoute";
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import PrivateRoute from "./pages/private/privateRoute.tsx";
 import PublicRoute from "./pages/public/publicRoute";
 import LoginPage from "./modules/Login/LoginPage";
-import DashboardPage from "./modules/Dashboard/DashboardPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
-import TicketInformationPage from "./modules/TicketInformation/TicketInformationPage";
-import UserDashboardPage from "./modules/UserDashboard/UserDashboardPage";
-import TicketPage from "./modules/Ticketing/TicketPage";
-import MaintenancePage from "./modules/Maintenance/MaintenancePage";
-
-const privateRoutes = [
-  {
-    path: "/dashboard",
-    element: <DashboardPage />,
-  },
-  {
-    path: "/ticket-information",
-    element: <TicketInformationPage />,
-  },
-  {
-    path: "/your-dashboard",
-    element: <UserDashboardPage />,
-  },
-  {
-    path: "/ticket",
-    element: <TicketPage />,
-  },
-  {
-    path: "/maintenance",
-    element: <MaintenancePage />,
-  },
-];
+import { usePrivateRoutes } from "./pages/private/privateRoute";
 
 function App() {
+  const newPrivateRoutes = usePrivateRoutes();
+
   return (
     <AuthProvider>
       <ToastProvider>
         <LoaderProvider>
-          <Router> 
+          <BrowserRouter future={{ v7_startTransition: true }}>
             <Routes>
-            <Route index element={<LoginPage />} />
+              <Route index element={<LoginPage />} />
               <Route
                 path="/login"
                 element={
@@ -56,15 +27,18 @@ function App() {
                 }
               />
 
-              {privateRoutes.map((route, index) => (
-                <Route
-                  key={`private-${index}`}
-                  path={route.path}
-                  element={<PrivateRoute>{route.element}</PrivateRoute>}
-                />
-              ))}
+              {newPrivateRoutes.privateRoutes.map(
+                (route) =>
+                  route.show && (
+                    <Route
+                      key={String(route.id)}
+                      path={route.path}
+                      element={<PrivateRoute component={route.component} />}
+                    />
+                  )
+              )}
             </Routes>
-          </Router>
+          </BrowserRouter>
         </LoaderProvider>
       </ToastProvider>
     </AuthProvider>

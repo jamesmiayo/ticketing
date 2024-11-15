@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import TicketList from "./TicketList"; // Import Ticket List component for card view
-import TicketCreationForm from "./TicketCreationForm"; // Import the Ticket Creation Form component
+import TicketCreationForm from "./TicketCreationForm";
 import {
   Box,
   Button,
-  Card,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Skeleton,
 } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
+
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -22,7 +20,7 @@ interface Ticket {
   department: string;
   section: string;
   tech: string;
-  status: string; // Ensure all tickets have a status field
+  status: string;
 }
 
 const TicketPage: React.FC = () => {
