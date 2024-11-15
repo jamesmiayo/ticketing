@@ -86,7 +86,13 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "auto",
+        padding:1
+      }}
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -95,6 +101,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               label="Ticket Title"
               register={register}
               errors={errors}
+              fullWidth
             />
           </Grid>
 
@@ -106,29 +113,31 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               errors={errors}
               multiline
               rows={4}
+              fullWidth
             />
           </Grid>
-          <Grid container paddingTop={2} spacing={2}>
-            <Grid item xs={6}>
-              <SelectItem
-                xs={{ marginBottom: 2 }}
+
+          <Grid item xs={12}>
+          <SelectItem
                 label="Category"
                 control={control}
                 options={categories}
                 name="category"
                 errors={errors}
-                onChange={(e: any) => handleSubCategoryList(e)}
+                fullWidth
+                onChange={(e) => handleSubCategoryList(e)}
               />
-            </Grid>
-            <Grid item xs={6}>
-              <SelectItem
+          </Grid>
+          
+          <Grid item xs={12}>
+          <SelectItem
                 label="Sub Category"
                 control={control}
                 options={subcategories}
                 errors={errors}
                 name="subcategory_id"
+                fullWidth
               />
-            </Grid>
           </Grid>
           <Grid item xs={12}>
             <SelectItem
@@ -137,10 +146,11 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               options={statusOptions}
               errors={errors}
               name="status"
+              fullWidth
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ marginTop: 2 }}>
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Create Ticket
             </Button>

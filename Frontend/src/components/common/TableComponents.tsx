@@ -10,6 +10,8 @@ import { useSearchParams } from "react-router-dom";
 interface DataGridProps<T> {
   columns: GridColDef[];
   rows: GridRowsProp;
+  height?: number;
+  width?: string;
   onPageChange: (page: number) => void;
   pageProps: string;
 }
@@ -19,6 +21,8 @@ const TableComponents = <T,>({
   rows,
   onPageChange,
   pageProps,
+  height = 400,
+  width = "100%",
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -39,11 +43,10 @@ const TableComponents = <T,>({
 
   return (
     <>
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: height, width: width }}>
         <DataGrid
           rows={rows}
           columns={columns}
-          pagination={false}
           hideFooter
           sx={{
             "& .MuiDataGrid-cell": {
@@ -55,49 +58,49 @@ const TableComponents = <T,>({
             },
           }}
         />
-      </div>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-          alignItems: "center",
-          marginTop: "10px",
-        }}
-      >
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <IconButton
-            aria-label="Previous page"
-            onClick={handlePrev}
-            disabled={page === 1} // Disable when on first page
-            sx={{
-              bgcolor: "background.paper",
-              boxShadow: 2,
-              "&:hover": {
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            marginTop: "10px",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <IconButton
+              aria-label="Previous page"
+              onClick={handlePrev}
+              disabled={page === 1} // Disable when on first page
+              sx={{
                 bgcolor: "background.paper",
-                boxShadow: 4,
-              },
-              transition: "box-shadow 0.3s ease-in-out",
-            }}
-          >
-            <IoIosArrowDropleftCircle />
-          </IconButton>
-          <IconButton
-            aria-label="Next page"
-            onClick={handleNext}
-            sx={{
-              bgcolor: "background.paper",
-              boxShadow: 2,
-              "&:hover": {
+                boxShadow: 2,
+                "&:hover": {
+                  bgcolor: "background.paper",
+                  boxShadow: 4,
+                },
+                transition: "box-shadow 0.3s ease-in-out",
+              }}
+            >
+              <IoIosArrowDropleftCircle />
+            </IconButton>
+            <IconButton
+              aria-label="Next page"
+              onClick={handleNext}
+              sx={{
                 bgcolor: "background.paper",
-                boxShadow: 4,
-              },
-              transition: "box-shadow 0.3s ease-in-out",
-            }}
-          >
-            <IoIosArrowDroprightCircle />
-          </IconButton>
+                boxShadow: 2,
+                "&:hover": {
+                  bgcolor: "background.paper",
+                  boxShadow: 4,
+                },
+                transition: "box-shadow 0.3s ease-in-out",
+              }}
+            >
+              <IoIosArrowDroprightCircle />
+            </IconButton>
+          </Box>
         </Box>
-      </Box>
+      </div>
     </>
   );
 };
