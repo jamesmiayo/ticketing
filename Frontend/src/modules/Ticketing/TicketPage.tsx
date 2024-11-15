@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
-
+import TicketSideBar from "./TicketSideBar";
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -73,20 +73,20 @@ const TicketPage: React.FC = () => {
           Create Ticket
         </Button>
       </Box>
-      <TicketTable tickets={data} isLoading={loading} isOptions={true} />
+
+      <Box sx={{ display: "flex", justifyContent: "flex-between", gap: 2 }}>
+        <TicketSideBar />
+        <TicketTable tickets={data} isLoading={loading} isOptions={true} />
+      </Box>
+
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create New Ticket</DialogTitle>
+      <DialogTitle>Create New Ticket</DialogTitle>
         <DialogContent>
           <TicketCreationForm
             onCreate={() => setOpen(false)}
             refetch={fetchData}
           />{" "}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

@@ -36,7 +36,6 @@ const TicketDetails = () => {
     const fetchTicketInformation = async () => {
       try {
         const response = await ticketApi.getInformation(ticketId);
-        console.log(response);
         if (response !== undefined) {
           setTicket(response);
         }
