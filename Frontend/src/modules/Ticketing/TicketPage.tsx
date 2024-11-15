@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
 } from "@mui/material";
@@ -12,6 +11,7 @@ import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
 import { useQuery } from "../TicketInformation/TicketDetails";
 
+import TicketSideBar from "./TicketSideBar";
 interface Ticket {
   ticketNo: string;
   dateTime: string;
@@ -66,9 +66,8 @@ const TicketPage: React.FC = () => {
 
   useEffect(() => {
     fetchData(page);
-  }, [page]); // Refetch data when page changes
+  }, [page]); 
 
-  // Handler for page change from TableComponents
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -81,26 +80,25 @@ const TicketPage: React.FC = () => {
           Create Ticket
         </Button>
       </Box>
-      <TicketTable
+      
+      <Box sx={{ display: "flex", justifyContent: "flex-between", gap: 2 }}>
+        <TicketSideBar />
+        <TicketTable
         tickets={data}
         isLoading={loading}
         isOptions={true}
-        onPageChange={handlePageChange} // Pass page change handler to TableComponents
+        onPageChange={handlePageChange} 
         pageProps={page}
       />
+        </Box>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create New Ticket</DialogTitle>
+      <DialogTitle>Create New Ticket</DialogTitle>
         <DialogContent>
           <TicketCreationForm
             onCreate={() => setOpen(false)}
-            refetch={() => fetchData(page)} // Refetch data on ticket creation
+            refetch={() => fetchData(page)} 
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );

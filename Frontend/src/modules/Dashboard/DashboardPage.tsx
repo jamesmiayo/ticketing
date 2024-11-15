@@ -55,6 +55,9 @@ const Dashboard: React.FC<any> = () => {
         <Box p={3}>
           <h1>Dashboard</h1>
           <TicketList />
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
+          ></Box>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
             <Button variant="contained" color="primary" onClick={handleOpen}>
               View More
