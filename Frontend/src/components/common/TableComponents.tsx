@@ -43,6 +43,7 @@ const TableComponents = <T,>({
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
 
+  console.log(customInputs);
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number
@@ -86,9 +87,16 @@ const TableComponents = <T,>({
                 <Button variant="contained" color="primary" type="submit">
                   Submit
                 </Button>
-                <Button variant="contained" color="secondary" type="submit">
-                  Clear
-                </Button>
+                <Button
+          variant="contained"
+          color="secondary"
+          type="button" 
+          onClick={() => {
+            customInputs = []
+          }}
+        >
+          Clear
+        </Button>
               </Box>
             </Grid>
           )}

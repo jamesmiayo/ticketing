@@ -38,7 +38,6 @@ const TicketDetails = () => {
         const response = await ticketApi.getInformation(ticketId);
         if (response !== undefined) {
           setTicket(response);
-          console.log(response);
         }
       } catch (error) {
         console.error("Error fetching ticket information:", error);
@@ -79,7 +78,7 @@ const TicketDetails = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn sx={{ mr: 1, color: theme.palette.primary.main }} />
                 <Typography variant="body1">
-                  {ticket?.requestor?.branch}
+                  {ticket?.requestor?.branch?.branch_description}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>

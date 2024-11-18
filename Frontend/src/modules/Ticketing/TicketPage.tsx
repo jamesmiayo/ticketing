@@ -201,6 +201,9 @@ const TicketPage: React.FC = () => {
             <TicketCreationForm
               onCreate={() => setOpen(false)}
               refetch={() => fetchData(null, page)}
+              categories={categories}
+              subcategories={subcategories}
+              handleSubCategoryList={handleSubCategoryList}
             />
           </DialogContent>
         </Dialog>
