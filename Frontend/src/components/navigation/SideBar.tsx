@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton"; // Import ListItemButton
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
@@ -46,12 +46,13 @@ const Sidebar: React.FC = ({ children }: any) => {
       behavior: "smooth",
     });
   };
+
   return (
     <Box
       sx={{
         display: "flex",
         height: "100vh",
-        backgroundColor: "#f4f6f8",
+        overflow: "hidden",
       }}
     >
       <Box
@@ -59,20 +60,28 @@ const Sidebar: React.FC = ({ children }: any) => {
           width: "250px",
           backgroundColor: "#ffffff",
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+          position: "fixed",
+          height: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
+          padding: 0,
+          zIndex: 100,
         }}
       >
-        <List sx={{ width: "100%" }}>
+        <List
+          sx={{
+            width: "100%",
+          }}
+        >
+          {/* Remove padding from List */}
           {navItems.map((item, index) => (
             <ListItem disablePadding key={index}>
               <ListItemButton
                 onClick={() => handleNavigation(item.path, item.title)}
                 sx={{
                   padding: "10px 20px",
-                  margin: "4px 0",
+                  margin: 0, // Remove margin
                   borderRadius: "8px",
                   transition: "background-color 0.3s ease-in-out",
                   backgroundColor:
@@ -89,24 +98,30 @@ const Sidebar: React.FC = ({ children }: any) => {
               </ListItemButton>
             </ListItem>
           ))}
+          <Divider sx={{ width: "80%", margin: "16px 0" }} />
+          <Button
+            onClick={handleLogout}
+            color="primary"
+            variant="contained"
+            sx={{
+              margin: 2,
+              backgroundColor: "#3f51b5",
+              "&:hover": {
+                backgroundColor: "#303f9f",
+              },
+            }}
+          >
+            Logout
+          </Button>
         </List>
-        <Divider sx={{ width: "80%", margin: "16px 0" }} />
-        <Button
-          onClick={handleLogout}
-          color="primary"
-          variant="contained"
-          sx={{
-            margin: 2,
-            backgroundColor: "#3f51b5",
-            "&:hover": {
-              backgroundColor: "#303f9f",
-            },
-          }}
-        >
-          Logout
-        </Button>
       </Box>
-      <Box sx={{ flexGrow: 1, padding: 3 }}>{children}</Box>
+      <Box
+        sx={{ flexGrow: 1, padding: 0, marginLeft: "250px", overflowY: "auto" }}
+      >
+        {" "}
+        {/* Remove padding */}
+        {children}
+      </Box>
     </Box>
   );
 };

@@ -99,37 +99,47 @@ const TicketPage: React.FC = () => {
     },
   ];
   return (
-    <div>
-      <h1>Ticket List</h1>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleOpen}>
-          Create Ticket
-        </Button>
-      </Box>
+    <Box sx={{ display: "flex" }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
+        <h1>Ticket List</h1>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Button variant="contained" color="primary" onClick={handleOpen}>
+            Create Ticket
+          </Button>
+        </Box>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
-        {/* <TicketSideBar /> */}
-        <TicketTable
-          tickets={data}
-          isLoading={loading}
-          isOptions={true}
-          onPageChange={handlePageChange}
-          pageProps={page}
-          maxCount={maxPage}
-          onSubmit={handleSubmit(onSubmit)} // Pass submit handler
-          customInputs={ticketSearchFilter}
-        />
-      </Box>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create New Ticket</DialogTitle>
-        <DialogContent>
-          <TicketCreationForm
-            onCreate={() => setOpen(false)}
-            refetch={() => fetchData(null,page)}
+        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+          {/* <TicketSideBar /> */}
+          <TicketTable
+            tickets={data}
+            isLoading={loading}
+            isOptions={true}
+            onPageChange={handlePageChange}
+            pageProps={page}
+            maxCount={maxPage}
+            onSubmit={handleSubmit(onSubmit)} // Pass submit handler
+            customInputs={ticketSearchFilter}
           />
-        </DialogContent>
-      </Dialog>
-    </div>
+        </Box>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Create New Ticket</DialogTitle>
+          <DialogContent>
+            <TicketCreationForm
+              onCreate={() => setOpen(false)}
+              refetch={() => fetchData(null, page)}
+            />
+          </DialogContent>
+        </Dialog>
+      </Box>
+    </Box>
   );
 };
 

@@ -23,23 +23,10 @@ import TicketList from "../Ticketing/TicketList";
 import TicketTable from "../Ticketing/TicketTable";
 import { useNavigate } from "react-router-dom";
 
-// Create a custom theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#f50057",
-    },
-  },
-});
-
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const fetchData = async () => {
     try {
@@ -80,32 +67,30 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex" }}>
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            backgroundColor: "#f5f5f5",
-            minHeight: "100vh",
-          }}
-        >
-          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-            Dashboard
-          </Typography>
-          <TicketList />
-          <Paper sx={{ mt: 4, p: 2 }}>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button variant="contained" color="primary" onClick={handleOpen}>
-                View More
-              </Button>
-            </Box>
-            <TicketTable tickets={data} isLoading={loading} />
-          </Paper>
-        </Box>
+    <Box sx={{ display: "flex" }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          backgroundColor: "#f5f5f5",
+          minHeight: "100vh",
+        }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+          Dashboard
+        </Typography>
+        <TicketList />
+        <Paper sx={{ mt: 4, p: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleOpen}>
+              View More
+            </Button>
+          </Box>
+          <TicketTable tickets={data} isLoading={loading} />
+        </Paper>
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 

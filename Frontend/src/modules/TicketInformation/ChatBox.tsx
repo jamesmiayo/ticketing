@@ -12,6 +12,7 @@ import {
   ListItemText,
   Paper,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 
@@ -64,6 +65,26 @@ export default function ChatBox() {
       >
         <Paper elevation={3} sx={{ flex: 1, mb: 2, overflow: "auto", p: 2 }}>
           <List>
+            <Paper
+              elevation={3}
+              sx={{
+                position: "sticky",
+                top: 0,
+                backgroundColor: "#f5f5f5",
+                padding: 2,
+                zIndex: 100,
+                marginBottom: 2,
+                borderRadius: 2,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: 15,
+                }}
+              >
+                For Description
+              </Typography>
+            </Paper>
             {messages.map((message) => (
               <ListItem
                 key={message.id}

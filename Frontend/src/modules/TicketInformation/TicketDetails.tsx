@@ -38,6 +38,7 @@ const TicketDetails = () => {
         const response = await ticketApi.getInformation(ticketId);
         if (response !== undefined) {
           setTicket(response);
+          console.log(response);
         }
       } catch (error) {
         console.error("Error fetching ticket information:", error);
@@ -65,7 +66,9 @@ const TicketDetails = () => {
             <Grid item xs={12} sm={6}>
               <Box display="flex" alignItems="center" mb={2}>
                 <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">{ticket?.user?.name}</Typography>
+                <Typography variant="body1">
+                  {ticket?.requestor?.name}
+                </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
                 <Work sx={{ mr: 1, color: theme.palette.primary.main }} />
@@ -75,11 +78,13 @@ const TicketDetails = () => {
             <Grid item xs={12} sm={6}>
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">Head Office</Typography>
+                <Typography variant="body1">
+                  {ticket?.requestor?.branch}
+                </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
                 <Phone sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">09495915699</Typography>
+                <Typography variant="body1">09495915119</Typography>
               </Box>
             </Grid>
           </Grid>
