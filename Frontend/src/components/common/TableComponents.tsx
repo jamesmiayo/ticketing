@@ -22,6 +22,7 @@ interface DataGridProps<T> {
   }[];
   onSubmit: () => void;
   maxCount: string;
+  isLoading?: boolean;
 }
 
 const TableComponents = <T,>({
@@ -34,6 +35,7 @@ const TableComponents = <T,>({
   customInputs = [],
   onSubmit,
   maxCount,
+  isLoading = false,
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -80,9 +82,11 @@ const TableComponents = <T,>({
         </form>
 
         <DataGrid
+          style={{ backgroundColor: "#FFFFFF" }}
           rows={rows}
           columns={columns}
           hideFooter
+          loading={isLoading}
           sx={{
             "& .MuiDataGrid-cell": {
               textAlign: "center",
