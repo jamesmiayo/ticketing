@@ -1,15 +1,45 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
+import {
+  Box,
+  Button,
+  Typography,
+  Paper,
+  Grid,
+  CircularProgress,
+  useTheme,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
+import {
+  Dashboard as DashboardIcon,
+  ConfirmationNumber as TicketIcon,
+  Person as PersonIcon,
+  Settings as SettingsIcon,
+} from "@mui/icons-material";
+import { ticketApi } from "../../api/services/ticket";
 import TicketList from "../Ticketing/TicketList";
 import TicketTable from "../Ticketing/TicketTable";
-import { ticketApi } from "../../api/services/ticket";
-import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard: React.FC<any> = () => {
+// Create a custom theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2",
+    },
+    secondary: {
+      main: "#f50057",
+    },
+  },
+});
+
+const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const fetchData = async () => {
     try {
@@ -50,23 +80,52 @@ const Dashboard: React.FC<any> = () => {
   };
 
   return (
-    <Box display="flex">
-      <Box flex={1}>
-        <Box p={3}>
-          <h1>Dashboard</h1>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: "flex" }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            backgroundColor: "#f5f5f5",
+            minHeight: "100vh",
+          }}
+        >
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+            Dashboard
+          </Typography>
           <TicketList />
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}
-          ></Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-              View More
-            </Button>
-          </Box>
-          <TicketTable tickets={data} isLoading={loading} />
+          <Paper sx={{ mt: 4, p: 2 }}>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button variant="contained" color="primary" onClick={handleOpen}>
+                View More
+              </Button>
+            </Box>
+            <TicketTable tickets={data} isLoading={loading} />
+          </Paper>
         </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
+  );
+};
+
+const StatCard: React.FC<{ title: string; value: React.ReactNode }> = ({
+  title,
+  value,
+}) => {
+  return (
+    <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: 140 }}>
+      <Typography color="textSecondary" gutterBottom>
+        {title}
+      </Typography>
+      <Typography
+        variant="h4"
+        component="div"
+        sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
+      >
+        {value}
+      </Typography>
+    </Paper>
   );
 };
 

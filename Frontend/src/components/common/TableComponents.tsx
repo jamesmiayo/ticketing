@@ -56,25 +56,27 @@ const TableComponents = <T,>({
             onSubmit();
           }}
         >
-          <Grid container spacing={2} mb={4}>
-            {customInputs.map((inputProps, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <InputComponent {...inputProps} />
-              </Grid>
-            ))}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "end",
-                marginLeft: "12px",
-              }}
-            >
-              <Button variant="contained" color="primary" type="submit">
-                Submit
-              </Button>
-            </Box>
-          </Grid>
+          {customInputs.length > 0 && (
+            <Grid container spacing={2} mb={4}>
+              {customInputs.map((inputProps, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <InputComponent {...inputProps} />
+                </Grid>
+              ))}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "end",
+                  marginLeft: "12px",
+                }}
+              >
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Box>
+            </Grid>
+          )}
         </form>
 
         <DataGrid
@@ -100,15 +102,17 @@ const TableComponents = <T,>({
             marginTop: "10px",
           }}
         >
-          <Stack spacing={2}>
-            <Pagination
-              count={Number(maxCount)}
-              page={page}
-              onChange={handlePageChange}
-              shape="rounded"
-              variant="outlined"
-            />
-          </Stack>
+          {maxCount && (
+            <Stack spacing={2}>
+              <Pagination
+                count={Number(maxCount)}
+                page={page}
+                onChange={handlePageChange}
+                shape="rounded"
+                variant="outlined"
+              />
+            </Stack>
+          )}
         </Box>
       </div>
     </>
