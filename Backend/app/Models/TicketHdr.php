@@ -21,7 +21,7 @@ class TicketHdr extends Model
         'body'
     ];
 
-    protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description','sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
+    protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
 
     protected $appends = ['ticket_status', 'time_finished'];
 
@@ -73,16 +73,33 @@ class TicketHdr extends Model
 
     public static function getTicketLog($searchParams)
     {
-        $query = self::with('ticket_logs_latest');
 
+        $query = self::with('ticket_logs_latest');
         if (array_key_exists('ticket_id', $searchParams)) {
             $query->ticketId($searchParams['ticket_id']);
+        }
+
+        if (array_key_exists('title', $searchParams)) {
+            $query->title($searchParams['title']);
+        }
+
+        if (array_key_exists('subcategory_id', $searchParams) && $searchParams['subcategory_id'] !== null) {
+            $query->subCategoryId($searchParams['subcategory_id']);
+        }
+
+        if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
+            $query->startDate($searchParams['start_date']);
+        }
+
+        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
+            $query->endDate($searchParams['end_date']);
         }
 
         return $query;
     }
 
-    public static function getSpecificTicket(){
+    public static function getSpecificTicket()
+    {
         $query = self::with([
             'ticket_logs_latest',
             'ticket_statuses' => function ($query) {
@@ -95,5 +112,25 @@ class TicketHdr extends Model
     public function scopeTicketId($query, $ticket_id)
     {
         return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
+    }
+
+    public function scopeTitle($query, $title)
+    {
+        return $query->where('title', 'LIKE', '%' . $title . '%');
+    }
+
+    public function scopeSubCategoryId($query, $subcategory_id)
+    {
+        return $query->where('subcategory_id', $subcategory_id);
+    }
+
+    public function scopeStartDate($query, $start_date)
+    {
+        return $query->whereDate('created_at', '>=', Carbon::parse($start_date)->startOfDay());
+    }
+
+    public function scopeEndDate($query, $end_date)
+    {
+        return $query->whereDate('created_at', '<=', Carbon::parse($end_date)->endOfDay());
     }
 }

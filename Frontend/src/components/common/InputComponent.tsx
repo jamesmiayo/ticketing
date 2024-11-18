@@ -9,7 +9,7 @@ const InputComponent = ({
   multiline = false,
   rows,
   ...rest
-}:any) => {
+}: any) => {
   return (
     <TextField
       label={label}
@@ -19,6 +19,7 @@ const InputComponent = ({
       helperText={errors?.[name]?.message}
       multiline={multiline}
       rows={multiline ? rows : undefined}
+      size="small" 
       {...rest}
     />
   );
