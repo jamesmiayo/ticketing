@@ -34,28 +34,22 @@ const TicketList: React.FC = () => {
 
   return (
     <Grid container spacing={3}>
-      {loading ? (
-        [...Array(4)].map((_, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <StatCard
-              title="Loading..."
-              value={<CircularProgress size={20} />}
-            />
-          </Grid>
-        ))
-      ) : data && data.length > 0 ? (
-        data.map((status, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <StatCard title={status.label} value={status.value} />
-          </Grid>
-        ))
-      ) : (
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2, textAlign: "center" }}>
-            <Typography variant="body1">No data available</Typography>
-          </Paper>
-        </Grid>
-      )}
+      {loading
+        ? [...Array(4)].map((_, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <StatCard
+                title="Loading..."
+                value={<CircularProgress size={20} />}
+              />
+            </Grid>
+          ))
+        : data && data.length > 0
+        ? data.map((status, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <StatCard title={status.label} value={status.value} />
+            </Grid>
+          ))
+        : null}
     </Grid>
   );
 };
@@ -65,7 +59,15 @@ const StatCard: React.FC<{ title: string; value: React.ReactNode }> = ({
   value,
 }) => {
   return (
-    <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: 140 }}>
+    <Paper
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        height: 140,
+        background: "#d0e1e9",
+      }}
+    >
       <Typography color="textSecondary" gutterBottom>
         {title}
       </Typography>

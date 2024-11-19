@@ -82,18 +82,24 @@ const TableComponents = <T,>({
         </form>
 
         <DataGrid
-          style={{ backgroundColor: "#FFFFFF" }}
           rows={rows}
           columns={columns}
           hideFooter
           loading={isLoading}
           sx={{
+            bgcolor: "#d0e1e9",
             "& .MuiDataGrid-cell": {
               textAlign: "center",
+              bgcolor: "#d0e1e9",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              bgcolor: "#d0e1e9",
             },
             "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "bold",
-              textAlign: "center",
+              color: "#000", // Adjust text color if needed for better visibility
+            },
+            "& .MuiDataGrid-row": {
+              bgcolor: "#d0e1e9",
             },
           }}
         />

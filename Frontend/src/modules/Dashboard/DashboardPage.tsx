@@ -73,7 +73,6 @@ const Dashboard: React.FC = () => {
         sx={{
           flexGrow: 1,
           p: 3,
-          backgroundColor: "#f5f5f5",
           minHeight: "100vh",
         }}
       >
@@ -81,8 +80,8 @@ const Dashboard: React.FC = () => {
           Dashboard
         </Typography>
         <TicketList />
-        <Paper sx={{ mt: 4, p: 2 }}>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Paper sx={{ mt: 4, p: 2, background: "#d0e1e9" }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
             <Button variant="contained" color="primary" onClick={handleOpen}>
               View More
             </Button>
