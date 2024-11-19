@@ -46,7 +46,7 @@ export default function TicketTable({
           {
             field: "view",
             headerName: "Options",
-            width: 110,
+            width: "100%",
             sortable: false,
             renderCell: (params: GridRenderCellParams) => (
               <IconButton onClick={() => handleViewClick(params.row)}>
@@ -64,7 +64,7 @@ export default function TicketTable({
         rows={tickets}
         onPageChange={onPageChange}
         pageProps={pageProps}
-        height={600}
+        height={300}
         customInputs={customInputs}
         onSubmit={onSubmit}
         maxCount={maxCount}

@@ -34,7 +34,7 @@ const TableComponents = <T,>({
   rows,
   onPageChange,
   pageProps,
-  height = 400,
+  height = 300,
   width = "100%",
   customInputs = [],
   onSubmit,

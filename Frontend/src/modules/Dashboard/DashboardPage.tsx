@@ -1,30 +1,22 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Paper, Typography, Button } from "@mui/material";
 import { ticketApi } from "../../api/services/ticket";
 import TicketList from "../Ticketing/TicketList";
 import TicketTable from "../Ticketing/TicketTable";
-import { useNavigate } from "react-router-dom";
 import { OverviewAPI } from "../../api/services/getOverview";
 import TodaySummaryComponent from "./TodaySummaryComponent";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [totalTicket, setTotalTicket] = useState<any>([]);
-
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const result = await ticketApi.getTicketData();
-      console.log(result);
       if (result) {
         const formattedTickets = result.map((ticket: any) => ({
           id: ticket.id,
@@ -51,9 +43,13 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleOpen = () => {
+    navigate("/ticket");
+  };
+
   const dashboardFetchData = async () => {
-    setLoading(true);
     try {
+      setLoading(true);
       const result = await OverviewAPI.getAllData();
       if (result) {
         setTotalTicket(result);
@@ -66,14 +62,11 @@ const Dashboard: React.FC = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     dashboardFetchData();
     fetchData();
   }, []);
-
-  const handleOpen = () => {
-    navigate("/ticket");
-  };
 
   return (
     <Box style={{ padding: 5 }}>
@@ -90,39 +83,92 @@ const Dashboard: React.FC = () => {
         </Typography>
 
         <Box>
-          <Box>
-            <Box
+          <Box sx={{ display: "flex", gap: 5 }}>
+            <TicketList
+              ticketList={totalTicket?.total_ticket_count}
+              isLoading={loading}
+            />
+            <TodaySummaryComponent totalTicket={totalTicket} />
+          </Box>
+          <Box
+            sx={{
+              mt: 4,
+              display: "flex",
+              gap: 2,
+              overflow: "hidden",
+              justifyContent: "space-between",
+            }}
+          >
+            <Paper
+              elevation={4}
               sx={{
-                display: "flex",
-                gap: 5,
+                p: 3,
+                background: "white",
+                borderRadius: 3,
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                flex: 1,
+                minWidth: "30%",
               }}
             >
-              <TicketList
-                ticketList={totalTicket?.total_ticket_count}
-                isLoading={loading}
-              />
-              <TodaySummaryComponent totalTicket={totalTicket} />
-            </Box>
-
-            <Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  mt: 4,
-                  mb: 2,
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleOpen}
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
                 >
-                  View More
-                </Button>
+                  <Typography variant="h6">Table 1</Typography>
+                  <Button
+                    onClick={handleOpen}
+                    variant="outlined"
+                    size="small"
+                    sx={{ textTransform: "none" }}
+                  >
+                    View More
+                  </Button>
+                </Box>
+                <TicketTable tickets={data} isLoading={loading} />
               </Box>
-              <TicketTable tickets={data} isLoading={loading} />
-            </Box>
+            </Paper>
+
+            <Paper
+              elevation={4}
+              sx={{
+                p: 3,
+                background: "white",
+                borderRadius: 3,
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                flex: 1,
+                minWidth: "30%",
+              }}
+            >
+              <Box>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Table 2
+                </Typography>
+                <TicketTable tickets={data} isLoading={loading} />
+              </Box>
+            </Paper>
+            <Paper
+              elevation={4}
+              sx={{
+                p: 3,
+                background: "white",
+                borderRadius: 3,
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                flex: 1,
+                minWidth: "35%",
+              }}
+            >
+              <Box>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Table 3
+                </Typography>
+                <TicketTable tickets={data} isLoading={loading} />
+              </Box>
+            </Paper>
           </Box>
         </Box>
       </Box>
