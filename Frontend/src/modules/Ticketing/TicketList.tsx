@@ -91,7 +91,7 @@ const StatCard: React.FC<{
         p: 2,
         display: "flex",
         flexDirection: "column",
-        height: 100,
+        height: 140,
         background: backgroundColor, // Use the background color prop
         color: "white",
       }}
