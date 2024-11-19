@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import TicketCreationForm from "./TicketCreationForm";
-import { Box, Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
 import { useQuery } from "../TicketInformation/TicketDetails";
-
-import TicketSideBar from "./TicketSideBar";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   filterFormtype,
   filterTicket,
 } from "../../schema/Ticket/ticketSearchSchema";
+import { getCategoryAPI } from "../../api/services/getCategoryList";
 
 const TicketPage: React.FC = () => {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subcategories, setSubCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -27,6 +28,7 @@ const TicketPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<filterFormtype>({
     resolver: yupResolver(filterTicket),
@@ -36,7 +38,6 @@ const TicketPage: React.FC = () => {
     try {
       setLoading(true);
       const result = await ticketApi.getTicketData(data, page);
-      console.log(result);
       if (result && result.data) {
         const formattedTickets = result.data.map((ticket: any) => ({
           id: ticket.id,
@@ -65,10 +66,6 @@ const TicketPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData(null, page);
-  }, [page]);
-
   const handlePageChange = (newPage: string) => {
     setPage(newPage);
   };
@@ -84,20 +81,92 @@ const TicketPage: React.FC = () => {
     }
   };
 
+  const handleClear = async () => {
+    fetchData(null, page);
+  };
+  const getCategoryList = async () => {
+    try {
+      const response = await getCategoryAPI.getAllData();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.category_description,
+          sub_category: row.sub_category,
+        };
+      });
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
+
+  function handleSubCategoryList(e: any) {
+    const data = categories
+      .find((category: any) => category.value == e)
+      ?.sub_category.map((row: any) => {
+        return { value: row.id, label: row.subcategory_description };
+      });
+    setSubCategories(data);
+  }
+
   const ticketSearchFilter = [
     {
       name: "ticket_id",
       label: "Ticket ID",
       register: register,
       errors: errors,
+      type: "text",
     },
     {
       name: "title",
       label: "Title",
       register: register,
       errors: errors,
+      type: "text",
+    },
+    {
+      name: "category_id",
+      label: "Category",
+      register: register,
+      control: control,
+      errors: errors,
+      options: categories,
+      type: "select",
+      onChange: (value: any) => handleSubCategoryList(value),
+    },
+    {
+      name: "subcategory_id",
+      label: "Sub Category",
+      register: register,
+      control: control,
+      errors: errors,
+      options: subcategories,
+      type: "select",
+    },
+    {
+      name: "start_date",
+      label: "Start Date",
+      register: register,
+      control: control,
+      errors: errors,
+      type: "date",
+    },
+    {
+      name: "end_date",
+      label: "End Date",
+      register: register,
+      control: control,
+      errors: errors,
+      type: "date",
     },
   ];
+
+  useEffect(() => {
+    getCategoryList();
+    fetchData(null, page);
+  }, [page]);
+
   return (
     <Box sx={{ display: "flex" }}>
       <Box
@@ -108,14 +177,16 @@ const TicketPage: React.FC = () => {
           width: "100%",
         }}
       >
-        <h1>Ticket List</h1>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+          Ticket List
+        </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleOpen}>
+          <Button variant="contained" color="success" onClick={handleOpen}>
             Create Ticket
           </Button>
         </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+        <Box>
           {/* <TicketSideBar /> */}
           <TicketTable
             tickets={data}
@@ -124,7 +195,8 @@ const TicketPage: React.FC = () => {
             onPageChange={handlePageChange}
             pageProps={page}
             maxCount={maxPage}
-            onSubmit={handleSubmit(onSubmit)} // Pass submit handler
+            onSubmit={handleSubmit(onSubmit)} 
+            onClear={handleClear}
             customInputs={ticketSearchFilter}
           />
         </Box>
@@ -134,6 +206,9 @@ const TicketPage: React.FC = () => {
             <TicketCreationForm
               onCreate={() => setOpen(false)}
               refetch={() => fetchData(null, page)}
+              categories={categories}
+              subcategories={subcategories}
+              handleSubCategoryList={handleSubCategoryList}
             />
           </DialogContent>
         </Dialog>

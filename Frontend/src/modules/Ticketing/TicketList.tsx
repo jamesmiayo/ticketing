@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Grid, Paper, Typography } from "@mui/material";
-import { OverviewAPI } from "../../api/services/getOverview";
+import React from "react";
+import {  CircularProgress, Grid, Paper, Typography } from "@mui/material";
 
 // Define the structure of each ticket status item
 interface TicketStatus {
@@ -8,30 +7,7 @@ interface TicketStatus {
   value: number;
 }
 
-const TicketList: React.FC = () => {
-  const [data, setData] = useState<TicketStatus[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const result = await OverviewAPI.getAllData();
-      if (result && Array.isArray(result.total_ticket_count)) {
-        setData(result.total_ticket_count);
-      } else {
-        console.warn("Unexpected data structure:", result);
-      }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+const TicketList: React.FC = ({ticketList , isLoading} :any) => {
   const colors = [
     "#4CAF50",
     "#2196F3",
@@ -45,33 +21,28 @@ const TicketList: React.FC = () => {
 
   return (
     <Grid container spacing={3}>
-      {loading ? (
-        [...Array(8)].map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <StatCard
-              title="Loading..."
-              value={<CircularProgress size={20} />}
-              backgroundColor={colors[index % colors.length]} // Assign color based on index
-            />
-          </Grid>
-        ))
-      ) : data && data.length > 0 ? (
-        data.map((status, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <StatCard
-              title={status.label}
-              value={status.value}
-              backgroundColor={colors[index % colors.length]} // Assign color based on index
-            />
-          </Grid>
-        ))
-      ) : (
-        <Grid item xs={12}>
-          <Typography variant="h6" align="center">
-            No data available
-          </Typography>
-        </Grid>
-      )}
+   {isLoading ? (
+  [...Array(8)].map((_, index) => (
+    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+      <StatCard
+        title="Loading..."
+        value={<CircularProgress size={20} />}
+        backgroundColor={colors[index % colors.length]} // Assign color based on index
+      />
+    </Grid>
+  ))
+) : (
+  ticketList.map((status: any, index: any) => (
+    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+      <StatCard
+        title={status.label}
+        value={status.value}
+        backgroundColor={colors[index % colors.length]} // Assign color based on index
+      />
+    </Grid>
+  ))
+)}
+
     </Grid>
   );
 };

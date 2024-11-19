@@ -5,33 +5,18 @@ import {
   Box,
   Button,
   Typography,
-  Paper,
-  Grid,
-  CircularProgress,
-  useTheme,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
 } from "@mui/material";
-import {
-  Dashboard as DashboardIcon,
-  ConfirmationNumber as TicketIcon,
-  Person as PersonIcon,
-  Settings as SettingsIcon,
-  OpenInNew as OpenInNewIcon,
-  CheckCircleOutline as CheckCircleOutlineIcon,
-  AddCircleOutline as AddCircleOutlineIcon,
-} from "@mui/icons-material";
 import { ticketApi } from "../../api/services/ticket";
 import TicketList from "../Ticketing/TicketList";
 import TicketTable from "../Ticketing/TicketTable";
 import { useNavigate } from "react-router-dom";
+import { OverviewAPI } from "../../api/services/getOverview";
+import TodaySummaryComponent from "./TodaySummaryComponent";
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [totalTicket, setTotalTicket] = useState<any>([]);
 
   const navigate = useNavigate();
 
@@ -39,6 +24,7 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       const result = await ticketApi.getTicketData();
+      console.log(result);
       if (result) {
         const formattedTickets = result.map((ticket: any) => ({
           id: ticket.id,
@@ -65,7 +51,23 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const dashboardFetchData = async () => {
+    setLoading(true);
+    try {
+      const result = await OverviewAPI.getAllData();
+      if (result) {
+        setTotalTicket(result);
+      } else {
+        console.warn("Unexpected data structure:", result);
+      }
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
+    dashboardFetchData();
     fetchData();
   }, []);
 
@@ -74,7 +76,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box style={{ padding: 5 }}>
       <Box
         component="main"
         sx={{
@@ -95,147 +97,11 @@ const Dashboard: React.FC = () => {
                 gap: 5,
               }}
             >
-              <TicketList />
-              <Box sx={{ maxWidth: 400, width: "100%", mb: 4, height: "auto" }}>
-                <Paper
-                  elevation={4}
-                  sx={{
-                    p: 3,
-                    background: "#deecf3",
-                    borderRadius: 3,
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                    height: "340px",
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{
-                      mb: 2,
-                      fontWeight: "600",
-                      color: "text.primary",
-                      textAlign: "center",
-                    }}
-                  >
-                    Today's Issue Summary
-                  </Typography>
-                  <List
-                    sx={{
-                      display: "flex",
-                      padding: 0,
-                      flexDirection: "column",
-                      gap: 1,
-                    }}
-                  >
-                    <ListItem
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 1,
-                        backgroundColor: "rgba(63, 81, 181, 0.1)",
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                          <OpenInNewIcon color="primary" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="Total Open"
-                          primaryTypographyProps={{
-                            variant: "body2",
-                            sx: {
-                              color: "text.secondary",
-                              fontWeight: 500,
-                            },
-                          }}
-                        />
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", color: "text.primary" }}
-                      >
-                        {10}
-                      </Typography>
-                    </ListItem>
-                    <ListItem
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 1,
-                        backgroundColor: "rgba(76, 175, 80, 0.1)",
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                          <CheckCircleOutlineIcon color="success" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="Total Solved"
-                          primaryTypographyProps={{
-                            variant: "body2",
-                            sx: {
-                              color: "text.secondary",
-                              fontWeight: 500,
-                            },
-                          }}
-                        />
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", color: "text.primary" }}
-                      >
-                        {10}
-                      </Typography>
-                    </ListItem>
-                    <ListItem
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: 1,
-                        backgroundColor: "rgba(156, 39, 176, 0.1)",
-                        borderRadius: 2,
-                      }}
-                    >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                          <AddCircleOutlineIcon color="secondary" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="Total Created"
-                          primaryTypographyProps={{
-                            variant: "body2",
-                            sx: {
-                              color: "text.secondary",
-                              fontWeight: 500,
-                            },
-                          }}
-                        />
-                      </Box>
-                      <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", color: "text.primary" }}
-                      >
-                        {10}
-                      </Typography>
-                    </ListItem>
-                  </List>
-                </Paper>
-              </Box>
+              <TicketList
+                ticketList={totalTicket?.total_ticket_count}
+                isLoading={loading}
+              />
+              <TodaySummaryComponent totalTicket={totalTicket} />
             </Box>
 
             <Box>

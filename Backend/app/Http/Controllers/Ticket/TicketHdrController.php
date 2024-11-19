@@ -32,7 +32,7 @@ class TicketHdrController extends Controller
             $data = $data->where('emp_id' , Auth::user()->id);
         }
 
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data->paginate(3)], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data->paginate(10)], Response::HTTP_OK);
     }
 
     /**

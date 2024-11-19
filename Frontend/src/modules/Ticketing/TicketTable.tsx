@@ -1,4 +1,4 @@
-import { Card, IconButton, Skeleton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
@@ -59,17 +59,17 @@ export default function TicketTable({
   ];
   return (
     <>
-        <TableComponents
-          columns={columns}
-          rows={tickets}
-          onPageChange={onPageChange}
-          pageProps={pageProps}
-          height={500}
-          customInputs={customInputs}
-          onSubmit={onSubmit}
-          maxCount={maxCount}
-          isLoading={isLoading}
-        />
+      <TableComponents
+        columns={columns}
+        rows={tickets}
+        onPageChange={onPageChange}
+        pageProps={pageProps}
+        height={600}
+        customInputs={customInputs}
+        onSubmit={onSubmit}
+        maxCount={maxCount}
+        isLoading={isLoading}
+      />
     </>
   );
 }

@@ -52,7 +52,15 @@ export const ticketApi = {
       const response = await apiClient.request({
         url: `/ticket/ticket-hdr`,
         method: "GET",
-        params: { page: page, ticket_id: data?.ticket_id },
+        params: {
+          page: page,
+          ticket_id: data?.ticket_id,
+          title: data?.title,
+          category_id: data?.category_id,
+          subcategory_id: data?.subcategory_id,
+          start_date: data?.start_date,
+          end_date: data?.end_date,
+        },
       });
       return response.data.data;
     } catch (error) {

@@ -16,10 +16,16 @@ const SelectItem = ({
   defaultValue,
   onChange,
 }: any) => {
-  const error = errors?.[name]; 
+  const error = errors?.[name];
   console.log(errors);
   return (
-    <FormControl size="small" variant="outlined" fullWidth error={!!error}>
+    <FormControl
+      size="small"
+      variant="outlined"
+      fullWidth
+      error={!!error}
+      style={{ minWidth: '250px' }} 
+    >
       <InputLabel>{label}</InputLabel>
       <Controller
         name={name}

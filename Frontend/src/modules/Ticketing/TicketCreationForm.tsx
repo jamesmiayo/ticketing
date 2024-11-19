@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Box, Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ticketApi } from "../../api/services/ticket";
 import { ticketValidationSchema } from "../../schema/Ticket/createTicketSchema";
 import SelectItem from "../../components/common/SelectItem";
-import { getCategoryAPI } from "../../api/services/getCategoryList";
 import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
 interface TicketCreationFormProps {
   onCreate: (ticket: any) => void;
   refetch: any;
+  categories: any;
+  subcategories: any;
+  handleSubCategoryList: any;
 }
 
 interface TicketFormInputs {
@@ -29,9 +31,10 @@ const statusOptions = [
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
   refetch,
+  categories,
+  subcategories,
+  handleSubCategoryList,
 }) => {
-  const [categories, setCategories] = useState<any[]>([]);
-  const [subcategories, setSubCategories] = useState<any[]>([]);
   const toast = useExecuteToast();
   const {
     register,
@@ -41,36 +44,6 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   } = useForm<TicketFormInputs>({
     resolver: yupResolver(ticketValidationSchema),
   });
-
-  const getCategoryList = async () => {
-    try {
-      const response = await getCategoryAPI.getAllData();
-      const data = response.map((row: any) => {
-        return {
-          value: row.id,
-          label: row.category_description,
-          sub_category: row.sub_category,
-        };
-      });
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching category list:", error);
-      throw error;
-    }
-  };
-
-  function handleSubCategoryList(e: any) {
-    const data = categories
-      .find((category: any) => category.value == e)
-      ?.sub_category.map((row: any) => {
-        return { value: row.id, label: row.subcategory_description };
-      });
-    setSubCategories(data);
-  }
-
-  useEffect(() => {
-    getCategoryList();
-  }, []);
 
   const onSubmit = async (data: any) => {
     try {
@@ -90,7 +63,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       sx={{
         maxWidth: 600,
         margin: "auto",
-        padding:1
+        padding: 1,
       }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -118,26 +91,26 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-          <SelectItem
-                label="Category"
-                control={control}
-                options={categories}
-                name="category"
-                errors={errors}
-                fullWidth
-                onChange={(e) => handleSubCategoryList(e)}
-              />
+            <SelectItem
+              label="Category"
+              control={control}
+              options={categories}
+              name="category"
+              errors={errors}
+              fullWidth
+              onChange={(e: any) => handleSubCategoryList(e)}
+            />
           </Grid>
-          
+
           <Grid item xs={12}>
-          <SelectItem
-                label="Sub Category"
-                control={control}
-                options={subcategories}
-                errors={errors}
-                name="subcategory_id"
-                fullWidth
-              />
+            <SelectItem
+              label="Sub Category"
+              control={control}
+              options={subcategories}
+              errors={errors}
+              name="subcategory_id"
+              fullWidth
+            />
           </Grid>
           <Grid item xs={12}>
             <SelectItem
