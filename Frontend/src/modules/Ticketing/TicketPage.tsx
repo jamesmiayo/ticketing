@@ -103,9 +103,9 @@ const TicketPage: React.FC = () => {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
           p: 3,
           minHeight: "100vh",
+          width: "100%",
         }}
       >
         <h1>Ticket List</h1>

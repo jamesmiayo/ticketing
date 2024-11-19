@@ -78,7 +78,6 @@ const Sidebar: React.FC = ({ children }: any) => {
             height: "100vh",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
             borderRadius: "10px",
             width: sidebarOpen ? "190px" : "90px",
             transition: "width 0.3s ease-in-out",

@@ -67,49 +67,31 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box>
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
           p: 3,
           minHeight: "100vh",
+          gap: 2,
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
           Dashboard
         </Typography>
         <TicketList />
-        <Paper sx={{ mt: 4, p: 2, background: "#d0e1e9" }}>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
+        <Box>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", mt: 4, mb: 2 }}
+          >
             <Button variant="contained" color="primary" onClick={handleOpen}>
               View More
             </Button>
           </Box>
           <TicketTable tickets={data} isLoading={loading} />
-        </Paper>
+        </Box>
       </Box>
     </Box>
-  );
-};
-
-const StatCard: React.FC<{ title: string; value: React.ReactNode }> = ({
-  title,
-  value,
-}) => {
-  return (
-    <Paper sx={{ p: 2, display: "flex", flexDirection: "column", height: 140 }}>
-      <Typography color="textSecondary" gutterBottom>
-        {title}
-      </Typography>
-      <Typography
-        variant="h4"
-        component="div"
-        sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}
-      >
-        {value}
-      </Typography>
-    </Paper>
   );
 };
 

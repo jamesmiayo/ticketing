@@ -32,31 +32,58 @@ const TicketList: React.FC = () => {
     fetchData();
   }, []);
 
+  const colors = [
+    "#4CAF50",
+    "#2196F3",
+    "#FFC107",
+    "#F44336",
+    "#9C27B0",
+    "#3F51B5",
+    "#009688",
+    "#FF5722",
+  ];
+
   return (
     <Grid container spacing={3}>
-      {loading
-        ? [...Array(4)].map((_, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <StatCard
-                title="Loading..."
-                value={<CircularProgress size={20} />}
-              />
-            </Grid>
-          ))
-        : data && data.length > 0
-        ? data.map((status, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <StatCard title={status.label} value={status.value} />
-            </Grid>
-          ))
-        : null}
+      {loading ? (
+        [...Array(8)].map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <StatCard
+              title="Loading..."
+              value={<CircularProgress size={20} />}
+              backgroundColor={colors[index % colors.length]} // Assign color based on index
+            />
+          </Grid>
+        ))
+      ) : data && data.length > 0 ? (
+        data.map((status, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <StatCard
+              title={status.label}
+              value={status.value}
+              backgroundColor={colors[index % colors.length]} // Assign color based on index
+            />
+          </Grid>
+        ))
+      ) : (
+        <Grid item xs={12}>
+          <Typography variant="h6" align="center">
+            No data available
+          </Typography>
+        </Grid>
+      )}
     </Grid>
   );
 };
 
-const StatCard: React.FC<{ title: string; value: React.ReactNode }> = ({
+const StatCard: React.FC<{
+  title: string;
+  value: React.ReactNode;
+  backgroundColor?: string;
+}> = ({
   title,
   value,
+  backgroundColor = "#d0e1e9", // Default color if no color is passed
 }) => {
   return (
     <Paper
@@ -64,11 +91,12 @@ const StatCard: React.FC<{ title: string; value: React.ReactNode }> = ({
         p: 2,
         display: "flex",
         flexDirection: "column",
-        height: 140,
-        background: "#d0e1e9",
+        height: 100,
+        background: backgroundColor, // Use the background color prop
+        color: "white",
       }}
     >
-      <Typography color="textSecondary" gutterBottom>
+      <Typography color="white" gutterBottom>
         {title}
       </Typography>
       <Typography
