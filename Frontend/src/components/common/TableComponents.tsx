@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
+import { useForm } from "react-hook-form";
 
 interface DataGridProps<T> {
   columns: GridColDef[];
@@ -42,8 +43,8 @@ const TableComponents = <T,>({
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
+  const { reset } = useForm();
 
-  console.log(customInputs);
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
     newPage: number
@@ -55,23 +56,31 @@ const TableComponents = <T,>({
 
   return (
     <>
-      <div style={{ height: height, width: width }}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
+      {customInputs.length > 0 && (
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "20px",
+            marginBottom: 5,
+            boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+            borderRadius: 5,
           }}
         >
-          {customInputs.length > 0 && (
-            <Grid container spacing={2} mb={4}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+          >
+            <Grid style={{ display: "flex", gap: 5 }}>
               {customInputs.map((inputProps, index) => (
                 <Grid item key={index}>
                   {inputProps.type === "text" ? (
                     <InputComponent {...inputProps} />
                   ) : inputProps.type === "select" ? (
-                    <SelectItem {...inputProps}/>
+                    <SelectItem {...inputProps} />
                   ) : inputProps.type === "date" ? (
-                    <InputDateComponent {...inputProps}/>
+                    <InputDateComponent {...inputProps} />
                   ) : null}
                 </Grid>
               ))}
@@ -81,46 +90,51 @@ const TableComponents = <T,>({
                   alignItems: "center",
                   justifyContent: "center",
                   marginLeft: "12px",
-                  gap: 1
+                  gap: 1,
                 }}
               >
                 <Button variant="contained" color="primary" type="submit">
                   Submit
                 </Button>
                 <Button
-          variant="contained"
-          color="secondary"
-          type="button" 
-          onClick={() => {
-            customInputs = []
-          }}
-        >
-          Clear
-        </Button>
+                  variant="contained"
+                  color="error"
+                  type="button"
+                  onClick={() => {
+                    reset();
+                  }}
+                >
+                  Clear
+                </Button>
               </Box>
             </Grid>
-          )}
-        </form>
-
+          </form>
+        </div>
+      )}
+      <div style={{ height: height, width: width }}>
         <DataGrid
           rows={rows}
           columns={columns}
           hideFooter
           loading={isLoading}
           sx={{
-            bgcolor: "#d0e1e9",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+            bgcolor: "white",
             "& .MuiDataGrid-cell": {
               textAlign: "center",
-              bgcolor: "#d0e1e9",
+              padding: "4px",
+              fontSize: "0.875rem",
             },
             "& .MuiDataGrid-columnHeaders": {
-              bgcolor: "#d0e1e9",
+              padding: "4px",
+              fontSize: "0.875rem",
             },
             "& .MuiDataGrid-columnHeaderTitle": {
-              color: "#000", // Adjust text color if needed for better visibility
+              fontSize: "0.875rem",
             },
             "& .MuiDataGrid-row": {
-              bgcolor: "#d0e1e9",
+              maxHeight: "40px",
+              minHeight: "40px",
             },
           }}
         />
@@ -141,6 +155,20 @@ const TableComponents = <T,>({
                 onChange={handlePageChange}
                 shape="rounded"
                 variant="outlined"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "#3f51b5",
+                    border: "1px solid #3f51b5",
+                    backgroundColor: "#ffffff",
+                  },
+                  "& .Mui-selected": {
+                    backgroundColor: "#3f51b5",
+                    color: "#ffffff",
+                  },
+                  "& .MuiPaginationItem-root:hover": {
+                    backgroundColor: "#e3f2fd",
+                  },
+                }}
               />
             </Stack>
           )}

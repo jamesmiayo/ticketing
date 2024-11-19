@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TicketCreationForm from "./TicketCreationForm";
-import { Box, Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
 import { useQuery } from "../TicketInformation/TicketDetails";
@@ -38,7 +38,6 @@ const TicketPage: React.FC = () => {
     try {
       setLoading(true);
       const result = await ticketApi.getTicketData(data, page);
-      console.log(result);
       if (result && result.data) {
         const formattedTickets = result.data.map((ticket: any) => ({
           id: ticket.id,
@@ -82,6 +81,9 @@ const TicketPage: React.FC = () => {
     }
   };
 
+  const handleClear = async () => {
+    fetchData(null, page);
+  };
   const getCategoryList = async () => {
     try {
       const response = await getCategoryAPI.getAllData();
@@ -175,14 +177,16 @@ const TicketPage: React.FC = () => {
           width: "100%",
         }}
       >
-        <h1>Ticket List</h1>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+          Ticket List
+        </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleOpen}>
+          <Button variant="contained" color="success" onClick={handleOpen}>
             Create Ticket
           </Button>
         </Box>
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+        <Box>
           {/* <TicketSideBar /> */}
           <TicketTable
             tickets={data}
@@ -191,7 +195,8 @@ const TicketPage: React.FC = () => {
             onPageChange={handlePageChange}
             pageProps={page}
             maxCount={maxPage}
-            onSubmit={handleSubmit(onSubmit)} // Pass submit handler
+            onSubmit={handleSubmit(onSubmit)} 
+            onClear={handleClear}
             customInputs={ticketSearchFilter}
           />
         </Box>

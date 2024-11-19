@@ -64,7 +64,7 @@ export default function TicketTable({
         rows={tickets}
         onPageChange={onPageChange}
         pageProps={pageProps}
-        height={500}
+        height={600}
         customInputs={customInputs}
         onSubmit={onSubmit}
         maxCount={maxCount}
