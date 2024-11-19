@@ -11,6 +11,7 @@ import {
   filterTicket,
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
+import { statusList } from "../../constants/constants";
 
 const TicketPage: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -81,9 +82,6 @@ const TicketPage: React.FC = () => {
     }
   };
 
-  const handleClear = async () => {
-    fetchData(null, page);
-  };
   const getCategoryList = async () => {
     try {
       const response = await getCategoryAPI.getAllData();
@@ -124,6 +122,15 @@ const TicketPage: React.FC = () => {
       register: register,
       errors: errors,
       type: "text",
+    },
+    {
+      name: "status",
+      label: "Status",
+      register: register,
+      control: control,
+      errors: errors,
+      options: statusList,
+      type: "select",
     },
     {
       name: "category_id",
@@ -196,7 +203,6 @@ const TicketPage: React.FC = () => {
             pageProps={page}
             maxCount={maxPage}
             onSubmit={handleSubmit(onSubmit)} 
-            onClear={handleClear}
             customInputs={ticketSearchFilter}
           />
         </Box>

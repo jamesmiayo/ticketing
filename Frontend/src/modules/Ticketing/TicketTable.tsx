@@ -1,8 +1,10 @@
 import { IconButton } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaRegUserCircle } from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
+import { useState } from "react";
+import TicketAssignee from "./TicketAssignee";
 
 interface Ticket {
   ticketNo: string;
@@ -26,11 +28,18 @@ export default function TicketTable({
   onSubmit,
   maxCount,
 }: any) {
+  const [open, setOpen] = useState(false);
+  const [data , setData] = useState<any>();
   const navigate = useNavigate();
 
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
+
+  function handleAssigneClick (params:any){
+    setData(params)
+    setOpen(true)
+  }
 
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 140 },
@@ -49,9 +58,14 @@ export default function TicketTable({
             width: "100%",
             sortable: false,
             renderCell: (params: GridRenderCellParams) => (
-              <IconButton onClick={() => handleViewClick(params.row)}>
-                <FaEye />
-              </IconButton>
+              <>
+                <IconButton onClick={() => handleViewClick(params.row)}>
+                  <FaEye />
+                </IconButton>
+                <IconButton onClick={() => handleAssigneClick(params.row)}>
+                  <FaRegUserCircle />
+                </IconButton>
+              </>
             ),
           },
         ]
@@ -59,6 +73,7 @@ export default function TicketTable({
   ];
   return (
     <>
+    <TicketAssignee data={data} open={open} setOpen={setOpen}/>
       <TableComponents
         columns={columns}
         rows={tickets}

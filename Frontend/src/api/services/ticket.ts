@@ -59,6 +59,7 @@ export const ticketApi = {
           category_id: data?.category_id,
           subcategory_id: data?.subcategory_id,
           start_date: data?.start_date,
+          status: data?.status,
           end_date: data?.end_date,
         },
       });

@@ -95,6 +95,10 @@ class TicketHdr extends Model
             $query->endDate($searchParams['end_date']);
         }
 
+        if (array_key_exists('status', $searchParams) && $searchParams['status'] !== null) {
+            $query->status($searchParams['status']);
+        }
+
         return $query;
     }
 
@@ -112,6 +116,13 @@ class TicketHdr extends Model
     public function scopeTicketId($query, $ticket_id)
     {
         return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
+    }
+
+    public function scopeStatus($query, $status)
+    {
+        return $query->whereHas('ticket_logs_latest', function ($query) use ($status) {
+            $query->where('status', $status);
+        });
     }
 
     public function scopeTitle($query, $title)
