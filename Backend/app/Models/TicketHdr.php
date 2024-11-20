@@ -60,6 +60,10 @@ class TicketHdr extends Model
         return $this->belongsTo(SubCategory::class, 'subcategory_id');
     }
 
+    public function ticket_messages()
+    {
+        return $this->hasMany(TicketDtl::class, 'ticket_id');
+    }
 
     public function ticket_logs_latest()
     {
@@ -109,6 +113,8 @@ class TicketHdr extends Model
             'ticket_statuses' => function ($query) {
                 $query->orderBy('id', 'desc');
             },
+            'ticket_messages',
+            'ticket_messages.user:id,name'
         ]);
         return $query;
     }

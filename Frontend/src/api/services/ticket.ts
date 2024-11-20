@@ -89,13 +89,33 @@ export const ticketApi = {
   }: TicketData) {
     try {
       const response = await apiClient.request({
-        url: "/ticket/ticket-hdr", // Adjust the endpoint as needed
+        url: "/ticket/ticket-hdr",
         method: "POST",
         data: {
           title,
           body: concern,
           subcategory_id,
           b_status: status,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  createMessage: async function ({
+    ticket_id,
+    message,
+  }: any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/sent-message",
+        method: "POST",
+        data: {
+          ticket_id,
+          message
         },
       });
       return response.data;

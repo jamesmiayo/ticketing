@@ -3,7 +3,6 @@ import TicketCreationForm from "./TicketCreationForm";
 import { Box, Button, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
-import { useQuery } from "../TicketInformation/TicketDetails";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -12,6 +11,7 @@ import {
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
 import { statusList } from "../../constants/constants";
+import { useQuery } from "../TicketInformation/TicketInformationPage";
 
 const TicketPage: React.FC = () => {
   const [categories, setCategories] = useState<any[]>([]);

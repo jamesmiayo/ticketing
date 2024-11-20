@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Avatar,
   Box,
+  Button,
   Container,
   IconButton,
   List,
@@ -12,9 +13,17 @@ import {
   ListItemText,
   Paper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
+import { useExecuteToast } from "../../context/ToastContext";
+import { useForm } from "react-hook-form";
+import { ticketApi } from "../../api/services/ticket";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { messageValidationSchema } from "../../schema/Ticket/createMessage";
+import InputComponent from "../../components/common/InputComponent";
+import { useAuth } from "../../context/AuthContext";
 
 interface Message {
   id: number;
@@ -22,27 +31,31 @@ interface Message {
   sender: "user" | "other";
 }
 
-export default function ChatBox() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hello! How can I help you today?", sender: "other" },
-  ]);
-  const [newMessage, setNewMessage] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+interface TicketMessage {
+  ticket_id: string;
+  message: string;
+}
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+export default function ChatBox({ ticketDetail }: any) {
+  const { user } = useAuth()
+  const toast = useExecuteToast();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<TicketMessage>({
+    resolver: yupResolver(messageValidationSchema),
+  });
 
-  useEffect(scrollToBottom, [messages]);
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newMessage.trim()) {
-      setMessages([
-        ...messages,
-        { id: messages.length + 1, text: newMessage, sender: "user" },
-      ]);
-      setNewMessage("");
+  const onSubmit = async (data: any) => {
+    const formData = { ticket_id: ticketDetail?.id, message: data.message };
+    try {
+      const response = await ticketApi.createMessage(formData);
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error creating ticket:", error);
     }
   };
 
@@ -82,15 +95,15 @@ export default function ChatBox() {
                   fontSize: 15,
                 }}
               >
-                For Description
+                {ticketDetail?.body}
               </Typography>
             </Paper>
-            {messages.map((message) => (
+            {ticketDetail?.ticket_messages.map((message: any) => (
               <ListItem
                 key={message.id}
                 sx={{
                   justifyContent:
-                    message.sender === "user" ? "flex-end" : "flex-start",
+                    message.user.id === user?.id ? "flex-end" : "flex-start",
                 }}
               >
                 <Paper
@@ -99,7 +112,7 @@ export default function ChatBox() {
                     p: 2,
                     maxWidth: "70%",
                     bgcolor:
-                      message.sender === "user"
+                    message.user.id === user?.id
                         ? "primary.light"
                         : "background.paper",
                   }}
@@ -107,25 +120,27 @@ export default function ChatBox() {
                   <ListItemAvatar
                     sx={{
                       minWidth: 0,
-                      mr: message.sender === "user" ? 0 : 2,
-                      ml: message.sender === "user" ? 2 : 0,
+                      mr: message.user.id === user?.id ? 0 : 2,
+                      ml: message.user.id === user?.id ? 2 : 0,
                     }}
                   >
-                    <Avatar
-                      sx={{
-                        width: 32,
-                        height: 32,
-                        bgcolor:
-                          message.sender === "user"
-                            ? "primary.main"
-                            : "secondary.main",
-                      }}
-                    >
-                      {message.sender === "user" ? "U" : "O"}
-                    </Avatar>
+                    <Tooltip title={message.user.name}>
+                      <Avatar
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          bgcolor:
+                            message.sender === "user"
+                              ? "primary.main"
+                              : "secondary.main",
+                        }}
+                      >
+                        {message.user.name.charAt(0).toUpperCase()}
+                      </Avatar>
+                    </Tooltip>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={message.text}
+                    primary={message.message}
                     sx={{
                       "& .MuiListItemText-primary": {
                         color:
@@ -138,29 +153,27 @@ export default function ChatBox() {
                 </Paper>
               </ListItem>
             ))}
-            <div ref={messagesEndRef} />
           </List>
         </Paper>
-        <Paper
-          component="form"
-          onSubmit={handleSendMessage}
-          elevation={3}
-          sx={{ p: 2 }}
-        >
-          <Box sx={{ display: "flex" }}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Type a message"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              sx={{ mr: 1 }}
-            />
-            <IconButton color="primary" type="submit" aria-label="send message">
-              <SendIcon />
-            </IconButton>
-          </Box>
-        </Paper>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Box sx={{ display: "flex" }}>
+              <InputComponent
+                name="message"
+                register={register}
+                errors={errors}
+                fullWidth
+                variant="outlined"
+                placeholder="Type a message"
+                sx={{ mr: 1 }}
+              />
+              <Button color="primary" type="submit" aria-label="send message">
+                <SendIcon />
+              </Button>
+            </Box>
+          </Paper>
+        </form>
       </Container>
     </Box>
   );

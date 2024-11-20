@@ -45,14 +45,18 @@ class DashboardController extends Controller
 
         return [
             'total_created' => $this->ticketHdr->whereDate('created_at', $today)->count(),
-            'total_open' => $this->ticketHdr->whereDate('created_at', $today)->where('b_status', true)->count(),
-            'total_resolved' => $this->ticketHdr->whereDate('created_at', $today)->where('b_status',false)->count(),
+            'total_open' => $this->ticketHdr->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->where('status', GlobalConstants::OPEN);
+            })->count(),
+            'total_resolved' => $this->ticketHdr->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED);
+            })->count(),
         ];
     }
 
     public function getTicketCountsByStatus(): array
     {
-        $tickets = Auth::user()->hasRole('Supervisor') ? $this->ticketHdr : $this->ticketHdr->where('emp_id' , Auth::user()->id);
+        $tickets = Auth::user()->hasRole('Supervisor') ? $this->ticketHdr : $this->ticketHdr->where('emp_id', Auth::user()->id);
 
         $statuses = GlobalConstants::getStatusesType();
 
@@ -61,15 +65,15 @@ class DashboardController extends Controller
 
         foreach ($statuses as $status => $label) {
             $count = $tickets->whereHas('ticket_logs_latest', function ($query) use ($status) {
-                    $query->where('status', $status);
-                })
+                $query->where('status', $status);
+            })
                 ->count();
 
             $ticketCounts[$label] = $count;
             $totalTickets += $count;
         }
 
-        $formattedCounts = array_map(function($label, $count) {
+        $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
 
