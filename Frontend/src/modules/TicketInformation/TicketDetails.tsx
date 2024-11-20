@@ -18,34 +18,9 @@ import {
   Phone,
   Work,
 } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ticketApi, TicketInformation } from "../../api/services/ticket";
 
-export function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
-const TicketDetails = () => {
+const TicketDetails = ({ticketDetail}:any) => {
   const theme = useTheme();
-  const query = useQuery();
-  const ticketId = query.get("id");
-  const [ticket, setTicket] = useState<TicketInformation | null>(null);
-
-  useEffect(() => {
-    const fetchTicketInformation = async () => {
-      try {
-        const response = await ticketApi.getInformation(ticketId);
-        if (response !== undefined) {
-          setTicket(response);
-        }
-      } catch (error) {
-        console.error("Error fetching ticket information:", error);
-      }
-    };
-
-    fetchTicketInformation();
-  }, [ticketId]);
   return (
     <Box sx={{ width: "480px" }}>
       <Card elevation={3}>
@@ -57,7 +32,7 @@ const TicketDetails = () => {
             mb={2}
           >
             <Typography variant="h5" component="h2">
-              Ticket Details ({ticketId})
+              Ticket Details ({ticketDetail?.ticket_id})
             </Typography>
           </Box>
           <Divider sx={{ mb: 3 }} />
@@ -66,7 +41,7 @@ const TicketDetails = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
                 <Typography variant="body1">
-                  {ticket?.requestor?.name}
+                  {ticketDetail?.requestor?.name}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
@@ -78,7 +53,7 @@ const TicketDetails = () => {
               <Box display="flex" alignItems="center" mb={2}>
                 <LocationOn sx={{ mr: 1, color: theme.palette.primary.main }} />
                 <Typography variant="body1">
-                  {ticket?.requestor?.branch?.branch_description}
+                  {ticketDetail?.requestor?.branch?.branch_description}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>

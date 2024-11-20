@@ -8,6 +8,7 @@ use App\Http\Controllers\Maintenance\DepartmentController;
 use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
 use App\Http\Controllers\Maintenance\UserController;
+use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
 
@@ -31,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     //tickets routes
     Route::prefix('ticket')->group(function () {
+        Route::post('sent-message', TicketDtlController::class);
         Route::get('ticket-logs', TicketLogController::class);
         Route::resource('ticket-hdr', TicketHdrController::class);
     });

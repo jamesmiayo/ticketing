@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('ticket_tdl_id');
             $table->foreign('ticket_tdl_id')->references('id')->on('ticket_dtls')->onDelete('cascade');
+            $table->string('attachments')->nullable();
             $table->timestamps();
         });
     }

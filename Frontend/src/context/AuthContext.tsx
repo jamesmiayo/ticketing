@@ -50,7 +50,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const loginUser = async (username: string, password: string) => {
     try {
       const response = await LoginAPI.login({ username, password });
-      console.log(response);
       if (response.access_token) {
         localStorage.setItem("token", response.access_token);
         localStorage.setItem("userData", JSON.stringify(response.user));
@@ -63,7 +62,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       }
       return { message: response.message };
     } catch (error: any) {
-      console.error("Login failed", error);
       throw error;
     }
   };
