@@ -1,9 +1,9 @@
-import UserProgileSection from "./UserProgileSection";
+import UserProfile from "./UserProfileSection";
 
 const UserDashboardPage = () => {
   return (
     <>
-      <UserProgileSection />
+      <UserProfile />
     </>
   );
 };

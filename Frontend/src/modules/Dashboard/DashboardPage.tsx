@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box>
-              <Box
+                <Box
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
                     View More
                   </Button>
                 </Box>
-                <TicketTable tickets={data} isLoading={loading}/>
+                <TicketTable tickets={data} isLoading={loading} />
               </Box>
             </Paper>
             <Paper
@@ -178,7 +178,7 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box>
-              <Box
+                <Box
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -196,7 +196,7 @@ const Dashboard: React.FC = () => {
                     View More
                   </Button>
                 </Box>
-                
+
                 <TicketTable tickets={data} isLoading={loading} />
               </Box>
             </Paper>

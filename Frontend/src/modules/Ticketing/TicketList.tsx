@@ -1,13 +1,20 @@
 import React from "react";
-import {  CircularProgress, Grid, Paper, Typography } from "@mui/material";
+import { CircularProgress, Grid, Paper, Typography } from "@mui/material";
 
-// Define the structure of each ticket status item
 interface TicketStatus {
   label: string;
   value: number;
 }
 
-const TicketList: React.FC = ({ticketList , isLoading} :any) => {
+interface TicketListProps {
+  ticketList?: TicketStatus[]; // Optional array
+  isLoading: boolean;
+}
+
+const TicketList: React.FC<TicketListProps> = ({
+  ticketList = [],
+  isLoading,
+}) => {
   const colors = [
     "#4CAF50",
     "#2196F3",
@@ -21,28 +28,25 @@ const TicketList: React.FC = ({ticketList , isLoading} :any) => {
 
   return (
     <Grid container spacing={3}>
-   {isLoading ? (
-  [...Array(8)].map((_, index) => (
-    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-      <StatCard
-        title="Loading..."
-        value={<CircularProgress size={20} />}
-        backgroundColor={colors[index % colors.length]} // Assign color based on index
-      />
-    </Grid>
-  ))
-) : (
-  ticketList.map((status: any, index: any) => (
-    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-      <StatCard
-        title={status.label}
-        value={status.value}
-        backgroundColor={colors[index % colors.length]} // Assign color based on index
-      />
-    </Grid>
-  ))
-)}
-
+      {isLoading
+        ? [...Array(8)].map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <StatCard
+                title="Loading..."
+                value={<CircularProgress size={20} />}
+                backgroundColor={colors[index % colors.length]}
+              />
+            </Grid>
+          ))
+        : ticketList.map((status, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <StatCard
+                title={status.label}
+                value={status.value}
+                backgroundColor={colors[index % colors.length]}
+              />
+            </Grid>
+          ))}
     </Grid>
   );
 };
@@ -51,11 +55,7 @@ const StatCard: React.FC<{
   title: string;
   value: React.ReactNode;
   backgroundColor?: string;
-}> = ({
-  title,
-  value,
-  backgroundColor = "#d0e1e9", 
-}) => {
+}> = ({ title, value, backgroundColor = "#d0e1e9" }) => {
   return (
     <Paper
       sx={{
@@ -63,7 +63,7 @@ const StatCard: React.FC<{
         display: "flex",
         flexDirection: "column",
         height: 150,
-        background: backgroundColor, 
+        background: backgroundColor,
         color: "white",
       }}
     >
