@@ -6,6 +6,7 @@ import { ticketValidationSchema } from "../../schema/Ticket/createTicketSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Department } from "../../api/services/department";
 import { statusList } from "../../constants/constants";
+import InputComponent from "../../components/common/InputComponent";
 
 export default function TicketAssignee({ data, open, setOpen }: any) {
   const [department, setDepartment] = useState([]);
@@ -23,6 +24,7 @@ export default function TicketAssignee({ data, open, setOpen }: any) {
     try {
     } catch (error) {}
   };
+
   const getDepartment = async () => {
     try {
       const response = await Department.getDepartment();
@@ -81,6 +83,15 @@ export default function TicketAssignee({ data, open, setOpen }: any) {
               name="status"
               fullWidth
               sx={{ mt: 2 }}
+            />
+             <InputComponent
+              name="remarks"
+              label="Remarks"
+              register={register}
+              errors={errors}
+              fullWidth
+              multiline
+              rows={4}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Assign Ticket
