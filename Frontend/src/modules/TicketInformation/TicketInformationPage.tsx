@@ -1,6 +1,7 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import ChatBox from "./ChatBox";
 import TicketDetails from "./TicketDetails";
+import TicketSideBar from "../Ticketing/TicketSideBar";
 
 const TicketInformationPage = () => {
   return (
@@ -11,17 +12,20 @@ const TicketInformationPage = () => {
           sx={{
             flexGrow: 1,
             p: 3,
-            minHeight: "100vh",
+            minHeight: "80vh",
           }}
         >
-          <h1>Ticket Information</h1>
+          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+            Ticket Information
+          </Typography>
           <Container
             sx={{
               display: "flex",
-              height: "100vh",
+              height: "80vh",
               justifyContent: "center",
             }}
           >
+            <TicketSideBar />
             <ChatBox />
             <TicketDetails />
           </Container>

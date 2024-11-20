@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleOpen = () => {
+  const handleNavigateTicket = () => {
     navigate("/ticket");
   };
 
@@ -119,9 +119,9 @@ const Dashboard: React.FC = () => {
                     mb: 2,
                   }}
                 >
-                  <Typography variant="h6">Table 1</Typography>
+                  <Typography variant="h6">Category List</Typography>
                   <Button
-                    onClick={handleOpen}
+                    onClick={handleNavigateTicket}
                     variant="outlined"
                     size="small"
                     sx={{ textTransform: "none" }}
@@ -145,10 +145,25 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Table 2
-                </Typography>
-                <TicketTable tickets={data} isLoading={loading} />
+              <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="h6">Branch List</Typography>
+                  <Button
+                    onClick={handleNavigateTicket}
+                    variant="outlined"
+                    size="small"
+                    sx={{ textTransform: "none" }}
+                  >
+                    View More
+                  </Button>
+                </Box>
+                <TicketTable tickets={data} isLoading={loading}/>
               </Box>
             </Paper>
             <Paper
@@ -163,9 +178,25 @@ const Dashboard: React.FC = () => {
               }}
             >
               <Box>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Table 3
-                </Typography>
+              <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="h6">Ticket List</Typography>
+                  <Button
+                    onClick={handleNavigateTicket}
+                    variant="outlined"
+                    size="small"
+                    sx={{ textTransform: "none" }}
+                  >
+                    View More
+                  </Button>
+                </Box>
+                
                 <TicketTable tickets={data} isLoading={loading} />
               </Box>
             </Paper>

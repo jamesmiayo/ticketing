@@ -54,7 +54,7 @@ const StatCard: React.FC<{
 }> = ({
   title,
   value,
-  backgroundColor = "#d0e1e9", // Default color if no color is passed
+  backgroundColor = "#d0e1e9", 
 }) => {
   return (
     <Paper
@@ -63,7 +63,7 @@ const StatCard: React.FC<{
         display: "flex",
         flexDirection: "column",
         height: 150,
-        background: backgroundColor, // Use the background color prop
+        background: backgroundColor, 
         color: "white",
       }}
     >

@@ -10,7 +10,7 @@ export default function TicketSideBar() {
         { href: '#simple-list', label: 'All' }
       ];
   return (
-    <Box sx={{ backgroundColor: 'white' }}>
+    <Box sx={{ backgroundColor: 'white' , padding: 2 }}>
     {items.map((item, index) => (
       <ListItemButton key={index} component="a" href={item.href}>
         <ListItemText primary={item.label} />
