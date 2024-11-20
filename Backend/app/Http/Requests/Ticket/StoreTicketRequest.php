@@ -47,6 +47,7 @@ class StoreTicketRequest extends FormRequest
             'ticket_id' => $ticket_id,
             'status' => $this->b_status,
             'emp_id' => null,
+            'remarks' => '',
             'updated_by' => Auth::user()->id,
         ];
     }

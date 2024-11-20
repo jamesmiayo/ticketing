@@ -44,7 +44,7 @@ export default function TicketTable({
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 140 },
     { field: "assignee", headerName: "Assignee", width: 140 },
-    { field: "title", headerName: "Title", width: 220 },
+    { field: "title", headerName: "Title", width: 250 },
     { field: "category", headerName: "Category", width: 180 },
     { field: "subCategory", headerName: "Sub Category", width: 180 },
     { field: "status", headerName: "Status", width: 110 },
@@ -79,7 +79,7 @@ export default function TicketTable({
         rows={tickets}
         onPageChange={onPageChange}
         pageProps={pageProps}
-        height={300}
+        height={600}
         customInputs={customInputs}
         onSubmit={onSubmit}
         maxCount={maxCount}
