@@ -21,6 +21,7 @@ class TicketHdrSeeder extends Seeder
                 'emp_id' =>null,
                 'updated_by' =>  1,
                 'status' =>  1,
+                'remarks' =>  "test",
             ]);
         }
     }

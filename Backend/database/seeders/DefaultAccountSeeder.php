@@ -29,7 +29,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'user.marketing',
                 'name' => 'user.marketing',
                 'email' => 'user.marketing@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 1
             ]);
 
             $supervisor->assignRole('Supervisor');
@@ -39,7 +40,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'user.investigator',
                 'name' => 'user.investigator',
                 'email' => 'user.investigator@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 2
             ]);
 
             $manager->assignRole('manager');
@@ -49,7 +51,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'user.credit',
                 'name' => 'user.credit',
                 'email' => 'user.credit@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 3
             ]);
 
             $tech->assignRole('tech');
@@ -70,7 +73,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'supervisor',
                 'name' => 'supervisor',
                 'email' => 'supervisor@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 1
             ]);
 
             $supervisor->assignRole('Supervisor');
@@ -80,7 +84,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'manager',
                 'name' => 'manager',
                 'email' => 'manager@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 2
             ]);
 
             $manager->assignRole('Manager');
@@ -90,7 +95,8 @@ class DefaultAccountSeeder extends Seeder
                 'username' => 'tech',
                 'name' => 'tech',
                 'email' => 'tech@gmail.com',
-                'password' => Hash::make('password')
+                'password' => Hash::make('password'),
+                'section_id' => 3
             ]);
 
             $tech->assignRole('tech');

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('emp_id')->nullable();
             $table->foreign('emp_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('status');
+            $table->string('remarks');
             $table->timestamps();
         });
     }
