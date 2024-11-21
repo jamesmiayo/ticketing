@@ -26,19 +26,21 @@ export default function TicketTable({
   pageProps,
   customInputs,
   onSubmit,
+  onReset,
   maxCount,
+  refetch,
 }: any) {
   const [open, setOpen] = useState(false);
-  const [data , setData] = useState<any>();
+  const [data, setData] = useState<any>();
   const navigate = useNavigate();
 
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  function handleAssigneClick (params:any){
-    setData(params)
-    setOpen(true)
+  function handleAssigneClick(params: any) {
+    setData(params);
+    setOpen(true);
   }
 
   const columns = [
@@ -73,7 +75,12 @@ export default function TicketTable({
   ];
   return (
     <>
-    <TicketAssignee data={data} open={open} setOpen={setOpen}/>
+      <TicketAssignee
+        data={data}
+        open={open}
+        setOpen={setOpen}
+        refetch={refetch}
+      />
       <TableComponents
         columns={columns}
         rows={tickets}
@@ -82,6 +89,7 @@ export default function TicketTable({
         height={600}
         customInputs={customInputs}
         onSubmit={onSubmit}
+        onReset={onReset}
         maxCount={maxCount}
         isLoading={isLoading}
       />

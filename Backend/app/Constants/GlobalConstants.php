@@ -4,13 +4,13 @@ namespace App\Constants;
 
 class GlobalConstants
 {
-    const OPEN = 0;
-    const IN_PROGRESS = 1;
-    const PENDING = 2;
-    const ON_HOLD  = 3;
-    const CANCELLED  = 4;
-    const IN_REVIEW = 5;
-    const COMPLETED  = 6;
+    const OPEN = 1;
+    const IN_PROGRESS = 2;
+    const PENDING = 3;
+    const ON_HOLD  = 4;
+    const CANCELLED  = 5;
+    const IN_REVIEW = 6;
+    const COMPLETED  = 7;
 
 
     public static function getStatusesType()

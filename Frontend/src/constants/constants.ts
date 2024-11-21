@@ -1,30 +1,30 @@
 export const statusList = [
     {
-      value: 0,
+      value: 1,
       label: 'Open',
     },
     {
-      value: 1,
+      value: 2,
       label: 'In Progress',
     },
     {
-      value: 2,
+      value: 3,
       label: 'Pending',
     },
     {
-      value: 3,
+      value: 4,
       label: 'On Hold',
     },
     {
-      value: 4,
+      value: 5,
       label: 'Cancelled',
     },
     {
-      value: 5,
+      value: 6,
       label: 'In Review',
     },
     {
-      value: 6,
+      value: 7,
       label: 'Completed',
     },
   ];

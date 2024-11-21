@@ -91,6 +91,10 @@ class TicketHdr extends Model
             $query->subCategoryId($searchParams['subcategory_id']);
         }
 
+        if (array_key_exists('category_id', $searchParams) && $searchParams['category_id'] !== null) {
+            $query->categoryId($searchParams['category_id']);
+        }
+
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
             $query->startDate($searchParams['start_date']);
         }
@@ -128,6 +132,13 @@ class TicketHdr extends Model
     {
         return $query->whereHas('ticket_logs_latest', function ($query) use ($status) {
             $query->where('status', $status);
+        });
+    }
+
+    public function scopeCategoryId($query, $category_id)
+    {
+        return $query->whereHas('sub_category.category', function ($query) use ($category_id) {
+            $query->where('id', $category_id);
         });
     }
 

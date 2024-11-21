@@ -34,12 +34,13 @@ interface TicketMessage {
   message: string;
 }
 
-export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
+export default function ChatBox({ ticketDetail }: any) {
   const { user } = useAuth();
   const toast = useExecuteToast();
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [userLoaded, setUserLoaded] = useState(false);
+  const [messages, setMessages] = useState<any[]>([]);
   const {
     register,
     formState: { errors },
@@ -57,27 +58,24 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
     }
   };
 
-  const fetchMessages = async () => {
+  const fetchMessage = async () => {
     try {
-      const updatedTicketDetail = await ticketApi.getTicketDetail(
-        ticketDetail.id
-      );
-      if (updatedTicketDetail) {
-        setTicketDetail(updatedTicketDetail);
-        scrollToBottom();
-      } else {
-        console.warn("No updated ticket detail returned");
-      }
+      const response = await ticketApi.getMessage({
+        ticket_id: ticketDetail.id,
+      });
+      setLoading(true);
+      setMessages(response.data);
     } catch (error) {
-      console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     setTimeout(() => {
-      setLoading(false);
       scrollToBottom();
     }, 1000);
+    fetchMessage();
   }, [ticketDetail]);
 
   useEffect(() => {
@@ -95,17 +93,14 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
         type: "success",
       });
       reset();
-      await fetchMessages();
-      scrollToBottom();
+      await fetchMessage();
     } catch (error) {
       console.error("Error creating ticket:", error);
     } finally {
       setSending(false);
     }
   };
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+
   return (
     <Box
       sx={{
@@ -130,7 +125,7 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
             mb: 2,
             overflow: "auto",
             p: 2,
-            maxHeight: "800px",
+            maxHeight: "700px",
           }}
         >
           {!userLoaded || loading ? (
@@ -182,7 +177,7 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
                   {ticketDetail?.body}
                 </Typography>
               </Paper>
-              {ticketDetail?.ticket_messages?.map((message: any) => (
+              {messages.map((message: any) => (
                 <ListItem
                   key={message.id}
                   sx={{
@@ -206,8 +201,34 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
                       borderRadius: 2,
                       ml: message.user?.id === user?.id ? "auto" : 0,
                       mr: message.user?.id === user?.id ? 0 : "auto",
+                      display: "flex",
+                      flexDirection:
+                        message.user?.id === user?.id ? "row-reverse" : "",
+                      gap: 2,
                     }}
                   >
+                    <ListItemAvatar
+                      sx={{
+                        minWidth: 0,
+                        mr: message.user?.id === user?.id ? 0 : 2,
+                        ml: message.user?.id === user?.id ? 2 : 0,
+                      }}
+                    >
+                      <Tooltip title={message.user.name}>
+                        <Avatar
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            bgcolor:
+                              message.sender === "user"
+                                ? "primary.main"
+                                : "secondary.main",
+                          }}
+                        >
+                          {message.user.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                      </Tooltip>
+                    </ListItemAvatar>
                     <Box
                       sx={{
                         display: "flex",
@@ -227,28 +248,6 @@ export default function ChatBox({ ticketDetail, setTicketDetail }: any) {
                       />
                     </Box>
                   </Paper>
-                  <ListItemAvatar
-                    sx={{
-                      minWidth: 0,
-                      mr: message.user?.id === user?.id ? 0 : 2,
-                      ml: message.user?.id === user?.id ? 2 : 0,
-                    }}
-                  >
-                    <Tooltip title={message.user.name}>
-                      <Avatar
-                        sx={{
-                          width: 32,
-                          height: 32,
-                          bgcolor:
-                            message.sender === "user"
-                              ? "primary.main"
-                              : "secondary.main",
-                        }}
-                      >
-                        {message.user.name.charAt(0).toUpperCase()}
-                      </Avatar>
-                    </Tooltip>
-                  </ListItemAvatar>
                 </ListItem>
               ))}
               <div ref={messagesEndRef} />

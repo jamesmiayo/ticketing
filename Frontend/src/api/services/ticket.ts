@@ -105,17 +105,47 @@ export const ticketApi = {
     }
   },
 
-  createMessage: async function ({
-    ticket_id,
-    message,
-  }: any) {
+  createMessage: async function ({ ticket_id, message }: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/sent-message",
         method: "POST",
         data: {
           ticket_id,
-          message
+          message,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  getMessage: async function ({ ticket_id }: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/sent-message/${ticket_id}`,
+        method: "GET",
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  ticketAssignee: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/assign",
+        method: "POST",
+        data: {
+          ticket_id,
+          message: data.message,
+          emp_id: data.emp_id,
+          status: data.status,
+          remarks: data.remarks
         },
       });
       return response.data;

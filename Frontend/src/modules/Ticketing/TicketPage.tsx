@@ -34,6 +34,7 @@ const TicketPage: React.FC = () => {
   const handleClose = () => setOpen(false);
 
   const {
+    reset,
     register,
     handleSubmit,
     control,
@@ -176,6 +177,10 @@ const TicketPage: React.FC = () => {
     },
   ];
 
+  const handleReset = () => {
+    reset(); 
+    fetchData(null, page);
+  };
   useEffect(() => {
     getCategoryList();
     fetchData(null, page);
@@ -202,6 +207,7 @@ const TicketPage: React.FC = () => {
 
         <Box>
           <TicketTable
+            onReset={handleReset}
             tickets={data}
             isLoading={loading}
             isOptions={true}
@@ -210,6 +216,7 @@ const TicketPage: React.FC = () => {
             maxCount={maxPage}
             onSubmit={handleSubmit(onSubmit)}
             customInputs={ticketSearchFilter}
+            refetch={() => fetchData(null, page)}
           />
         </Box>
         <Dialog open={open} onClose={handleClose}>
