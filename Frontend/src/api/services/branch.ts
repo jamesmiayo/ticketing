@@ -1,10 +1,10 @@
 import apiClient from "../configs/axiosConfigs";
 
-export const Department = {
-  getDepartment: async function () {
+export const Branch = {
+  getBranch: async function () {
     try {
       const response = await apiClient.request({
-        url: "/maintenance/department",
+        url: "/maintenance/branch",
         method: "GET",
       });
 
@@ -14,21 +14,21 @@ export const Department = {
       throw error;
     }
   },
-  newDepartment: async function (body: Record<string, any>) {
+  newBranch: async function (body: Record<string, any>) {
     try {
       const response = await apiClient.request({
-        url: "/maintenance/department",
+        url: "/maintenance/branch",
         method: "POST",
         data: body,
       });
 
       return response.data;
     } catch (error) {
-      console.error("Error creating department:", error);
+      console.error("Error creating Branch:", error);
       throw error;
     }
   },
-  updateDepartment: async function ({
+  updateBranch: async function ({
     body,
     id,
   }: {
@@ -37,7 +37,7 @@ export const Department = {
   }) {
     try {
       const response = await apiClient.request({
-        url: `/maintenance/department/${id}`,
+        url: `/maintenance/branch/${id}`,
         method: "PUT",
         data: body,
       });
@@ -48,16 +48,16 @@ export const Department = {
       throw error;
     }
   },
-  deleteDepartment: async function (id: number) {
+  deleteBranch: async function (id: number) {
     try {
       const response = await apiClient.request({
-        url: `/maintenance/department/${id}`,
+        url: `/maintenance/branch/${id}`,
         method: "DELETE",
       });
 
       return response.data;
     } catch (error) {
-      console.error("Error updating department:", error);
+      console.error("Error updating Branch:", error);
       throw error;
     }
   },

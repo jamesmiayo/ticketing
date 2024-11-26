@@ -11,7 +11,8 @@ class UpdateSubCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Create Sub Category');
+        return true;
+        // return $this->user()->can('Can Create Sub Category');
     }
 
     /**

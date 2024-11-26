@@ -8,6 +8,7 @@ use App\Http\Controllers\Maintenance\DepartmentController;
 use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
 use App\Http\Controllers\Maintenance\UserController;
+use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
@@ -27,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('department', DepartmentController::class);
         Route::resource('section', SectionController::class);
         Route::resource('category', CategoryController::class);
-        Route::resource('sub-category', CategoryController::class);
+        Route::resource('sub-category', SubCategoryController::class);
     });
 
     //tickets routes

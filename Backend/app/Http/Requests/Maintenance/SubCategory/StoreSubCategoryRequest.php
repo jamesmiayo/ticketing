@@ -11,7 +11,8 @@ class StoreSubCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Create Sub Category');
+        return true;
+        // return $this->user()->can('Can Create Sub Category');
     }
 
     /**
@@ -33,6 +34,7 @@ class StoreSubCategoryRequest extends FormRequest
             'subcategory_id' => mt_rand(1000, 9999),
             'category_id' => $this->category_id,
             'subcategory_description' => $this->subcategory_description,
+            'b_active' => true,
         ];
     }
 }

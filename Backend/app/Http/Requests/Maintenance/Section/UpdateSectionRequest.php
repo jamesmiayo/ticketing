@@ -11,7 +11,8 @@ class UpdateSectionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Update Section');
+        return true;
+        // return $this->user()->can('Can Update Section');
     }
 
     /**

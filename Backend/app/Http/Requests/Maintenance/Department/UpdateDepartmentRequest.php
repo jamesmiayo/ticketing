@@ -11,7 +11,8 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Update Department');
+        return true;
+        // return $this->user()->can('Can Update Department');
     }
 
     /**

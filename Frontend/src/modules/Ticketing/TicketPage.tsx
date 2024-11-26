@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TicketCreationForm from "./TicketCreationForm";
-import { Box, Button, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import TicketTable from "./TicketTable";
 import { ticketApi } from "../../api/services/ticket";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -184,7 +191,7 @@ const TicketPage: React.FC = () => {
           width: "100%",
         }}
       >
-          <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
           Ticket List
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
@@ -194,7 +201,6 @@ const TicketPage: React.FC = () => {
         </Box>
 
         <Box>
-          {/* <TicketSideBar /> */}
           <TicketTable
             tickets={data}
             isLoading={loading}
@@ -202,7 +208,7 @@ const TicketPage: React.FC = () => {
             onPageChange={handlePageChange}
             pageProps={page}
             maxCount={maxPage}
-            onSubmit={handleSubmit(onSubmit)} 
+            onSubmit={handleSubmit(onSubmit)}
             customInputs={ticketSearchFilter}
           />
         </Box>
