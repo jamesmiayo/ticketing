@@ -30,6 +30,7 @@ class DashboardController extends Controller
                 'total_ticket_branch' => $this->getTicketPerBranch(),
                 'total_ticket_category' => $this->getTicketPerCategory(),
                 'total_today_created_ticket' =>  $this->getTicketPerDay(),
+                'total_priority' => $this->getTicketPerPriority(),
                 'latest_ticket' =>  $this->ticketHdr->latest()->take(10)->get(),
             ], Response::HTTP_OK);
         } else {
@@ -54,6 +55,23 @@ class DashboardController extends Controller
                 $query->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED);
             })->count(),
         ];
+    }
+
+    public function getTicketPerPriority(): array
+    {
+        $priorities = GlobalConstants::getPrioritiesType();
+
+        $ticketCounts = [];
+
+        foreach ($priorities as $key => $label) {
+            $ticketCounts[] = $this->ticketHdr->where('priority', $key)->count();
+        }
+
+        $nullPriorityCount = $this->ticketHdr->whereNull('priority')->count();
+
+        $ticketCounts[] = $nullPriorityCount;
+
+        return $ticketCounts;
     }
 
     public function getTicketCountsByStatus($branch = null): array

@@ -53,7 +53,8 @@ const TicketPage: React.FC = () => {
           ticket_id: ticket.ticket_id || "N/A",
           requestedBy: ticket.user?.name || "N/A",
           title: ticket.title || "N/A",
-          priority: ticket.priority_name || "N/A",
+          priority: ticket.ticket_priority || "N/A",
+          b_status: ticket.b_status || "N/A",
           category:
             ticket.sub_category?.category?.category_description || "N/A",
           subCategory: ticket.sub_category?.subcategory_description || "N/A",

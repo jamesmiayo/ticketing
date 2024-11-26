@@ -7,6 +7,7 @@ import BranchListTable from "./BranchListTable";
 import CategoryTableList from "./CategoryTableList";
 import TicketListTable from "./TicketListTable";
 import TicketList from "../Ticketing/TicketList";
+import TicketPriority from "./TicketPriority";
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -79,12 +80,13 @@ const Dashboard: React.FC = () => {
         </Typography>
 
         <Box>
-          <Box sx={{ display: "flex", gap: 5 }}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <TicketList
               ticketList={totalTicket?.total_ticket_count}
               isLoading={loading}
             />
-            <TodaySummaryComponent totalTicket={totalTicket} />
+                        <TicketPriority ticketPriority={totalTicket?.total_priority} isLoading={loading}/>
+            <TodaySummaryComponent totalTicket={totalTicket} isLoading={loading}/>
           </Box>
           <Box
             sx={{

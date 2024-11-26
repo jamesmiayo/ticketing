@@ -172,4 +172,25 @@ export const ticketApi = {
       throw error;
     }
   },
+
+  createSatisfactory: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/satisfactory",
+        method: "POST",
+        data: {
+          ticket_id,
+          satisfactory_1: data.satisfactory_1,
+          satisfactory_2: data.satisfactory_2,
+          satisfactory_3: data.satisfactory_3,
+          satisfactory_4: data.satisfactory_4,
+          satisfactory_5: data.satisfactory_5,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
 };

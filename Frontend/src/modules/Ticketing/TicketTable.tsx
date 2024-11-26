@@ -7,6 +7,8 @@ import { useState } from "react";
 import TicketAssignee from "./TicketAssignee";
 import { FaRegFlag } from "react-icons/fa";
 import TicketPriority from "./TicketPriority";
+import { FaCheckCircle } from "react-icons/fa";
+import TicketStatus from "./TicketStatus";
 
 interface Ticket {
   ticketNo: string;
@@ -41,18 +43,58 @@ export default function TicketTable({
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  function handleAssigneClick(params: any , value:any) {
-    setModal(value)
+  function handleAssigneClick(params: any, value: any) {
+    setModal(value);
     setData(params);
     setOpen(true);
   }
 
+  function handlePriorityColor(priority: string): React.CSSProperties {
+    switch (priority) {
+      case "Critical":
+        return { backgroundColor: "darkred" };
+      case "High":
+        return { backgroundColor: "red" };
+      case "Medium":
+        return { backgroundColor: "#ff9800" };
+      case "Low":
+        return { backgroundColor: "#4caf50" };
+      default:
+        return { backgroundColor: "#2196f3" };
+    }
+  }
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 140 },
     { field: "assignee", headerName: "Assignee", width: 140 },
     { field: "title", headerName: "Title", width: 270 },
-    { field: "status", headerName: "Status", width: 150 },
-    { field: "priority", headerName: "Priority", width: 150 },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        return params.row.b_status === "7"
+          ? "Completed"
+          : params.row.status_name;
+      },
+    },
+    {
+      field: "priority",
+      headerName: "Priority",
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => (
+        <div
+          style={{
+            ...handlePriorityColor(params.value),
+            borderRadius: "4px",
+            padding: "4px 8px",
+            textAlign: "center",
+            color: "white",
+          }}
+        >
+          {params.value}
+        </div>
+      ),
+    },
     { field: "category", headerName: "Category", width: 180 },
     { field: "subCategory", headerName: "Sub Category", width: 180 },
     { field: "updated_by", headerName: "Updated By", width: 180 },
@@ -71,16 +113,33 @@ export default function TicketTable({
                     <FaEye />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={"Assign Ticket"}>
-                  <IconButton onClick={() => handleAssigneClick(params.row , 'assign')}>
-                    <FaRegUserCircle />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={"Change Priority"}>
-                  <IconButton onClick={() => handleAssigneClick(params.row , 'priority')}>
-                    <FaRegFlag />
-                  </IconButton>
-                </Tooltip>
+                {params.row.b_status !== "7" && (
+                  <>
+                    <Tooltip title="Assign Ticket">
+                      <IconButton
+                        onClick={() => handleAssigneClick(params.row, "assign")}
+                      >
+                        <FaRegUserCircle />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Change Priority">
+                      <IconButton
+                        onClick={() =>
+                          handleAssigneClick(params.row, "priority")
+                        }
+                      >
+                        <FaRegFlag />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Done This Ticket">
+                      <IconButton
+                        onClick={() => handleAssigneClick(params.row, "status")}
+                      >
+                        <FaCheckCircle />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
               </>
             ),
           },
@@ -89,18 +148,16 @@ export default function TicketTable({
   ];
   return (
     <>
-        <Dialog open={open} onClose={() => setOpen(false)}>
-    {modal === 'priority' ? <TicketPriority  data={data}
-        setOpen={setOpen}
-        refetch={refetch}/> : 
-      <TicketAssignee
-        data={data}
-        setOpen={setOpen}
-        refetch={refetch}
-      />
-      }
-    </Dialog>
-     
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        {modal === "priority" ? (
+          <TicketPriority data={data} setOpen={setOpen} refetch={refetch} />
+        ) : modal === "status" ? (
+          <TicketStatus data={data} setOpen={setOpen} refetch={refetch} />
+        ) : (
+          <TicketAssignee data={data} setOpen={setOpen} refetch={refetch} />
+        )}
+      </Dialog>
+
       <TableComponents
         columns={columns}
         rows={tickets}

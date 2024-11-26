@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Ticket;
 
+use App\Constants\GlobalConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\StoreTicketRequest;
+use App\Http\Requests\Ticket\StoreTicketSatisfactoryRequest;
 use App\Http\Requests\Ticket\StoreTicketStatusRequest;
 use App\Models\TicketHdr;
+use App\Models\TicketSatisfactory;
 use App\Models\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\TicketLogService;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Attributes\Ticket;
 
 class TicketHdrController extends Controller
 {
@@ -98,5 +102,15 @@ class TicketHdrController extends Controller
         $ticket = TicketHdr::where('id',$request->ticket_id);
         $ticket->update(['priority' => $request->priority]);
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Priority Successfully'], Response::HTTP_OK);
+    }
+
+    public function ticketSatisFactory(StoreTicketSatisfactoryRequest $request){
+        $ticket = TicketHdr::where('id',$request->ticket_id)->first();
+        if(empty($ticket->assignee)){
+            return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'Cannot Close the Ticket Without Assignee'], Response::HTTP_FORBIDDEN);
+        }
+        $ticket->update(['b_status' => GlobalConstants::COMPLETED]);
+        TicketSatisfactory::create($request->getTicketSatisfactoryData());
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Thank You For Answering.'], Response::HTTP_OK);
     }
 }

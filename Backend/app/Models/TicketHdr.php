@@ -20,6 +20,7 @@ class TicketHdr extends Model
         'title',
         'body',
         'priority',
+        'b_status'
     ];
 
     protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
@@ -47,7 +48,7 @@ class TicketHdr extends Model
 
     public function getTicketPriorityAttribute()
     {
-        return GlobalConstants::getStatusType($this->priority);
+        return GlobalConstants::getPriorityType($this->priority);
     }
 
 

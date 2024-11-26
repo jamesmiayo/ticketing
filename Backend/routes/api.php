@@ -33,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
 
     //tickets routes
     Route::prefix('ticket')->group(function () {
+        Route::post('satisfactory', [TicketHdrController::class , 'ticketSatisFactory']);
         Route::post('sent-message', [TicketDtlController::class , 'create']);
         Route::get('sent-message/{ticket_id}', [TicketDtlController::class , 'show']);
         Route::get('ticket-logs', TicketLogController::class);
