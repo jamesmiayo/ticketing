@@ -26,9 +26,29 @@ class GlobalConstants
         ];
     }
 
+    const LOW = 1;
+    const MEDIUM = 2;
+    const HIGH = 3;
+    const CRITICAL = 3;
+
     public static function getStatusType($Type)
     {
         return static::getStatusesType()[$Type] ?? null;
+    }
+
+    public static function getPrioritiesType()
+    {
+        return [
+            self::LOW => 'Low',
+            self::MEDIUM => 'Medium',
+            self::HIGH => 'High',
+            self::CRITICAL => 'Critical',
+        ];
+    }
+
+    public static function getPriorityType($Type)
+    {
+        return static::getPrioritiesType()[$Type] ?? null;
     }
 
 

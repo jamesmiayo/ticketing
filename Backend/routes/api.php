@@ -38,5 +38,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('ticket-logs', TicketLogController::class);
         Route::resource('ticket-hdr', TicketHdrController::class);
         Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
+        Route::put('priority', [TicketHdrController::class , 'updatePriority']);
     });
 });

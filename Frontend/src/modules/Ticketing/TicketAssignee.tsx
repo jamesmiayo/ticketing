@@ -10,7 +10,7 @@ import { User } from "../../api/services/user";
 import { ticketAssign } from "../../schema/Ticket/createTicketAssign";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
-export default function TicketAssignee({ data, open, setOpen , refetch }: any) {
+export default function TicketAssignee({ data, setOpen , refetch }: any) {
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState<any>([]);
   const [user, setUser] = useState<any>([]);
@@ -89,7 +89,7 @@ export default function TicketAssignee({ data, open, setOpen , refetch }: any) {
   }, []);
 
   return (
-    <Dialog open={open} onClose={() => setOpen(false)}>
+    <>
       <DialogTitle>Assigne Ticket on {data?.title} </DialogTitle>
       <DialogContent>
         <div style={{ padding: 5 }}>
@@ -146,7 +146,6 @@ export default function TicketAssignee({ data, open, setOpen , refetch }: any) {
             </Button>
           </form>
         </div>
-      </DialogContent>
-    </Dialog>
+      </DialogContent></>
   );
 }

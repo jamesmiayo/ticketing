@@ -29,6 +29,25 @@ export const statusList = [
     },
   ];
 
+  export const priorityList = [
+    {
+      value: 1,
+      label: 'Low',
+    },
+    {
+      value: 2,
+      label: 'Medium',
+    },
+    {
+      value: 3,
+      label: 'High',
+    },
+    {
+      value: 4,
+      label: 'Critical',
+    },
+  ];
+
   export const cardColors = [
     "#4CAF50",
     "#2196F3",

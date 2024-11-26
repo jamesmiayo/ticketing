@@ -9,8 +9,9 @@ export default function TicketSideBar({
 }) {
   const items = [
     { label: "Ticket" },
+    { label: "Analysis" },
     { label: "Costs" },
-    { label: "Historical" },
+    { label: "Logs" },
     { label: "All" },
   ];
 

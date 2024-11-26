@@ -18,12 +18,13 @@ class TicketHdr extends Model
         'subcategory_id',
         'status',
         'title',
-        'body'
+        'body',
+        'priority',
     ];
 
     protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
 
-    protected $appends = ['ticket_status', 'time_finished'];
+    protected $appends = ['ticket_status', 'time_finished' , 'ticket_priority'];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -42,6 +43,11 @@ class TicketHdr extends Model
     public function getTicketStatusAttribute()
     {
         return GlobalConstants::getStatusType($this->b_status);
+    }
+
+    public function getTicketPriorityAttribute()
+    {
+        return GlobalConstants::getStatusType($this->priority);
     }
 
 
@@ -87,6 +93,10 @@ class TicketHdr extends Model
             $query->title($searchParams['title']);
         }
 
+        if (array_key_exists('priority', $searchParams) && $searchParams['priority'] !== null) {
+            $query->priority($searchParams['priority']);
+        }
+
         if (array_key_exists('subcategory_id', $searchParams) && $searchParams['subcategory_id'] !== null) {
             $query->subCategoryId($searchParams['subcategory_id']);
         }
@@ -126,6 +136,11 @@ class TicketHdr extends Model
     public function scopeTicketId($query, $ticket_id)
     {
         return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
+    }
+
+    public function scopePriority($query, $priority)
+    {
+        return $query->where('priority', 'LIKE', '%' . $priority . '%');
     }
 
     public function scopeStatus($query, $status)

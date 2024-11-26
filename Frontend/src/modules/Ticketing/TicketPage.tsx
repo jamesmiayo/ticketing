@@ -17,7 +17,7 @@ import {
   filterTicket,
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
-import { statusList } from "../../constants/constants";
+import { priorityList, statusList } from "../../constants/constants";
 import { useQuery } from "../TicketInformation/TicketInformationPage";
 
 const TicketPage: React.FC = () => {
@@ -53,6 +53,7 @@ const TicketPage: React.FC = () => {
           ticket_id: ticket.ticket_id || "N/A",
           requestedBy: ticket.user?.name || "N/A",
           title: ticket.title || "N/A",
+          priority: ticket.priority_name || "N/A",
           category:
             ticket.sub_category?.category?.category_description || "N/A",
           subCategory: ticket.sub_category?.subcategory_description || "N/A",
@@ -138,6 +139,15 @@ const TicketPage: React.FC = () => {
       control: control,
       errors: errors,
       options: statusList,
+      type: "select",
+    },
+    {
+      name: "priority",
+      label: "Priority",
+      register: register,
+      control: control,
+      errors: errors,
+      options: priorityList,
       type: "select",
     },
     {

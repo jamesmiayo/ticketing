@@ -92,4 +92,11 @@ class TicketHdrController extends Controller
         //     return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Ticket Successfully Assign'], Response::HTTP_OK);
         // }
     }
+
+    public function updatePriority(Request $request):  JsonResponse
+    {
+        $ticket = TicketHdr::where('id',$request->ticket_id);
+        $ticket->update(['priority' => $request->priority]);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Priority Successfully'], Response::HTTP_OK);
+    }
 }

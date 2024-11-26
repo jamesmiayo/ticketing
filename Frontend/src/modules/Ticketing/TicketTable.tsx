@@ -1,10 +1,12 @@
-import { IconButton } from "@mui/material";
+import { Dialog, IconButton, Tooltip } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaRegUserCircle } from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useState } from "react";
 import TicketAssignee from "./TicketAssignee";
+import { FaRegFlag } from "react-icons/fa";
+import TicketPriority from "./TicketPriority";
 
 interface Ticket {
   ticketNo: string;
@@ -32,13 +34,15 @@ export default function TicketTable({
 }: any) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>();
+  const [modal, setModal] = useState<any>();
   const navigate = useNavigate();
 
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  function handleAssigneClick(params: any) {
+  function handleAssigneClick(params: any , value:any) {
+    setModal(value)
     setData(params);
     setOpen(true);
   }
@@ -46,10 +50,11 @@ export default function TicketTable({
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 140 },
     { field: "assignee", headerName: "Assignee", width: 140 },
-    { field: "title", headerName: "Title", width: 250 },
+    { field: "title", headerName: "Title", width: 270 },
+    { field: "status", headerName: "Status", width: 150 },
+    { field: "priority", headerName: "Priority", width: 150 },
     { field: "category", headerName: "Category", width: 180 },
     { field: "subCategory", headerName: "Sub Category", width: 180 },
-    { field: "status", headerName: "Status", width: 110 },
     { field: "updated_by", headerName: "Updated By", width: 180 },
     { field: "created_at", headerName: "Date Time", width: 180 },
     ...(isOptions
@@ -61,12 +66,21 @@ export default function TicketTable({
             sortable: false,
             renderCell: (params: GridRenderCellParams) => (
               <>
-                <IconButton onClick={() => handleViewClick(params.row)}>
-                  <FaEye />
-                </IconButton>
-                <IconButton onClick={() => handleAssigneClick(params.row)}>
-                  <FaRegUserCircle />
-                </IconButton>
+                <Tooltip title={"View"}>
+                  <IconButton onClick={() => handleViewClick(params.row)}>
+                    <FaEye />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={"Assign Ticket"}>
+                  <IconButton onClick={() => handleAssigneClick(params.row , 'assign')}>
+                    <FaRegUserCircle />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={"Change Priority"}>
+                  <IconButton onClick={() => handleAssigneClick(params.row , 'priority')}>
+                    <FaRegFlag />
+                  </IconButton>
+                </Tooltip>
               </>
             ),
           },
@@ -75,12 +89,18 @@ export default function TicketTable({
   ];
   return (
     <>
+        <Dialog open={open} onClose={() => setOpen(false)}>
+    {modal === 'priority' ? <TicketPriority  data={data}
+        setOpen={setOpen}
+        refetch={refetch}/> : 
       <TicketAssignee
         data={data}
-        open={open}
         setOpen={setOpen}
         refetch={refetch}
       />
+      }
+    </Dialog>
+     
       <TableComponents
         columns={columns}
         rows={tickets}

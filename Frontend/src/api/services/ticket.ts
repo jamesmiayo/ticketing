@@ -55,6 +55,7 @@ export const ticketApi = {
         params: {
           page: page,
           ticket_id: data?.ticket_id,
+          priority: data?.priority,
           title: data?.title,
           category_id: data?.category_id,
           subcategory_id: data?.subcategory_id,
@@ -146,6 +147,23 @@ export const ticketApi = {
           emp_id: data.emp_id,
           status: data.status,
           remarks: data.remarks
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  updatePriority: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/priority",
+        method: "PUT",
+        data: {
+          ticket_id,
+          priority: data.priority,
         },
       });
       return response.data;
