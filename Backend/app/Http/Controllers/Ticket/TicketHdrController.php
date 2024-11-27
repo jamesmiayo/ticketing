@@ -106,7 +106,7 @@ class TicketHdrController extends Controller
 
     public function ticketSatisFactory(StoreTicketSatisfactoryRequest $request){
         $ticket = TicketHdr::where('id',$request->ticket_id)->first();
-        if(empty($ticket->assignee)){
+        if(empty($ticket->ticket_logs_latest->assignee)){
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'Cannot Close the Ticket Without Assignee'], Response::HTTP_FORBIDDEN);
         }
         $ticket->update(['b_status' => GlobalConstants::COMPLETED]);

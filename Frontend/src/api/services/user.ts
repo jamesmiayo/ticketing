@@ -14,4 +14,18 @@ export const User = {
       throw error 
     }
   },
+
+  getUserTicket: async function () {
+    try {
+      const response = await apiClient.request({
+        url: '/user/ticket',
+        method: 'GET',
+      })
+
+      return response.data.data
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      throw error 
+    }
+  },
 }

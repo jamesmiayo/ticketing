@@ -5,6 +5,7 @@ import TicketInformation from "../../modules/TicketInformation/TicketInformation
 import UserDashboardPage from "../../modules/UserDashboard/UserDashboardPage.tsx";
 import Maintenance from "../../modules/Maintenance/MaintenancePage.tsx";
 import TicketPage from "../../modules/Ticketing/TicketPage.tsx";
+import UserTicketPage from "../../modules/UserTicket/UserTicketPage.tsx";
 
 export const usePrivateRoutes = () => {
     const privateRoutes = [
@@ -46,6 +47,14 @@ export const usePrivateRoutes = () => {
             description: "Ticket",
             path: PathConstants.TICKET,
             component: TicketPage,
+            show: true,
+        },
+        {
+            id: uuidv4,
+            name: "User Ticket",
+            description: "User Ticket",
+            path: PathConstants.USERTICKET,
+            component: UserTicketPage,
             show: true,
         },
     ]

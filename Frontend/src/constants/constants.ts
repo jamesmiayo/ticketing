@@ -29,6 +29,28 @@ export const statusList = [
     },
   ];
 
+  export const statusListAssign = [
+    {
+      value: 2,
+      label: 'In Progress',
+    },
+    {
+      value: 3,
+      label: 'Pending',
+    },
+    {
+      value: 4,
+      label: 'On Hold',
+    },
+    {
+      value: 5,
+      label: 'Cancelled',
+    },
+    {
+      value: 6,
+      label: 'In Review',
+    },
+  ];
   export const priorityList = [
     {
       value: 1,

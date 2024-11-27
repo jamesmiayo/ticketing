@@ -17,7 +17,7 @@ class TicketStatus extends Model
         'status',
         'remarks'
     ];
-    protected $with = ['tickets:id,title,status,created_at', 'assignee:id,name', 'updated_by:id,name'];
+    protected $with = ['assignee:id,name', 'updated_by:id,name'];
 
     protected $appends = ['ticket_status', 'time_difference'];
 
@@ -52,7 +52,7 @@ class TicketStatus extends Model
     }
     public function tickets()
     {
-        return $this->belongsTo(TicketHdr::class);
+        return $this->belongsTo(TicketHdr::class , 'ticket_id');
     }
 
     public function assignee()

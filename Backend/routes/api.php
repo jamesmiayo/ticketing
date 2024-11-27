@@ -12,6 +12,8 @@ use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
+use App\Http\Controllers\User\UserTicketController;
+
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -40,5 +42,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('ticket-hdr', TicketHdrController::class);
         Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
         Route::put('priority', [TicketHdrController::class , 'updatePriority']);
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::get('ticket',UserTicketController::class);
     });
 });

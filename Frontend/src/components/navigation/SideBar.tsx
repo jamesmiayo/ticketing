@@ -26,6 +26,7 @@ const Sidebar: React.FC = ({ children }: any) => {
   const navItems = [
     { title: "Dashboard", path: "/dashboard", icon: <MdDashboard /> },
     { title: "Ticket", path: "/ticket?page=1", icon: <BsTicketDetailed /> },
+    { title: "User Ticket", path: "/user-ticket", icon: <BsTicketDetailed /> },
     { title: "Profile", path: "/profile", icon: <MdDashboard /> },
     { title: "Maintenance", path: "/maintenance", icon: <MdDashboard /> },
   ];

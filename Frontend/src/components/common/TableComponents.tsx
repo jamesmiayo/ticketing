@@ -12,8 +12,8 @@ interface DataGridProps<T> {
   rows: GridRowsProp;
   height?: number;
   width?: string;
-  onPageChange: (page: number) => void;
-  pageProps: string;
+  onPageChange?: (page: number) => void;
+  pageProps?: string;
   customInputs?: {
     name: string;
     label: string;
@@ -24,10 +24,10 @@ interface DataGridProps<T> {
     rest?: any;
     type: string;
   }[];
-  onSubmit: () => void;
-  maxCount: string;
+  onSubmit?: () => void;
+  maxCount?: string;
   isLoading?: boolean;
-  onReset: () => void;
+  onReset?: () => void;
 }
 
 const TableComponents = <T,>({

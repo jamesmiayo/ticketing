@@ -6,5 +6,6 @@ export const PathConstants = {
     TICKET: "/ticket",
     USER_DASHBOARD: "/profile",
     MAINTENANCE: "/maintenance",
+    USERTICKET: "/user-ticket",
 }
   

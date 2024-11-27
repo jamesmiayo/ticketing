@@ -35,8 +35,8 @@ class TicketHdr extends Model
     {
         $latestTicketLog = $this->ticket_logs_latest;
 
-        if ($latestTicketLog) {
-            return $this->created_at->diff($latestTicketLog->created_at)->format('%d days, %h hours, %i minutes, %s seconds');
+        if ($latestTicketLog && $this->ticket_status === 'Completed') {
+            return $this->created_at->diff($latestTicketLog->created_at)->format('%h:%i:%s');
         }
         return 'No related logs';
     }
@@ -70,6 +70,11 @@ class TicketHdr extends Model
     public function ticket_messages()
     {
         return $this->hasMany(TicketDtl::class, 'ticket_id');
+    }
+
+    public function ticket_satisfactory()
+    {
+        return $this->hasOne(TicketSatisfactory::class, 'ticket_id');
     }
 
     public function ticket_logs_latest()

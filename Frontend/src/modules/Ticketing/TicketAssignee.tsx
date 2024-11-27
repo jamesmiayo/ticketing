@@ -1,10 +1,10 @@
-import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Button, DialogContent, DialogTitle } from "@mui/material";
 import { useEffect, useState } from "react";
 import SelectItem from "../../components/common/SelectItem";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Department } from "../../api/services/department";
-import { statusList } from "../../constants/constants";
+import {  statusListAssign } from "../../constants/constants";
 import InputComponent from "../../components/common/InputComponent";
 import { User } from "../../api/services/user";
 import { ticketAssign } from "../../schema/Ticket/createTicketAssign";
@@ -126,7 +126,7 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
             <SelectItem
               label="Status"
               control={control}
-              options={statusList}
+              options={statusListAssign}
               errors={errors}
               name="status"
               fullWidth
