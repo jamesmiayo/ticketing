@@ -14,7 +14,8 @@ class UserTicketController extends Controller
     {
         $data = User::with(
             'section:id,section_description,department_id',
-            'section.department:id,department_description',
+            'section.department:id,department_description,division_id',
+            'section.department.division',
             'ticketdtl:id,ticket_id,emp_id,updated_by',
             'ticketdtl.tickets',
             'ticketdtl.tickets.ticket_satisfactory'

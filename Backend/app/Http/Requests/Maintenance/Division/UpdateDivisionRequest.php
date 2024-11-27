@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Maintenance\Section;
+namespace App\Http\Requests\Maintenance\Division;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSectionRequest extends FormRequest
+class UpdateDivisionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,7 +12,6 @@ class UpdateSectionRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
-        // return $this->user()->can('Can Update Section');
     }
 
     /**
@@ -23,20 +22,16 @@ class UpdateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'department_id' => 'required',
-            'section_id' => 'required',
-            'section_description' => 'required',
+            'division_description' => 'required',
             'b_active' => 'required',
         ];
     }
 
-    public function getSectionData(): array
+    public function getDivisionData(): array
     {
         return [
-            'department_id' => $this->department_id,
-            'section_id' => $this->section_id,
-            'section_description' => $this->section_description,
             'b_active' => $this->b_active,
+            'division_description' => $this->division_description,
         ];
     }
 }

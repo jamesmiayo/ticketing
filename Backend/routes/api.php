@@ -8,6 +8,7 @@ use App\Http\Controllers\Maintenance\DepartmentController;
 use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
 use App\Http\Controllers\Maintenance\RoleController;
+use App\Http\Controllers\Maintenance\DivisionController;
 use App\Http\Controllers\Maintenance\UserController;
 use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
@@ -28,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
+        Route::resource('division', DivisionController::class);
         Route::resource('branch', BranchController::class);
         Route::resource('department', DepartmentController::class);
         Route::resource('section', SectionController::class);
