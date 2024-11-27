@@ -32,8 +32,9 @@ class UserController extends Controller
 
     public function updateUserRole(Request $request): JsonResponse
     {
-        $role = Role::find($request->role_id);
+        $role = Role::where('id',$request->role_id)->first();
         $user = User::find($request->user_id);
+        $user->roles()->detach();
         $user->assignRole($role->name);
         return new JsonResponse(['status' => Response::HTTP_OK,'ss' => $role, 'data' => 'User Section Updated Successfully'], Response::HTTP_OK);
     }

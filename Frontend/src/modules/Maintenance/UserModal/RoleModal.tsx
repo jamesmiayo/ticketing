@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { User } from '../../../api/services/user';
 import { useForm } from 'react-hook-form';
 import { roleUser, roleUserFormType } from '../../../schema/User/UpdateUserRole';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Branch } from '../../../api/services/branch';
 import { Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import SelectItem from '../../../components/common/SelectItem';
+import { Role } from '../../../api/services/role';
 
 export default function RoleModal({data, setOpen, refetch}:any) {
     const {
@@ -19,10 +19,10 @@ export default function RoleModal({data, setOpen, refetch}:any) {
       const [dataValue, setDataValue] = useState([]);
       const getDataList = async () => {
         try {
-          const response = await Branch.getBranch();
+          const response = await Role.getRole();
           const data = response.map((row: any) => ({
             value: row.id,
-            label: row.branch_description,
+            label: row.name,
           }));
           setDataValue(data);
         } catch (error) {
@@ -47,7 +47,7 @@ export default function RoleModal({data, setOpen, refetch}:any) {
       <DialogContent>
         <form style={{ marginTop: 10 }} onSubmit={handleSubmit(onSubmit)}>
           <SelectItem
-            label="Branch"
+            label="Role Name"
             control={control}
             options={dataValue}
             errors={errors}

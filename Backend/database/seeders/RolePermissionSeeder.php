@@ -28,8 +28,8 @@ class RolePermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
         }
-        // $editorRole = Role::where('name', 'Supervisor')->first();
-        // $editorRole->givePermissionTo(Permission::all());
+        $editorRole = Role::where('name', 'Supervisor')->first();
+        $editorRole->givePermissionTo(Permission::all());
 
     }
 }

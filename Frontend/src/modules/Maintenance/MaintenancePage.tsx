@@ -7,6 +7,7 @@ import SubCategoryTable from "./SubCategoryTable";
 import BranchTable from "./BranchTable";
 import RoleTable from "./RoleTable";
 import UserManagementTable from "./UserManagementTable";
+import RoleTable from "./RoleTable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
@@ -30,7 +31,7 @@ export default function MaintenancePage() {
       <Box
         sx={{
           width: "100%",
-          maxWidth: "670px",
+          maxWidth: "800px",
           backgroundColor: "#010001",
           borderRadius: 1,
           display: "flex",

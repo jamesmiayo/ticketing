@@ -9,6 +9,7 @@ use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
 use App\Http\Controllers\Maintenance\RoleController;
 use App\Http\Controllers\Maintenance\DivisionController;
+use App\Http\Controllers\Maintenance\RoleController;
 use App\Http\Controllers\Maintenance\UserController;
 use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
@@ -16,7 +17,6 @@ use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
 use App\Http\Controllers\Ticket\TicketDocumentController;
 use App\Http\Controllers\User\UserTicketController;
-
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
