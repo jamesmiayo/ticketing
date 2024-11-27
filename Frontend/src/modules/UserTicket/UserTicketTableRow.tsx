@@ -52,7 +52,7 @@ export default function UserTicketTableRow({ data }: any) {
         <UserTicketSatisfactory data={dataValue} />
       </Dialog>
       <DialogContent>
-      <DialogTitle>Ticket Of {data?.name}</DialogTitle>
+      <DialogTitle>Ticket Of {data?.name} <br></br> Got {data?.satisfactory_percentage}% Customer SatisFactory In {data?.total_ticket} Tickets</DialogTitle>
         <TableComponents rows={row} columns={columns} />
       </DialogContent>
     </>

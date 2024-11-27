@@ -9,9 +9,10 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+
 class User extends Authenticatable
 {
-    use HasApiTokens , HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -49,19 +50,23 @@ class User extends Authenticatable
         ];
     }
 
-    public function checkPassword(string $password): bool {
+    public function checkPassword(string $password): bool
+    {
         return Hash::check($password, $this->password);
     }
 
-    public static function destroyToken(){
+    public static function destroyToken()
+    {
         return Auth::user()->tokens()->delete();
     }
 
-    public function branch() {
+    public function branch()
+    {
         return $this->belongsTo(Branch::class);
     }
 
-    public function section() {
+    public function section()
+    {
         return $this->belongsTo(Section::class);
     }
 
@@ -73,5 +78,17 @@ class User extends Authenticatable
     public function ticketdtl()
     {
         return $this->hasMany(TicketStatus::class, 'emp_id');
+    }
+
+    public function satisfactoryPercentage()
+    {
+        return $this->ticketdtl->map(function ($ticket) {
+            return $ticket->tickets->ticket_satisfactory->average_satisfactory;
+        })->filter()
+            ->pipe(function ($averages) {
+                $totalSum = $averages->sum();
+                $totalCount = $averages->count();
+                return $totalCount > 0 ? ($totalSum / $totalCount) : 0;
+            });
     }
 }

@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
       setLoading(true);
       const result = await ticketApi.getTicketData();
       if (result) {
-        const formattedTickets = result.map((ticket: any) => ({
+        const formattedTickets = result?.map((ticket: any) => ({
           id: ticket.id,
           ticket_id: ticket.ticket_id || "N/A",
           requestedBy: ticket.user?.name || "N/A",

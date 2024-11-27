@@ -111,6 +111,7 @@ class TicketHdrController extends Controller
         }
         $ticket->update(['b_status' => GlobalConstants::COMPLETED]);
         TicketSatisfactory::create($request->getTicketSatisfactoryData());
+        TicketStatus::create($request->getTicketStatus());
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Thank You For Answering.'], Response::HTTP_OK);
     }
 }
