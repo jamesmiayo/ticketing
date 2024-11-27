@@ -5,6 +5,8 @@ import TicketSideBar from "../Ticketing/TicketSideBar";
 import { ticketApi, TicketInformation } from "../../api/services/ticket";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import TicketLog from "./TicketLog";
+import TicketAnalysis from "./TicketAnalysis";
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -15,19 +17,21 @@ const TicketInformationPage = () => {
   const ticketId = query.get("id");
   const [ticket, setTicket] = useState<TicketInformation | null>(null);
   const [activeSection, setActiveSection] = useState<string>("Ticket");
-
-  useEffect(() => {
-    const fetchTicketInformation = async () => {
-      try {
-        const response = await ticketApi.getInformation(ticketId);
-        if (response !== undefined) {
-          setTicket(response);
-        }
-      } catch (error) {
-        console.error("Error fetching ticket information:", error);
+  const [ isLoading , setIsLoading ] = useState(false);
+  const fetchTicketInformation = async () => {
+    setIsLoading(true)
+    try {
+      const response = await ticketApi.getInformation(ticketId);
+      if (response !== undefined) {
+        setTicket(response);
       }
-    };
-
+    } catch (error) {
+      console.error("Error fetching ticket information:", error);
+    }finally{
+      setIsLoading(false)
+    }
+  };
+  useEffect(() => {
     fetchTicketInformation();
   }, [ticketId]);
 
@@ -56,25 +60,30 @@ const TicketInformationPage = () => {
             setActiveSection={setActiveSection}
           />
           <Box sx={{ flex: 1, paddingLeft: 2 }}>
-            {activeSection === "Ticket" && (
-              <Container
-                sx={{
-                  display: "flex",
-                  height: "80vh",
-                  justifyContent: "center",
-                }}
-              >
-                <ChatBox ticketDetail={ticket} />
-                <TicketDetails ticketDetail={ticket} />
-              </Container>
-            )}
-            {activeSection === "Costs" && (
-              <Typography variant="h6">Costs Section</Typography>
-            )}
-            {activeSection === "Historical" && (
-              <Typography variant="h6">Historical Section</Typography>
-            )}
-            {activeSection === "All" && "All"}
+
+              {activeSection === "Ticket" && (
+                           <Container
+                           sx={{
+                             display: "flex",
+                             height: "80vh",
+                             justifyContent: "center",
+                           }}
+                         >
+                  <ChatBox ticketDetail={ticket} />
+                  <TicketDetails ticketDetail={ticket} isLoading={isLoading}/>
+                </Container>
+              )}
+              {activeSection === "Analysis" && (
+                 <TicketAnalysis data={ticket}/>
+                )}
+              {activeSection === "Costs" && (
+                <Typography variant="h6">Costs Section</Typography>
+              )}
+              {activeSection === "Logs" && 
+              <>
+                 <TicketLog data={ticket}/>
+                </>}
+              {activeSection === "All" && "All"}
           </Box>
         </Container>
       </Box>

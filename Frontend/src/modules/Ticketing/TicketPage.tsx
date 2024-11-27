@@ -17,7 +17,7 @@ import {
   filterTicket,
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
-import { statusList } from "../../constants/constants";
+import { priorityList, statusList } from "../../constants/constants";
 import { useQuery } from "../TicketInformation/TicketInformationPage";
 
 const TicketPage: React.FC = () => {
@@ -34,6 +34,7 @@ const TicketPage: React.FC = () => {
   const handleClose = () => setOpen(false);
 
   const {
+    reset,
     register,
     handleSubmit,
     control,
@@ -52,6 +53,8 @@ const TicketPage: React.FC = () => {
           ticket_id: ticket.ticket_id || "N/A",
           requestedBy: ticket.user?.name || "N/A",
           title: ticket.title || "N/A",
+          priority: ticket.ticket_priority || "N/A",
+          b_status: ticket.b_status || "N/A",
           category:
             ticket.sub_category?.category?.category_description || "N/A",
           subCategory: ticket.sub_category?.subcategory_description || "N/A",
@@ -140,6 +143,15 @@ const TicketPage: React.FC = () => {
       type: "select",
     },
     {
+      name: "priority",
+      label: "Priority",
+      register: register,
+      control: control,
+      errors: errors,
+      options: priorityList,
+      type: "select",
+    },
+    {
       name: "category_id",
       label: "Category",
       register: register,
@@ -176,6 +188,10 @@ const TicketPage: React.FC = () => {
     },
   ];
 
+  const handleReset = () => {
+    reset(); 
+    fetchData(null, page);
+  };
   useEffect(() => {
     getCategoryList();
     fetchData(null, page);
@@ -202,6 +218,7 @@ const TicketPage: React.FC = () => {
 
         <Box>
           <TicketTable
+            onReset={handleReset}
             tickets={data}
             isLoading={loading}
             isOptions={true}
@@ -210,6 +227,7 @@ const TicketPage: React.FC = () => {
             maxCount={maxPage}
             onSubmit={handleSubmit(onSubmit)}
             customInputs={ticketSearchFilter}
+            refetch={() => fetchData(null, page)}
           />
         </Box>
         <Dialog open={open} onClose={handleClose}>

@@ -24,8 +24,8 @@ interface TicketFormInputs {
 }
 
 const statusOptions = [
-  { value: "0", label: "Open" },
-  { value: "6", label: "Completed" },
+  { value: "1", label: "Open" },
+  { value: "7", label: "Completed" },
 ];
 
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({

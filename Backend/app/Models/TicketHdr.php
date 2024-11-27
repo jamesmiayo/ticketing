@@ -18,12 +18,14 @@ class TicketHdr extends Model
         'subcategory_id',
         'status',
         'title',
-        'body'
+        'body',
+        'priority',
+        'b_status'
     ];
 
     protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
 
-    protected $appends = ['ticket_status', 'time_finished'];
+    protected $appends = ['ticket_status', 'time_finished' , 'ticket_priority'];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -33,8 +35,8 @@ class TicketHdr extends Model
     {
         $latestTicketLog = $this->ticket_logs_latest;
 
-        if ($latestTicketLog) {
-            return $this->created_at->diff($latestTicketLog->created_at)->format('%d days, %h hours, %i minutes, %s seconds');
+        if ($latestTicketLog && $this->ticket_status === 'Completed') {
+            return $this->created_at->diff($latestTicketLog->created_at)->format('%h:%i:%s');
         }
         return 'No related logs';
     }
@@ -42,6 +44,11 @@ class TicketHdr extends Model
     public function getTicketStatusAttribute()
     {
         return GlobalConstants::getStatusType($this->b_status);
+    }
+
+    public function getTicketPriorityAttribute()
+    {
+        return GlobalConstants::getPriorityType($this->priority);
     }
 
 
@@ -63,6 +70,11 @@ class TicketHdr extends Model
     public function ticket_messages()
     {
         return $this->hasMany(TicketDtl::class, 'ticket_id');
+    }
+
+    public function ticket_satisfactory()
+    {
+        return $this->hasOne(TicketSatisfactory::class, 'ticket_id');
     }
 
     public function ticket_logs_latest()
@@ -87,8 +99,16 @@ class TicketHdr extends Model
             $query->title($searchParams['title']);
         }
 
+        if (array_key_exists('priority', $searchParams) && $searchParams['priority'] !== null) {
+            $query->priority($searchParams['priority']);
+        }
+
         if (array_key_exists('subcategory_id', $searchParams) && $searchParams['subcategory_id'] !== null) {
             $query->subCategoryId($searchParams['subcategory_id']);
+        }
+
+        if (array_key_exists('category_id', $searchParams) && $searchParams['category_id'] !== null) {
+            $query->categoryId($searchParams['category_id']);
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
@@ -124,10 +144,22 @@ class TicketHdr extends Model
         return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
     }
 
+    public function scopePriority($query, $priority)
+    {
+        return $query->where('priority', 'LIKE', '%' . $priority . '%');
+    }
+
     public function scopeStatus($query, $status)
     {
         return $query->whereHas('ticket_logs_latest', function ($query) use ($status) {
             $query->where('status', $status);
+        });
+    }
+
+    public function scopeCategoryId($query, $category_id)
+    {
+        return $query->whereHas('sub_category.category', function ($query) use ($category_id) {
+            $query->where('id', $category_id);
         });
     }
 

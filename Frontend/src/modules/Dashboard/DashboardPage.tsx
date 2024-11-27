@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Box, Paper, Typography, Button } from "@mui/material";
 import { ticketApi } from "../../api/services/ticket";
-import TicketList from "../Ticketing/TicketList";
-import TicketTable from "../Ticketing/TicketTable";
 import { OverviewAPI } from "../../api/services/getOverview";
 import TodaySummaryComponent from "./TodaySummaryComponent";
-import { useNavigate } from "react-router-dom";
+import BranchListTable from "./BranchListTable";
+import CategoryTableList from "./CategoryTableList";
+import TicketListTable from "./TicketListTable";
+import TicketList from "../Ticketing/TicketList";
+import TicketPriority from "./TicketPriority";
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
   const [totalTicket, setTotalTicket] = useState<any>([]);
-  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -41,10 +42,6 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleNavigateTicket = () => {
-    navigate("/ticket");
   };
 
   const dashboardFetchData = async () => {
@@ -83,12 +80,13 @@ const Dashboard: React.FC = () => {
         </Typography>
 
         <Box>
-          <Box sx={{ display: "flex", gap: 5 }}>
+          <Box sx={{ display: "flex", gap: 2 }}>
             <TicketList
               ticketList={totalTicket?.total_ticket_count}
               isLoading={loading}
             />
-            <TodaySummaryComponent totalTicket={totalTicket} />
+                        <TicketPriority ticketPriority={totalTicket?.total_priority} isLoading={loading}/>
+            <TodaySummaryComponent totalTicket={totalTicket} isLoading={loading}/>
           </Box>
           <Box
             sx={{
@@ -99,107 +97,9 @@ const Dashboard: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <Paper
-              elevation={4}
-              sx={{
-                p: 3,
-                background: "white",
-                borderRadius: 3,
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                flex: 1,
-                minWidth: "30%",
-              }}
-            >
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
-                >
-                  <Typography variant="h6">Category List</Typography>
-                  <Button
-                    onClick={handleNavigateTicket}
-                    variant="outlined"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                  >
-                    View More
-                  </Button>
-                </Box>
-                <TicketTable tickets={data} isLoading={loading} />
-              </Box>
-            </Paper>
-
-            <Paper
-              elevation={4}
-              sx={{
-                p: 3,
-                background: "white",
-                borderRadius: 3,
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                flex: 1,
-                minWidth: "30%",
-              }}
-            >
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
-                >
-                  <Typography variant="h6">Branch List</Typography>
-                  <Button
-                    onClick={handleNavigateTicket}
-                    variant="outlined"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                  >
-                    View More
-                  </Button>
-                </Box>
-                <TicketTable tickets={data} isLoading={loading} />
-              </Box>
-            </Paper>
-            <Paper
-              elevation={4}
-              sx={{
-                p: 3,
-                background: "white",
-                borderRadius: 3,
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                flex: 1,
-                minWidth: "35%",
-              }}
-            >
-              <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
-                >
-                  <Typography variant="h6">Ticket List</Typography>
-                  <Button
-                    onClick={handleNavigateTicket}
-                    variant="outlined"
-                    size="small"
-                    sx={{ textTransform: "none" }}
-                  >
-                    View More
-                  </Button>
-                </Box>
-
-                <TicketTable tickets={data} isLoading={loading} />
-              </Box>
-            </Paper>
+            <CategoryTableList data={totalTicket?.total_ticket_category} isLoading={loading} />
+            <BranchListTable data={totalTicket?.total_ticket_branch} isLoading={loading} />
+            <TicketListTable data={totalTicket?.latest_ticket} isLoading={loading} />
           </Box>
         </Box>
       </Box>

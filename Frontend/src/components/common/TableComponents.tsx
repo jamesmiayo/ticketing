@@ -12,8 +12,8 @@ interface DataGridProps<T> {
   rows: GridRowsProp;
   height?: number;
   width?: string;
-  onPageChange: (page: number) => void;
-  pageProps: string;
+  onPageChange?: (page: number) => void;
+  pageProps?: string;
   customInputs?: {
     name: string;
     label: string;
@@ -24,9 +24,10 @@ interface DataGridProps<T> {
     rest?: any;
     type: string;
   }[];
-  onSubmit: () => void;
-  maxCount: string;
+  onSubmit?: () => void;
+  maxCount?: string;
   isLoading?: boolean;
+  onReset?: () => void;
 }
 
 const TableComponents = <T,>({
@@ -40,10 +41,10 @@ const TableComponents = <T,>({
   onSubmit,
   maxCount,
   isLoading = false,
+  onReset
 }: DataGridProps<T>) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
-  const { reset } = useForm();
 
   const handlePageChange = (
     _event: React.ChangeEvent<unknown>,
@@ -100,9 +101,7 @@ const TableComponents = <T,>({
                   variant="contained"
                   color="error"
                   type="button"
-                  onClick={() => {
-                    reset();
-                  }}
+                  onClick={onReset}
                 >
                   Clear
                 </Button>

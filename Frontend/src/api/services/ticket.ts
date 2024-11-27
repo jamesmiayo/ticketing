@@ -55,6 +55,7 @@ export const ticketApi = {
         params: {
           page: page,
           ticket_id: data?.ticket_id,
+          priority: data?.priority,
           title: data?.title,
           category_id: data?.category_id,
           subcategory_id: data?.subcategory_id,
@@ -105,17 +106,85 @@ export const ticketApi = {
     }
   },
 
-  createMessage: async function ({
-    ticket_id,
-    message,
-  }: any) {
+  createMessage: async function ({ ticket_id, message }: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/sent-message",
         method: "POST",
         data: {
           ticket_id,
-          message
+          message,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  getMessage: async function ({ ticket_id }: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/sent-message/${ticket_id}`,
+        method: "GET",
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  ticketAssignee: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/assign",
+        method: "POST",
+        data: {
+          ticket_id,
+          message: data.message,
+          emp_id: data.emp_id,
+          status: data.status,
+          remarks: data.remarks
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  updatePriority: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/priority",
+        method: "PUT",
+        data: {
+          ticket_id,
+          priority: data.priority,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+
+  createSatisfactory: async function (ticket_id:any , data:any) {
+    try {
+      const response = await apiClient.request({
+        url: "/ticket/satisfactory",
+        method: "POST",
+        data: {
+          ticket_id,
+          satisfactory_1: data.satisfactory_1,
+          satisfactory_2: data.satisfactory_2,
+          satisfactory_3: data.satisfactory_3,
+          satisfactory_4: data.satisfactory_4,
+          satisfactory_5: data.satisfactory_5,
         },
       });
       return response.data;

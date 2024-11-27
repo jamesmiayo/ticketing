@@ -17,7 +17,6 @@ const SelectItem = ({
   onChange,
 }: any) => {
   const error = errors?.[name];
-  console.log(errors);
   return (
     <FormControl
       size="small"

@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TicketHdr::class, 'emp_id');
     }
+
+    public function ticketdtl()
+    {
+        return $this->hasMany(TicketStatus::class, 'emp_id');
+    }
 }

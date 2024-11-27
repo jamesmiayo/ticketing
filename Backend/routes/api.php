@@ -12,6 +12,8 @@ use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
+use App\Http\Controllers\User\UserTicketController;
+
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -33,8 +35,16 @@ Route::middleware(['auth'])->group(function () {
 
     //tickets routes
     Route::prefix('ticket')->group(function () {
-        Route::post('sent-message', TicketDtlController::class);
+        Route::post('satisfactory', [TicketHdrController::class , 'ticketSatisFactory']);
+        Route::post('sent-message', [TicketDtlController::class , 'create']);
+        Route::get('sent-message/{ticket_id}', [TicketDtlController::class , 'show']);
         Route::get('ticket-logs', TicketLogController::class);
         Route::resource('ticket-hdr', TicketHdrController::class);
+        Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
+        Route::put('priority', [TicketHdrController::class , 'updatePriority']);
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::get('ticket',UserTicketController::class);
     });
 });
