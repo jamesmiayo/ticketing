@@ -16,7 +16,7 @@ class DivisionController extends Controller
      */
     public function index()
     {
-        $data = Division::with('department')->latest()->get();
+        $data = Division::with('department' , 'department.section')->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 

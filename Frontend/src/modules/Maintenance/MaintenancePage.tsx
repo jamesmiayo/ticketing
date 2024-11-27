@@ -6,6 +6,7 @@ import SectionTable from "./SectionTable";
 import SubCategoryTable from "./SubCategoryTable";
 import BranchTable from "./BranchTable";
 import RoleTable from "./RoleTable";
+import UserManagementTable from "./UserManagementTable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
@@ -56,6 +57,7 @@ export default function MaintenancePage() {
             },
           }}
         >
+          <Tab label="Users" />
           <Tab label="Category" />
           <Tab label="Sub Category" />
           <Tab label="Department" />
@@ -77,6 +79,17 @@ export default function MaintenancePage() {
         {value === 0 && (
           <>
             <Typography variant="h6" gutterBottom>
+              Manage User Access
+            </Typography>
+            <Typography>Manage and organize your categories here.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <UserManagementTable />
+            </Box>
+          </>
+        )}
+        {value === 1 && (
+          <>
+            <Typography variant="h6" gutterBottom>
               Category Management
             </Typography>
             <Typography>Manage and organize your categories here.</Typography>
@@ -85,7 +98,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 1 && (
+        {value === 2 && (
           <>
             <Typography variant="h6" gutterBottom>
               Sub Category Management
@@ -98,7 +111,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 2 && (
+        {value === 3 && (
           <>
             <Typography variant="h6" gutterBottom>
               Department Overview
@@ -109,7 +122,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 3 && (
+        {value === 4 && (
           <>
             <Typography variant="h6" gutterBottom>
               Section Control
@@ -120,7 +133,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 4 && (
+        {value === 5 && (
           <>
             <Typography variant="h6" gutterBottom>
               Branch Control
@@ -131,7 +144,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 5 && (
+        {value === 6 && (
           <>
             <Typography variant="h6" gutterBottom>
               Role Assignment

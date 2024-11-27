@@ -25,7 +25,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', DashboardController::class);
-    Route::get('get-user', UserController::class);
+    Route::get('get-user', [UserController::class , 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
@@ -53,5 +53,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('user')->group(function () {
         Route::get('ticket',UserTicketController::class);
+        Route::post('branch' , [UserController::class , 'updateUserBranch']);
+        Route::post('section' , [UserController::class , 'updateUserSection']);
+        Route::post('role' , [UserController::class , 'updateUserRole']);
     });
 });
