@@ -13,9 +13,10 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { ConfirmDialog } from "../../components/common/ConfirmationModal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { Branch } from "../../api/services/branch";
 import { Role } from "../../api/services/role";
 import RoleForm from "./RoleForm";
+import RoleUserPermission from "./RoleUserPermission";
+import { GiPadlock } from "react-icons/gi";
 
 export default function RoleTable({
   onPageChange,
@@ -29,6 +30,8 @@ export default function RoleTable({
   const [dataList, setDataList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [selectedRole, setSelectedRole] = useState(false);
+  const [row, setRow] = useState([]);
 
   const handleOpenClose = () => {
     setOpen(!open);
@@ -80,10 +83,10 @@ export default function RoleTable({
     try {
       setLoading(true);
       const response = await Role.getRole();
-      console.log(response);
       const data = response.map((row: any) => ({
         id: row.id,
         label: row.name,
+        permissions: row.permissions,
         active: row.b_active,
         created_at: row.created_at,
         updated_at: row.updated_at,
@@ -96,6 +99,11 @@ export default function RoleTable({
       setLoading(false);
     }
   };
+
+  function handleRolePermission(data: any) {
+    setRow(data);
+    setSelectedRole(true);
+  }
 
   useEffect(() => {
     getDataList();
@@ -113,6 +121,14 @@ export default function RoleTable({
       headerAlign: "center",
       renderCell: (params: any) => (
         <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+          <Tooltip title="Assign Permission Role" arrow>
+            <IconButton
+              color="primary"
+              onClick={() => handleRolePermission(params.row)}
+            >
+              <GiPadlock size={30} />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Edit" arrow>
             <IconButton
               color="primary"
@@ -141,6 +157,22 @@ export default function RoleTable({
             refetch={getDataList}
             onClose={handleOpenClose}
             defaultValues={selectedRow}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        maxWidth="lg"
+        fullWidth
+        open={selectedRole}
+        onClose={() => setSelectedRole(false)}
+      >
+        <DialogTitle>Assign Permission on this Role</DialogTitle>
+        <DialogContent sx={{ minHeight: "50vh" }}>
+          <RoleUserPermission
+            data={row}
+            refetch={getDataList}
+            onClose={setSelectedRole}
           />
         </DialogContent>
       </Dialog>

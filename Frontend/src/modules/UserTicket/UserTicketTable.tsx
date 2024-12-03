@@ -11,6 +11,7 @@ export default function UserTicketTable({ data, isLoading }: any) {
   const columns = [
     { field: "emp_id", headerName: "Employee ID", width: 140 },
     { field: "branch", headerName: "Branch", width: 140 },
+    { field: "division", headerName: "Division", width: 140 },
     { field: "department", headerName: "Department", width: 140 },
     { field: "section", headerName: "Section", width: 140 },
     { field: "name", headerName: "Name", width: 140 },

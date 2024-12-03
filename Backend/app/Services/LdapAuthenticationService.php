@@ -48,13 +48,9 @@ class LdapAuthenticationService
             ]
         );
 
-        // if(!empty($role) || count($localUser->roles) > 0){
-        //     $localUser->assignRole($role->name);
-        //     $localUser->givePermissionTo($role->permissions->pluck('name'));
-        // }else{
-        //     $localUser->assignRole('User');
-        //     $localUser->givePermissionTo(['Can Create Ticket']);
-        // }
+        if(count($localUser->roles) === 0){
+            $localUser->assignRole('User');
+        }
 
         $token = $localUser->createToken('SAFC')->plainTextToken;
 
@@ -63,7 +59,7 @@ class LdapAuthenticationService
             'message' => 'Login successful.',
             'user' => $localUser,
             'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
-            'role' => $localUser->roles->pluck('name') ?: 'user',
+            'role' => $localUser->roles->pluck('name'),
             'access_token' => $token,
         ], Response::HTTP_OK);
     }

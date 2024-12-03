@@ -6,8 +6,12 @@ import UserDashboardPage from "../../modules/UserDashboard/UserDashboardPage.tsx
 import Maintenance from "../../modules/Maintenance/MaintenancePage.tsx";
 import TicketPage from "../../modules/Ticketing/TicketPage.tsx";
 import UserTicketPage from "../../modules/UserTicket/UserTicketPage.tsx";
+import { useContext } from "react";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider.tsx";
 
 export const usePrivateRoutes = () => {
+    const { permission } = useContext(PermissionContext);
+
     const privateRoutes = [
         {
           id: uuidv4,
@@ -39,7 +43,8 @@ export const usePrivateRoutes = () => {
             description: "Maintenance",
             path: PathConstants.MAINTENANCE,
             component: Maintenance,
-            show: true,
+            show: permission?.includes("Can View Maintenance"),
+            requiredPermissions: ["Can View Maintenance"],
         },
         {
             id: uuidv4,
@@ -55,7 +60,8 @@ export const usePrivateRoutes = () => {
             description: "User Ticket",
             path: PathConstants.USERTICKET,
             component: UserTicketPage,
-            show: true,
+            show: permission?.includes("Can View User Ticket"),
+            requiredPermissions: ["Can View User Ticket"],
         },
     ]
 

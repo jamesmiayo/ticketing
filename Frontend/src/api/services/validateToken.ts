@@ -1,15 +1,21 @@
 import apiClient from "../configs/axiosConfigs";
 
-export const validateToken = async (): Promise<boolean> => {
+interface ValidateToken {
+  isValid: boolean;
+  user: any;
+}
+
+export const validateToken = async (): Promise<ValidateToken> => {
   try {
-    const response = await apiClient.request<{ isValid: boolean }>({
+    const response = await apiClient.request<ValidateToken>({
       url: "auth/validate-token",
       method: "POST",
     });
 
-    return response.data.isValid;
+    return response.data;
   } catch (error) {
     console.error("Token validation failed:", error);
-    return false;
+
+    return { isValid: false, user: null };
   }
 };

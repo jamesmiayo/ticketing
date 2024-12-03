@@ -54,7 +54,6 @@ const LoginPage: React.FC<any> = () => {
       } else {
         setError("An unexpected error occurred. Please try again later.");
       }
-      console.log(e);
     } finally {
       hideLoader();
     }

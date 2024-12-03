@@ -114,7 +114,6 @@ export default function BranchTable({
     try {
       setLoading(true);
       const response = await Branch.getBranch();
-      console.log(response);
       const data = response.map((row: any) => ({
         id: row.id,
         label: row.branch_description,

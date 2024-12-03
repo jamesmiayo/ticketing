@@ -19,8 +19,11 @@ import {
 import { getCategoryAPI } from "../../api/services/getCategoryList";
 import { priorityList, statusList } from "../../constants/constants";
 import { useQuery } from "../TicketInformation/TicketInformationPage";
+import { useAuth } from "../../context/AuthContext";
+import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
 
 const TicketPage: React.FC = () => {
+  const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,29 +50,9 @@ const TicketPage: React.FC = () => {
     try {
       setLoading(true);
       const result = await ticketApi.getTicketData(data, page);
-      if (result && result.data) {
-        const formattedTickets = result.data.map((ticket: any) => ({
-          id: ticket.id,
-          ticket_id: ticket.ticket_id || "N/A",
-          requestedBy: ticket.user?.name || "N/A",
-          title: ticket.title || "N/A",
-          priority: ticket.ticket_priority || "N/A",
-          b_status: ticket.b_status || "N/A",
-          category:
-            ticket.sub_category?.category?.category_description || "N/A",
-          subCategory: ticket.sub_category?.subcategory_description || "N/A",
-          status: ticket?.ticket_logs_latest?.ticket_status || "Unknown",
-          created_at: ticket?.ticket_logs_latest?.created_at,
-          assignee: ticket?.ticket_logs_latest?.assignee?.name || "No assignee",
-          updated_by:
-            ticket?.ticket_logs_latest?.updated_by?.name || "No assignee",
-        }));
-        setData(formattedTickets);
-        const maxPage = result.last_page;
-        setMaxPage(maxPage);
-      } else {
-        console.warn("Unexpected data structure:", result);
-      }
+      setData(result.data);
+      const maxPage = result.last_page;
+      setMaxPage(maxPage);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
@@ -189,14 +172,14 @@ const TicketPage: React.FC = () => {
   ];
 
   const handleReset = () => {
-    reset(); 
+    reset();
     fetchData(null, page);
   };
   useEffect(() => {
     getCategoryList();
     fetchData(null, page);
   }, [page]);
-
+  console.log(user)
   return (
     <Box sx={{ display: "flex" }}>
       <Box
@@ -231,16 +214,27 @@ const TicketPage: React.FC = () => {
           />
         </Box>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Create New Ticket</DialogTitle>
-          <DialogContent>
-            <TicketCreationForm
-              onCreate={() => setOpen(false)}
-              refetch={() => fetchData(null, page)}
-              categories={categories}
-              subcategories={subcategories}
-              handleSubCategoryList={handleSubCategoryList}
-            />
-          </DialogContent>
+          {user?.branch_id !== null && user?.section_id !== null ? (
+            <>
+              <DialogTitle>Create New Ticket</DialogTitle>
+              <DialogContent>
+              <TicketCreationForm
+                  onCreate={() => setOpen(false)}
+                  refetch={() => fetchData(null, page)}
+                  categories={categories}
+                  subcategories={subcategories}
+                  handleSubCategoryList={handleSubCategoryList}
+                />
+              </DialogContent>
+            </>
+          ) : (
+            <>
+              <DialogTitle>You Need To Update Your Profile Before Creating Ticket.</DialogTitle>
+              <DialogContent>
+              <UpdateUserBranchSection onClose={handleClose}/>
+              </DialogContent>
+            </>
+          )}
         </Dialog>
       </Box>
     </Box>

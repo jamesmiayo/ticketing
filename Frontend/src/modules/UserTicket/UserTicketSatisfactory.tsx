@@ -1,6 +1,4 @@
 import { DialogContent, DialogTitle, Rating, Typography } from "@mui/material";
-import React from "react";
-import { Controller } from "react-hook-form";
 
 export default function UserTicketSatisfactory({ data }: any) {
   const satisfactoryFields = [

@@ -1,5 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import Sidebar from "../../components/navigation/SideBar";
 
 const PrivateRoute = ({ component: Component } :any) => {

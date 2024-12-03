@@ -70,6 +70,6 @@ class TicketSatisfactory extends Model
         $average = array_sum($ratings) / count($ratings);
         $percentage = ($average / 5) * 100;
 
-        return $percentage;
+        return $percentage || 0;
     }
 }
