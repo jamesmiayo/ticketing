@@ -26,15 +26,15 @@ class GlobalConstants
         ];
     }
 
-    const LOW = 1;
-    const MEDIUM = 2;
-    const HIGH = 3;
-    const CRITICAL = 4;
-
     public static function getStatusType($Type)
     {
         return static::getStatusesType()[$Type] ?? null;
     }
+    
+    const LOW = 1;
+    const MEDIUM = 2;
+    const HIGH = 3;
+    const CRITICAL = 4;
 
     public static function getPrioritiesType()
     {
@@ -50,7 +50,30 @@ class GlobalConstants
     {
         return static::getPrioritiesType()[$Type] ?? null;
     }
+    const TERRIBLE = 0;
+    const BAD = 1;
+    const OKAY = 2;
+    const GOOD = 3;
+    const AMAZING = 4;
+    
 
+    
+    public static function getSatisfactionsType()
+    {
+        return [
+            self::TERRIBLE => 'TERRIBLE',
+            self::BAD => 'BAD',
+            self::OKAY => 'OKAY',
+            self::GOOD => 'GOOD',
+            self::AMAZING => 'AMAZING',
+        ];
+    }
+    
+    public static function getSatisfactionType($type)
+    {
+        return static::getSatisfactionsType()[$type] ?? null;
+    }
+    
 
 //      Response::HTTP_OK; // 200
 // Response::HTTP_CREATED; // 201

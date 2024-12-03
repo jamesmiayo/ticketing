@@ -11,8 +11,14 @@ class TicketDtl extends Model
 
     protected $fillable = ['thread_id', 'ticket_id' , 'user_id', 'message'];
 
+
     public function user()
     {
         return $this->belongsTo(User::class , 'user_id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(TicketDocument::class, 'ticket_tdl_id');
     }
 }

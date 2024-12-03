@@ -1,16 +1,25 @@
-import { Button, DialogContent, DialogTitle } from "@mui/material";
 import { useEffect, useState } from "react";
-import SelectItem from "../../components/common/SelectItem";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Department } from "../../api/services/department";
-import {  statusListAssign } from "../../constants/constants";
-import InputComponent from "../../components/common/InputComponent";
-import { User } from "../../api/services/user";
+import {
+  Box,
+  Button,
+  DialogContent,
+  DialogTitle,
+  Typography,
+  Stack,
+} from "@mui/material";
+import { AssignmentInd, Business, Group } from "@mui/icons-material";
 import { ticketAssign } from "../../schema/Ticket/createTicketAssign";
+import { Department } from "../../api/services/department";
+import { User } from "../../api/services/user";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
-export default function TicketAssignee({ data, setOpen , refetch }: any) {
+import { statusListAssign } from "../../constants/constants";
+import SelectItem from "../../components/common/SelectItem";
+import InputComponent from "../../components/common/InputComponent";
+
+export default function TicketAssignee({ data, setOpen, refetch }: any) {
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState<any>([]);
   const [user, setUser] = useState<any>([]);
@@ -18,19 +27,19 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
   const toast = useExecuteToast();
 
   const {
-    reset,
-    register,
-    handleSubmit,
     control,
+    handleSubmit,
+    reset,
     formState: { errors },
+    register,
   } = useForm<any>({
     resolver: yupResolver(ticketAssign),
   });
 
   const onSubmit = async (formData: any) => {
-    setOpen(false)
+    setOpen(false);
     try {
-      const response = await ticketApi.ticketAssignee(data.id , formData);
+      const response = await ticketApi.ticketAssignee(data.id, formData);
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
@@ -38,6 +47,9 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
       reset();
     } catch (error) {
       console.error("Failed to assign ticket:", error);
+      toast.executeToast("Failed to assign ticket", "top-center", true, {
+        type: "error",
+      });
     }
   };
 
@@ -60,26 +72,28 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
       const response = await User.getUser();
       setUser(response);
     } catch (error) {
-      console.error("Failed to fetch department:", error);
+      console.error("Failed to fetch users:", error);
     }
   };
 
   const getSection = (departmentId: number) => {
     const data = department
       .find((department: any) => department.value === departmentId)
-      ?.section.map((row: any) => {
-        return { value: row.id, label: row.section_description };
-      });
+      ?.section.map((row: any) => ({
+        value: row.id,
+        label: row.section_description,
+      }));
     setSection(data);
     setUserOption([]);
   };
 
-  const handleSection = (section: string) => {
+  const handleSection = (sectionId: string) => {
     const data = user
-      .filter((row: any) => row.section_id === section)
-      .map((row: any) => {
-        return { value: row.id, label: row.name };
-      });
+      .filter((row: any) => row.section_id === sectionId)
+      .map((row: any) => ({
+        value: row.id,
+        label: row.name,
+      }));
     setUserOption(data);
   };
 
@@ -90,10 +104,17 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
 
   return (
     <>
-      <DialogTitle>Assigne Ticket on {data?.title} </DialogTitle>
+      <DialogTitle>
+        <Typography variant="h5" align="center" fontWeight="bold">
+          Assign Ticket{" "}
+          <Box component="span" sx={{ color: "error.main", ml: 1 }}>
+            ({data?.ticket_id})
+          </Box>
+        </Typography>
+      </DialogTitle>
       <DialogContent>
-        <div style={{ padding: 5 }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={3} sx={{ mt: 2 }}>
             <SelectItem
               label="Department"
               control={control}
@@ -101,8 +122,8 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
               errors={errors}
               name="department"
               fullWidth
-              sx={{ mt: 2 }}
               onChange={(e: any) => getSection(e)}
+              startAdornment={<Business color="action" />}
             />
             <SelectItem
               label="Section"
@@ -111,8 +132,8 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
               errors={errors}
               name="section"
               fullWidth
-              sx={{ mt: 2 }}
               onChange={(e: any) => handleSection(e)}
+              startAdornment={<Group color="action" />}
             />
             <SelectItem
               label="User"
@@ -121,7 +142,7 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
               errors={errors}
               name="emp_id"
               fullWidth
-              sx={{ mt: 2 }}
+              startAdornment={<AssignmentInd color="action" />}
             />
             <SelectItem
               label="Status"
@@ -130,7 +151,6 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
               errors={errors}
               name="status"
               fullWidth
-              sx={{ mt: 2 }}
             />
             <InputComponent
               name="remarks"
@@ -141,11 +161,18 @@ export default function TicketAssignee({ data, setOpen , refetch }: any) {
               multiline
               rows={4}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              size="large"
+            >
               Assign Ticket
             </Button>
-          </form>
-        </div>
-      </DialogContent></>
+          </Stack>
+        </form>
+      </DialogContent>
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { TextField } from "@mui/material";
 
 const InputComponent = ({
   name,
@@ -19,7 +19,7 @@ const InputComponent = ({
       helperText={errors?.[name]?.message}
       multiline={multiline}
       rows={multiline ? rows : undefined}
-      size="small" 
+      size="small"
       {...rest}
     />
   );

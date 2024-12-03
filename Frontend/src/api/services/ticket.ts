@@ -135,8 +135,19 @@ export const ticketApi = {
       throw error;
     }
   },
+  getDocuments: async ({ ticket_id }: any) => {
+    try {
+      const response = await apiClient.get(
+        `/ticket/documents?ticket_id=${ticket_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      throw error;
+    }
+  },
 
-  ticketAssignee: async function (ticket_id:any , data:any) {
+  ticketAssignee: async function (ticket_id: any, data: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/assign",
@@ -146,7 +157,7 @@ export const ticketApi = {
           message: data.message,
           emp_id: data.emp_id,
           status: data.status,
-          remarks: data.remarks
+          remarks: data.remarks,
         },
       });
       return response.data;
@@ -156,7 +167,7 @@ export const ticketApi = {
     }
   },
 
-  updatePriority: async function (ticket_id:any , data:any) {
+  updatePriority: async function (ticket_id: any, data: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/priority",
@@ -172,8 +183,29 @@ export const ticketApi = {
       throw error;
     }
   },
+  uploadAttachment: async function (ticket_id: number, data: FormData) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/upload`,
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        data: {
+          thread_id: data.get("thread_id"),
+          ticket_id: ticket_id,
+          message: data.get("message"),
+          attachments: data.getAll("attachments"),
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading attachment:", error);
+      throw error;
+    }
+  },
 
-  createSatisfactory: async function (ticket_id:any , data:any) {
+  createSatisfactory: async function (ticket_id: any, data: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/satisfactory",
@@ -185,6 +217,7 @@ export const ticketApi = {
           satisfactory_3: data.satisfactory_3,
           satisfactory_4: data.satisfactory_4,
           satisfactory_5: data.satisfactory_5,
+          overall_satisfaction: data.overall_satisfaction,
         },
       });
       return response.data;

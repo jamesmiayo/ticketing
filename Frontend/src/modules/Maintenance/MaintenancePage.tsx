@@ -5,6 +5,7 @@ import DepartmentTable from "./DepartmentTable";
 import SectionTable from "./SectionTable";
 import SubCategoryTable from "./SubCategoryTable";
 import BranchTable from "./BranchTable";
+import RoleTable from "./RoleTable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
@@ -136,6 +137,9 @@ export default function MaintenancePage() {
               Role Assignment
             </Typography>
             <Typography>Manage user roles and permissions.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <RoleTable />
+            </Box>
           </>
         )}
       </Paper>

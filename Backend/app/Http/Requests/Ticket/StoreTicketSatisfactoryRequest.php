@@ -29,6 +29,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
             'satisfactory_3' => 'nullable',
             'satisfactory_4' => 'nullable',
             'satisfactory_5' => 'nullable',
+            'overrall_satisfaction' => 'nullable',
         ];
     }
 
@@ -41,6 +42,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
             'satisfactory_3' => $this->satisfactory_3,
             'satisfactory_4' => $this->satisfactory_4,
             'satisfactory_5' => $this->satisfactory_5,
+            'overall_satisfaction' => $this->overall_satisfaction,
             'user_id' => Auth::user()->id, // Assuming you have a User model and Laravel's auth() function. Replace with your actual method.
         ];
     }

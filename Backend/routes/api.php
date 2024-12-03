@@ -7,11 +7,13 @@ use App\Http\Controllers\Maintenance\BranchController;
 use App\Http\Controllers\Maintenance\DepartmentController;
 use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
+use App\Http\Controllers\Maintenance\RoleController;
 use App\Http\Controllers\Maintenance\UserController;
 use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
+use App\Http\Controllers\Ticket\TicketDocumentController;
 use App\Http\Controllers\User\UserTicketController;
 
 
@@ -31,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('section', SectionController::class);
         Route::resource('category', CategoryController::class);
         Route::resource('sub-category', SubCategoryController::class);
+        Route::resource('role', RoleController::class);
     });
 
     //tickets routes
@@ -42,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('ticket-hdr', TicketHdrController::class);
         Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
         Route::put('priority', [TicketHdrController::class , 'updatePriority']);
+        Route::post('upload', [TicketDocumentController::class, 'store']);
+        Route::get('documents', [TicketDocumentController::class, 'getByAuthenticatedUser']);
     });
 
     Route::prefix('user')->group(function () {

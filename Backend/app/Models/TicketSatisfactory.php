@@ -4,16 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Constants\GlobalConstants;
 
 class TicketSatisfactory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ticket_id', 'user_id', 'satisfactory_1', 'satisfactory_2', 'satisfactory_3', 'satisfactory_4', 'satisfactory_5'];
+    protected $fillable = ['ticket_id', 'user_id', 'satisfactory_1', 'satisfactory_2', 'satisfactory_3', 'satisfactory_4', 'satisfactory_5' ,'overall_satisfaction'];
 
     protected $with = ['user:id,name'];
 
-    protected $appends = ['average_satisfactory'];
+    protected $appends = ['average_satisfactory' , 'overall_satisfaction_value'];
+
+
+    public function getOverallSatisfactionValueAttribute()
+    {
+        return GlobalConstants::getSatisfactionType($this->overall_satisfaction);
+    }
+
     public function ticket_hdr()
     {
         return $this->belongsTo(TicketHdr::class, 'ticket_id');

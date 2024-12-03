@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +9,7 @@ import {
   Grid,
   Typography,
   useTheme,
-  CircularProgress,
-  Skeleton
+  Skeleton,
 } from "@mui/material";
 import {
   AccessTime,
@@ -23,11 +23,18 @@ import {
 
 interface TicketDetailsProps {
   ticketDetail: {
+    id: any;
     ticket_id?: string;
     requestor?: {
       name?: string;
       branch?: {
         branch_description?: string;
+      };
+      section?: {
+        section_description?: string;
+        department?: {
+          department_description?: string;
+        };
       };
     };
     ticket_logs_latest?: {
@@ -44,19 +51,24 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   isLoading,
 }) => {
   const theme = useTheme();
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpenClose = () => {
+    setOpen((prev) => !prev);
+  };
+
   return (
-    <Box sx={{ width: "480px"}}>
+    <Box sx={{ width: "480px" }}>
       <Card elevation={3}>
         <CardContent>
           {isLoading ? (
-            <>
-              <Skeleton
-                    variant="rectangular"
-                    height={605}
-                    width="100%"
-                    sx={{ borderRadius: 1 }}
-                  />
-            </>
+            <Skeleton
+              variant="rectangular"
+              height={605}
+              width="100%"
+              sx={{ borderRadius: 1 }}
+            />
           ) : (
             <>
               <Box
@@ -66,16 +78,17 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                 mb={2}
               >
                 <Typography variant="h5" component="h2">
-                  Ticket Details ({ticketDetail?.ticket_id})
+                  Ticket Details ({ticketDetail?.ticket_id || "N/A"})
                 </Typography>
               </Box>
               <Divider sx={{ mb: 3 }} />
+
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Box display="flex" alignItems="center" mb={2}>
                     <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
                     <Typography variant="body1">
-                      {ticketDetail?.requestor?.name}
+                      {ticketDetail?.requestor?.name || "No Name"}
                     </Typography>
                   </Box>
                   <Box display="flex" alignItems="center" mb={2}>
@@ -89,7 +102,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                       sx={{ mr: 1, color: theme.palette.primary.main }}
                     />
                     <Typography variant="body1">
-                      {ticketDetail?.requestor?.branch?.branch_description || 'No Branch'}
+                      {ticketDetail?.requestor?.branch?.branch_description ||
+                        "No Branch"}
                     </Typography>
                   </Box>
                   <Box display="flex" alignItems="center" mb={2}>
@@ -98,7 +112,9 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                   </Box>
                 </Grid>
               </Grid>
+
               <Divider sx={{ my: 3 }} />
+
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Box mb={2}>
@@ -109,7 +125,13 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                     >
                       Department
                     </Typography>
-                    <Chip label={ticketDetail?.requestor?.section?.department?.department_description || 'No Department'} color="primary" />
+                    <Chip
+                      label={
+                        ticketDetail?.requestor?.section?.department
+                          ?.department_description || "No Department"
+                      }
+                      color="primary"
+                    />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -121,11 +143,19 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                     >
                       Section
                     </Typography>
-                    <Chip label={ticketDetail?.requestor?.section?.section_description || 'No Section'} color="primary" />
+                    <Chip
+                      label={
+                        ticketDetail?.requestor?.section?.section_description ||
+                        "No Section"
+                      }
+                      color="primary"
+                    />
                   </Box>
                 </Grid>
               </Grid>
+
               <Divider sx={{ my: 3 }} />
+
               <Box display="flex" alignItems="center" mb={2}>
                 <AccessTime sx={{ mr: 1, color: theme.palette.primary.main }} />
                 <Typography variant="body1">Urgent</Typography>
@@ -134,9 +164,10 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                 <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
                 <Typography variant="body1">
                   Assigned to:{" "}
-                  {ticketDetail?.ticket_logs_latest?.assignee?.name}
+                  {ticketDetail?.ticket_logs_latest?.assignee?.name || "None"}
                 </Typography>
               </Box>
+
               <Box mb={3}>
                 <Divider sx={{ my: 3 }} />
                 <Typography variant="subtitle1" gutterBottom>
@@ -146,17 +177,21 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                   variant="outlined"
                   startIcon={<Attachment />}
                   sx={{ textTransform: "none" }}
+                  onClick={() => setOpen(!open)}
                 >
-                  View Attachments
+                  Attachments
                 </Button>
               </Box>
+
               <Divider sx={{ my: 3 }} />
+
               <Box display="flex">
                 <Button
                   variant="contained"
                   color="primary"
                   startIcon={<Close />}
                   size="large"
+                  onClick={handleOpenClose}
                 >
                   Close Ticket
                 </Button>

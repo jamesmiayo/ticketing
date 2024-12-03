@@ -23,10 +23,16 @@ class TicketDtlController extends Controller
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Message Sent Successfully'], Response::HTTP_OK);
     }
 
-    public function show(Request $request) : JsonResponse
+    public function show(Request $request): JsonResponse
     {
-        $data = TicketDtl::with('user')->where('ticket_id', $request->ticket_id)->get();
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+        $data = TicketDtl::with('user', 'documents')
+            ->where('ticket_id', $request->ticket_id)
+            ->get();
 
+        return response()->json([
+            'status' => 200,
+            'data' => $data,
+        ], 200);
     }
+    
 }
