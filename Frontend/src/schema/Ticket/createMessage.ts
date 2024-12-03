@@ -4,3 +4,5 @@ export const messageValidationSchema = Yup.object().shape({
   ticket_id: Yup.string().optional(),
   message: Yup.string().optional(),
 });
+
+export type messageValidationSchemaFormtype = Yup.InferType<typeof messageValidationSchema>;

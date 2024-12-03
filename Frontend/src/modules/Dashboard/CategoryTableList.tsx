@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, Paper, Typography } from '@mui/material'
 import TableComponents from '../../components/common/TableComponents';
 

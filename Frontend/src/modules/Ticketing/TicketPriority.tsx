@@ -35,7 +35,7 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
       });
       refetch();
       reset();
-    } catch (error) {
+    } catch (error:any) {
       toast.executeToast(error?.response?.data?.message, "top-center", true, {
         type: "error",
       });

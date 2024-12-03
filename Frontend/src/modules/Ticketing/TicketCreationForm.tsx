@@ -3,7 +3,7 @@ import { Button, Box, Grid } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ticketApi } from "../../api/services/ticket";
-import { ticketValidationSchema } from "../../schema/Ticket/createTicketSchema";
+import { ticketValidationSchema, ticketValidationSchemaFormtype } from "../../schema/Ticket/createTicketSchema";
 import SelectItem from "../../components/common/SelectItem";
 import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
@@ -13,14 +13,6 @@ interface TicketCreationFormProps {
   categories: any;
   subcategories: any;
   handleSubCategoryList: any;
-}
-
-interface TicketFormInputs {
-  title: string;
-  concern: string;
-  category: string;
-  subcategory_id: string;
-  status: string;
 }
 
 const statusOptions = [
@@ -41,7 +33,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<TicketFormInputs>({
+  } = useForm<ticketValidationSchemaFormtype>({
     resolver: yupResolver(ticketValidationSchema),
   });
 

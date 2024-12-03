@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../../api/services/user";
 import TableComponents from "../../components/common/TableComponents";
 import { GridRenderCellParams } from "@mui/x-data-grid";

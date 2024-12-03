@@ -10,17 +10,17 @@ import TicketPriority from "./TicketPriority";
 import { FaCheckCircle } from "react-icons/fa";
 import TicketStatus from "./TicketStatus";
 
-interface Ticket {
-  ticketNo: string;
-  dateTime: string;
-  title: string;
-  concern: string;
-  category: string;
-  department: string;
-  section: string;
-  tech: string;
-  status: string;
-}
+// interface Ticket {
+//   ticketNo: string;
+//   dateTime: string;
+//   title: string;
+//   concern: string;
+//   category: string;
+//   department: string;
+//   section: string;
+//   tech: string;
+//   status: string;
+// }
 
 export default function TicketTable({
   tickets,

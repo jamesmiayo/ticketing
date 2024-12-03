@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
-import { category, categoryFormtype } from "../../schema/Category/category";
-import { getCategoryAPI } from "../../api/services/getCategoryList";
 import { Branch } from "../../api/services/branch";
 import { branch, branchFormtype } from "../../schema/Branch/branch";
 

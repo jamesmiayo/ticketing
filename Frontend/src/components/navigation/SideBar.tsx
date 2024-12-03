@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -15,7 +15,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
-const Sidebar: React.FC = ({ children }: any) => {
+const Sidebar = ({ children }: any) => {
   const { permission } = useContext(PermissionContext);
   const navigate = useNavigate();
   const [activeNavItem, setActiveNavItem] = useState("");
@@ -58,7 +58,7 @@ const Sidebar: React.FC = ({ children }: any) => {
 
   const handleLogout = async () => {
     try {
-      const response = await logoutUser();
+      const response:any = await logoutUser();
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });

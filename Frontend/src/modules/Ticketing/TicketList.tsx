@@ -1,6 +1,5 @@
 import React from "react";
 import {  CircularProgress, Grid, Paper, Typography } from "@mui/material";
-import { cardColors } from "../../constants/constants";
 
 // Define the structure of each ticket status item
 interface TicketStatus {

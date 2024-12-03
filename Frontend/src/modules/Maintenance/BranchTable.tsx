@@ -14,7 +14,6 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { ConfirmDialog } from "../../components/common/ConfirmationModal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { Department } from "../../api/services/department";
 import BranchForm from "./BranchForm";
 import { Branch } from "../../api/services/branch";
 

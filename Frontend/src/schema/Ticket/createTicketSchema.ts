@@ -8,3 +8,5 @@ export const ticketValidationSchema = Yup.object().shape({
   subcategory_id: Yup.string().required(warningMessage),
   status: Yup.string().required(warningMessage),
 });
+
+export type ticketValidationSchemaFormtype = Yup.InferType<typeof ticketValidationSchema>;
