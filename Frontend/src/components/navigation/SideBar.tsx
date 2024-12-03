@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -6,17 +6,17 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton"; // Import IconButton
 import { MdDashboard } from "react-icons/md";
 import { BsTicketDetailed } from "react-icons/bs";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material"; // Import icons for toggle
-import { Button } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 const Sidebar: React.FC = ({ children }: any) => {
+  const { permission } = useContext(PermissionContext);
   const navigate = useNavigate();
   const [activeNavItem, setActiveNavItem] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -24,11 +24,31 @@ const Sidebar: React.FC = ({ children }: any) => {
   const toast = useExecuteToast();
 
   const navItems = [
-    { title: "Dashboard", path: "/dashboard", icon: <MdDashboard /> },
-    { title: "Ticket", path: "/ticket?page=1", icon: <BsTicketDetailed /> },
-    { title: "User Ticket", path: "/user-ticket", icon: <BsTicketDetailed /> },
-    { title: "Profile", path: "/profile", icon: <MdDashboard /> },
-    { title: "Maintenance", path: "/maintenance", icon: <MdDashboard /> },
+    {
+      title: "Dashboard",
+      path: "/dashboard",
+      icon: <MdDashboard />,
+      show: true,
+    },
+    {
+      title: "Ticket",
+      path: "/ticket?page=1",
+      icon: <BsTicketDetailed />,
+      show: true,
+    },
+    {
+      title: "User Ticket",
+      path: "/user-ticket",
+      icon: <BsTicketDetailed />,
+      show: permission?.includes("Can View User Ticket"),
+    },
+    { title: "Profile", path: "/profile", icon: <MdDashboard />, show: true },
+    {
+      title: "Maintenance",
+      path: "/maintenance",
+      icon: <MdDashboard />,
+      show: permission?.includes("Can View Maintenance"),
+    },
   ];
 
   const handleNavigation = (path: string, title: string) => {
@@ -118,7 +138,9 @@ const Sidebar: React.FC = ({ children }: any) => {
                 flexGrow: 1,
               }}
             >
-              {navItems.map((item, index) => (
+              {navItems 
+              .filter(item => item.show) 
+              .map((item, index) => (
                 <ListItem disablePadding key={index} sx={{ marginTop: 1 }}>
                   <ListItemButton
                     onClick={() => handleNavigation(item.path, item.title)}

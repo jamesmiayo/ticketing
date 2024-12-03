@@ -17,7 +17,7 @@ class TicketStatus extends Model
         'status',
         'remarks'
     ];
-    protected $with = ['assignee:id,name', 'updated_by:id,name'];
+    protected $with = ['assignee:id,name,section_id', 'updated_by:id,name'];
 
     protected $appends = ['ticket_status', 'time_difference'];
 
@@ -42,9 +42,6 @@ class TicketStatus extends Model
 
         return sprintf('%02d:%02d:%02d', $diff->h, $diff->i, $diff->s);
     }
-
-
-
 
     public function getTicketStatusAttribute()
     {

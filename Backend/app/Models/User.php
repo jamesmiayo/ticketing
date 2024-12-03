@@ -82,11 +82,51 @@ class User extends Authenticatable
         return $this->hasMany(TicketStatus::class, 'emp_id');
     }
 
+    public static function getUserData($searchParams)
+    {
+        $query = self::with('roles', 'branch', 'section', 'section.department', 'section.department.division');
+
+        if (array_key_exists('employee_id', $searchParams) && $searchParams['employee_id'] !== null) {
+            $query->employeeId($searchParams['employee_id']);
+        }
+
+        if (array_key_exists('name', $searchParams) && $searchParams['name'] !== null) {
+            $query->name($searchParams['name']);
+        }
+
+        if (array_key_exists('role_id', $searchParams) && $searchParams['role_id'] !== null) {
+            $query->role($searchParams['role_id']);
+        }
+
+        return $query;
+    }
+
+    public function scopeEmployeeId($query, $employee_id)
+    {
+        return $query->where('emp_id', 'LIKE', '%' . $employee_id . '%');
+    }
+
+    public function scopeName($query, $name)
+    {
+
+        return $query->where('name', 'LIKE', '%' . $name . '%');
+    }
+
+    public function scopeRole($query, $id)
+    {
+        return $query->whereHas('roles', function ($roleQuery) use ($id) {
+            $roleQuery->where('id', $id);
+        });
+    }
     public function satisfactoryPercentage()
     {
-        return $this->ticketdtl->map(function ($ticket) {
-            return $ticket->tickets->ticket_satisfactory->average_satisfactory;
-        })->filter()
+        return $this->ticketdtl
+            ->map(function ($ticket) {
+                return optional($ticket->tickets->ticket_satisfactory)->average_satisfactory;
+            })
+            ->filter(function ($average) {
+                return !is_null($average);
+            })
             ->pipe(function ($averages) {
                 $totalSum = $averages->sum();
                 $totalCount = $averages->count();

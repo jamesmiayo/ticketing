@@ -8,11 +8,12 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $data = User::with('roles','branch', 'section', 'section.department', 'section.department.division')->latest()->get();
+        $data = User::getUserData($request->all())->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
@@ -37,5 +38,21 @@ class UserController extends Controller
         $user->roles()->detach();
         $user->assignRole($role->name);
         return new JsonResponse(['status' => Response::HTTP_OK,'ss' => $role, 'data' => 'User Section Updated Successfully'], Response::HTTP_OK);
+    }
+
+    public function showProfile()
+    {
+        $data = Auth::user()->with('roles' , 'section' , 'section.department' , 'section.department.division')->first();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+    }
+
+    public function updateUserBranchSection(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        $user->update([
+            'branch_id' => $request->branch_id,
+            'section_id' => $request->section_id,
+        ]);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Your Account Has been Successfully Updated'], Response::HTTP_OK);
     }
 }

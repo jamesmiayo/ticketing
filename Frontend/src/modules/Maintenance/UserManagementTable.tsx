@@ -3,13 +3,19 @@ import { User } from "../../api/services/user";
 import TableComponents from "../../components/common/TableComponents";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import { Dialog, IconButton, Tooltip } from "@mui/material";
-import { FaEye } from "react-icons/fa";
 import { FaBuilding } from "react-icons/fa";
 import SectionModal from "./UserModal/SectionModal";
 import BranchModal from "./UserModal/BranchModal";
 import RoleModal from "./UserModal/RoleModal";
 import { FaUserCircle } from "react-icons/fa";
 import { BsBuildingsFill } from "react-icons/bs";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  userSearchSchema,
+  userSearchSchemaFormType,
+} from "../../schema/User/UserSearchSchema";
+import { Role } from "../../api/services/role";
 
 export default function UserManagementTable() {
   const [data, setData] = useState();
@@ -17,10 +23,22 @@ export default function UserManagementTable() {
   const [modal, setModal] = useState<any>();
   const [row, setRow] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const fetchData = async () => {
+  const [roles, setRoles] = useState([]);
+  
+  const {
+    control,
+    reset,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<userSearchSchemaFormType>({
+    resolver: yupResolver(userSearchSchema),
+  });
+
+  const fetchData = async (filterData:any) => {
     setLoading(true);
     try {
-      const response = await User.getUser();
+      const response = await User.getUser(filterData);
       const data = response.map((row: any) => ({
         id: row.id,
         emp_id: row.emp_id,
@@ -38,9 +56,63 @@ export default function UserManagementTable() {
       setLoading(false);
     }
   };
+
+  const onSubmit: SubmitHandler<userSearchSchemaFormType> = async (formData: any) => {
+    try {
+      setLoading(true);
+      fetchData(formData);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getRolesData = async () => {
+    setLoading(true);
+    try {
+      const response = await Role.getRole();
+      const data = response.map((row: any) => ({
+        value: row.id,
+        label: row.name,
+      }));
+      setRoles(data);
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    fetchData();
+    fetchData(null);
+    getRolesData();
   }, []);
+
+  const userSearchFilter = [
+    {
+      name: "employee_id",
+      label: "Employee ID",
+      register: register,
+      errors: errors,
+      type: "text",
+    },
+    {
+      name: "name",
+      label: "Name",
+      register: register,
+      errors: errors,
+      type: "text",
+    },
+    {
+      name: "role_id",
+      label: "Role",
+      register: register,
+      control: control,
+      errors: errors,
+      options: roles,
+      type: "select",
+    },
+  ];
+
   const columns = [
     { field: "emp_id", headerName: "Employee ID", width: 140 },
     { field: "branch", headerName: "Branch", width: 140 },
@@ -61,7 +133,7 @@ export default function UserManagementTable() {
               <BsBuildingsFill />
             </IconButton>
           </Tooltip>
-          <Tooltip title={"Change User Branch"}>
+          <Tooltip title={"Change User Section"}>
             <IconButton onClick={() => handleClick(params.row, "section")}>
               <FaBuilding />
             </IconButton>
@@ -81,6 +153,10 @@ export default function UserManagementTable() {
     setModal(modal);
     setRow(params);
   }
+  const handleReset = () => {
+    reset();
+    fetchData(null);
+  };
   return (
     <>
       <Dialog
@@ -97,7 +173,15 @@ export default function UserManagementTable() {
           <RoleModal data={row} setOpen={setOpen} refetch={fetchData} />
         )}
       </Dialog>
-      <TableComponents rows={data} columns={columns} isLoading={loading} />
+      <TableComponents
+        rows={data}
+        columns={columns}
+        isLoading={loading}
+        customInputs={userSearchFilter}
+        onReset={handleReset}
+        onSubmit={handleSubmit(onSubmit)}
+
+      />
     </>
   );
 }

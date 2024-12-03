@@ -32,7 +32,6 @@ export default function SectionModal({ data, setOpen, refetch }: any) {
   const getDataList = async () => {
     try {
       const response = await Division.getDivision();
-      console.log(response);
       const data = response.map((row: any) => ({
         value: row.id,
         label: row.division_description,

@@ -23,7 +23,7 @@ class TicketHdr extends Model
         'b_status'
     ];
 
-    protected $with = ['requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
+    protected $with = ['ticket_logs_latest','requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
 
     protected $appends = ['ticket_status', 'time_finished' , 'ticket_priority'];
 
@@ -79,7 +79,7 @@ class TicketHdr extends Model
 
     public function ticket_logs_latest()
     {
-        return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name')->latestOfMany();
+        return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name,section_id')->latestOfMany();
     }
 
     public function ticket_logs_completed()
@@ -87,10 +87,11 @@ class TicketHdr extends Model
         return $this->hasOne(TicketStatus::class, 'ticket_id')->where('status', GlobalConstants::COMPLETED)->latestOfMany();
     }
 
-    public static function getTicketLog($searchParams)
+    public function getTicketLog($searchParams)
     {
 
-        $query = self::with('ticket_logs_latest');
+        $query = self::query();
+
         if (array_key_exists('ticket_id', $searchParams)) {
             $query->ticketId($searchParams['ticket_id']);
         }

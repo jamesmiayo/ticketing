@@ -9,7 +9,7 @@ use App\Http\Controllers\Maintenance\SectionController;
 use App\Http\Controllers\Maintenance\CategoryController;
 use App\Http\Controllers\Maintenance\RoleController;
 use App\Http\Controllers\Maintenance\DivisionController;
-use App\Http\Controllers\Maintenance\RoleController;
+use App\Http\Controllers\Maintenance\PermissionController;
 use App\Http\Controllers\Maintenance\UserController;
 use App\Http\Controllers\Maintenance\SubCategoryController;
 use App\Http\Controllers\Ticket\TicketDtlController;
@@ -25,10 +25,11 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', DashboardController::class);
-    Route::get('get-user', [UserController::class , 'index']);
+    Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
+        Route::resource('permission', PermissionController::class);
         Route::resource('division', DivisionController::class);
         Route::resource('branch', BranchController::class);
         Route::resource('department', DepartmentController::class);
@@ -36,13 +37,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('category', CategoryController::class);
         Route::resource('sub-category', SubCategoryController::class);
         Route::resource('role', RoleController::class);
+        Route::post('role-permission', [PermissionController::class, 'assignRolePermission']);
     });
 
     //tickets routes
     Route::prefix('ticket')->group(function () {
-        Route::post('satisfactory', [TicketHdrController::class , 'ticketSatisFactory']);
-        Route::post('sent-message', [TicketDtlController::class , 'create']);
-        Route::get('sent-message/{ticket_id}', [TicketDtlController::class , 'show']);
+        Route::post('satisfactory', [TicketHdrController::class, 'ticketSatisFactory']);
+        Route::post('sent-message', [TicketDtlController::class, 'create']);
+        Route::get('sent-message/{ticket_id}', [TicketDtlController::class, 'show']);
         Route::get('ticket-logs', TicketLogController::class);
         Route::resource('ticket-hdr', TicketHdrController::class);
         Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
@@ -52,9 +54,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('user')->group(function () {
-        Route::get('ticket',UserTicketController::class);
-        Route::post('branch' , [UserController::class , 'updateUserBranch']);
-        Route::post('section' , [UserController::class , 'updateUserSection']);
-        Route::post('role' , [UserController::class , 'updateUserRole']);
+        Route::post('branch-section' , [UserController::class, 'updateUserBranchSection']);
+        Route::get('profile', [UserController::class, 'showProfile']);
+        Route::get('ticket', UserTicketController::class);
+        Route::post('branch', [UserController::class, 'updateUserBranch']);
+        Route::post('section', [UserController::class, 'updateUserSection']);
+        Route::post('role', [UserController::class, 'updateUserRole']);
     });
 });

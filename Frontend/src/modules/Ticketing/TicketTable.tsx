@@ -63,22 +63,32 @@ export default function TicketTable({
         return { backgroundColor: "#2196f3" };
     }
   }
+
   const columns = [
-    { field: "ticket_id", headerName: "Ticket ID", width: 140 },
-    { field: "assignee", headerName: "Assignee", width: 140 },
-    { field: "title", headerName: "Title", width: 270 },
+    { field: "ticket_id", headerName: "Ticket ID", width: 100 },
+    {
+      field: "Assignee",
+      headerName: "Assignee To",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.ticket_logs_latest?.assignee?.name || "No Assignee",
+    },
+    {
+      field: "requestor",
+      headerName: "Request By",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.requestor.name,
+    },
     {
       field: "status",
       headerName: "Status",
       width: 150,
-      renderCell: (params: GridRenderCellParams) => {
-        return params.row.b_status === "7"
-          ? "Completed"
-          : params.row.status_name;
-      },
+      renderCell: (params: any) => params.row.ticket_logs_latest?.ticket_status,
     },
+    { field: "title", headerName: "Title", width: 200 },
     {
-      field: "priority",
+      field: "ticket_priority",
       headerName: "Priority",
       width: 150,
       renderCell: (params: GridRenderCellParams) => (
@@ -91,13 +101,25 @@ export default function TicketTable({
             color: "white",
           }}
         >
-          {params.value}
+          {params.value || "N/A"}
         </div>
       ),
     },
-    { field: "category", headerName: "Category", width: 180 },
-    { field: "subCategory", headerName: "Sub Category", width: 180 },
-    { field: "updated_by", headerName: "Updated By", width: 180 },
+    {
+      field: "category",
+      headerName: "Category",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.sub_category?.category?.category_description ||
+        "No Assignee",
+    },
+    {
+      field: "sub_category",
+      headerName: "Category",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.sub_category?.subcategory_description || "No Assignee",
+    },
     { field: "created_at", headerName: "Date Time", width: 180 },
     ...(isOptions
       ? [

@@ -27,7 +27,6 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
   });
 
   const onSubmit = async (formData: any) => {
-    console.log(formData);
     setOpen(false);
     try {
       const response = await ticketApi.updatePriority(data.id, formData);
@@ -37,7 +36,9 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
       refetch();
       reset();
     } catch (error) {
-      console.error("Failed to assign ticket:", error);
+      toast.executeToast(error?.response?.data?.message, "top-center", true, {
+        type: "error",
+      });
     }
   };
 

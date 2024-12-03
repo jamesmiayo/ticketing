@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Paper, Typography, Button } from "@mui/material";
 import { ticketApi } from "../../api/services/ticket";
 import { OverviewAPI } from "../../api/services/getOverview";
@@ -8,42 +8,13 @@ import CategoryTableList from "./CategoryTableList";
 import TicketListTable from "./TicketListTable";
 import TicketList from "../Ticketing/TicketList";
 import TicketPriority from "./TicketPriority";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
+import TicketTable from "../Ticketing/TicketTable";
 
 const Dashboard: React.FC = () => {
+  const { permission } = useContext(PermissionContext);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any>([]);
   const [totalTicket, setTotalTicket] = useState<any>([]);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const result = await ticketApi.getTicketData();
-      if (result) {
-        const formattedTickets = result?.map((ticket: any) => ({
-          id: ticket.id,
-          ticket_id: ticket.ticket_id || "N/A",
-          requestedBy: ticket.user?.name || "N/A",
-          title: ticket.title || "N/A",
-          category:
-            ticket.sub_category?.category?.category_description || "N/A",
-          subCategory: ticket.sub_category?.subcategory_description || "N/A",
-          status: ticket?.ticket_logs_latest?.ticket_status || "Unknown",
-          created_at: ticket?.ticket_logs_latest?.created_at,
-          assignee: ticket?.ticket_logs_latest?.assignee?.name || "No assignee",
-          updated_by:
-            ticket?.ticket_logs_latest?.updated_by?.name || "No assignee",
-        }));
-        setData(formattedTickets);
-      } else {
-        console.warn("Unexpected data structure:", result);
-      }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const dashboardFetchData = async () => {
     try {
       setLoading(true);
@@ -62,9 +33,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     dashboardFetchData();
-    fetchData();
   }, []);
-
   return (
     <Box style={{ padding: 5 }}>
       <Box
@@ -85,8 +54,18 @@ const Dashboard: React.FC = () => {
               ticketList={totalTicket?.total_ticket_count}
               isLoading={loading}
             />
-                        <TicketPriority ticketPriority={totalTicket?.total_priority} isLoading={loading}/>
-            <TodaySummaryComponent totalTicket={totalTicket} isLoading={loading}/>
+            {permission?.includes("Can View Ticket Priority") && (
+              <TicketPriority
+                ticketPriority={totalTicket?.total_priority}
+                isLoading={loading}
+              />
+            )}
+            {permission?.includes("Can View Today Summary") && (
+              <TodaySummaryComponent
+                totalTicket={totalTicket}
+                isLoading={loading}
+              />
+            )}
           </Box>
           <Box
             sx={{
@@ -97,9 +76,34 @@ const Dashboard: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <CategoryTableList data={totalTicket?.total_ticket_category} isLoading={loading} />
-            <BranchListTable data={totalTicket?.total_ticket_branch} isLoading={loading} />
-            <TicketListTable data={totalTicket?.latest_ticket} isLoading={loading} />
+            {permission?.includes("Can View Category Table List") && (
+              <CategoryTableList
+                data={totalTicket?.total_ticket_category}
+                isLoading={loading}
+              />
+            )}
+            {permission?.includes("Can View Branch Table List") && (
+              <BranchListTable
+                data={totalTicket?.total_ticket_branch}
+                isLoading={loading}
+              />
+            )}{" "}
+            {permission?.includes("Can View Ticket Table List") && (
+              <TicketListTable
+                data={totalTicket?.latest_ticket}
+                isLoading={loading}
+              />
+            )}
+            {[
+              "Can View Category Table List",
+              "Can View Branch Table List",
+              "Can View Ticket Table List",
+            ].some((perm) => !permission?.includes(perm)) && (
+              <TicketTable
+                tickets={totalTicket?.latest_ticket}
+                isLoading={loading}
+              />
+            )}
           </Box>
         </Box>
       </Box>

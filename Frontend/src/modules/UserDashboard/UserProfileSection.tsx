@@ -6,27 +6,17 @@ import {
   Card,
   CardContent,
   Container,
-  Grid,
   IconButton,
   Link,
+  Skeleton,
   Typography,
   styled,
 } from "@mui/material";
 import {
-  Key,
-  Laptop,
-  Person,
-  Settings,
-  Work,
-  Security,
-  Help,
-  Language,
-  AccountCircle,
   Edit,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { OverviewAPI } from "../../api/services/getOverview";
-import TicketList from "../Ticketing/TicketList";
+import { User } from "../../api/services/user";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
@@ -41,38 +31,31 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ActionLink = styled(Link)(({ theme }) => ({
-  color: theme.palette.primary.main,
-  textDecoration: "none",
-  display: "inline-flex",
-  alignItems: "center",
-  "&:hover": {
-    textDecoration: "underline",
-  },
-}));
+// const ActionLink = styled(Link)(({ theme }) => ({
+//   color: theme.palette.primary.main,
+//   textDecoration: "none",
+//   display: "inline-flex",
+//   alignItems: "center",
+//   "&:hover": {
+//     textDecoration: "underline",
+//   },
+// }));
 
 export default function UserProfile() {
   const [loading, setLoading] = useState(true);
-  const [totalTicket, setTotalTicket] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
 
   const dashboardFetchData = async () => {
     try {
       setLoading(true);
-      const result = await OverviewAPI.getAllData();
-      if (result) {
-        setTotalTicket(result);
-      } else {
-        console.warn("Unexpected data structure:", result);
-      }
+      const result = await User.getUserProfile();
+      setData(result?.data);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
     }
   };
-
-  console.log(totalTicket);
-
   useEffect(() => {
     dashboardFetchData();
   }, []);
@@ -100,28 +83,59 @@ export default function UserProfile() {
               <Edit fontSize="small" />
             </IconButton>
           </Box>
-          <Typography variant="h5" gutterBottom>
-            Dastine Jhay Bernardo
-          </Typography>
-          <Typography color="textSecondary" gutterBottom>
-            Application Developer
-          </Typography>
-          <Typography color="textSecondary" gutterBottom>
-            IT Group
-          </Typography>
-          <Link
-            href="mailto:djbernardo@safc.com.ph"
-            color="primary"
-            sx={{ mb: 2, display: "block" }}
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+            }}
           >
-            djbernardo@safc.com.ph
-          </Link>
+            {loading ? (
+              <>
+                <Skeleton variant="text" width="50%" height={30} />
+                <Skeleton variant="text" width="70%" height={25} />
+                <Skeleton variant="text" width="60%" height={25} />
+                <Skeleton variant="text" width="60%" height={25} />
+                <Skeleton
+                  variant="rectangular"
+                  width="30%"
+                  height={30}
+                  sx={{ mt: 2 }}
+                />
+              </>
+            ) : (
+              <>
+                <Typography variant="h5" gutterBottom>
+                  {data?.name}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
+                  {data?.section?.department?.division?.division_description}
+                </Typography>
+                <Typography color="textSecondary" gutterBottom>
+                  {data?.section?.department?.department_description}
+                </Typography>
+                <Typography color="textSecondary" gutterBottom>
+                  {data?.section?.section_description}
+                </Typography>
+                <Link
+                  href={`mailto:${data?.email}`}
+                  color="primary"
+                  sx={{ mb: 2, display: "block" }}
+                >
+                  {data?.email}
+                </Link>
+              </>
+            )}
+          </Box>
         </CardContent>
       </StyledCard>
-      <TicketList
+      {/* <TicketList
         ticketList={totalTicket?.total_ticket_count}
         isLoading={loading}
-      />
+      /> */}
     </Container>
   );
 }
