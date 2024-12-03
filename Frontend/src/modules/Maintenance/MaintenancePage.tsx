@@ -7,6 +7,7 @@ import SubCategoryTable from "./SubCategoryTable";
 import BranchTable from "./BranchTable";
 import RoleTable from "./RoleTable";
 import UserManagementTable from "./UserManagementTable";
+import DivisionTable from "./DivisionTable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
@@ -60,6 +61,7 @@ export default function MaintenancePage() {
           <Tab label="Users" />
           <Tab label="Category" />
           <Tab label="Sub Category" />
+          <Tab label="Division" />
           <Tab label="Department" />
           <Tab label="Section" />
           <Tab label="Branch" />
@@ -114,6 +116,19 @@ export default function MaintenancePage() {
         {value === 3 && (
           <>
             <Typography variant="h6" gutterBottom>
+              Division Management
+            </Typography>
+            <Typography>
+              Manage and organize your sub categories here.
+            </Typography>
+            <Box sx={{ mt: 5 }}>
+              <DivisionTable />
+            </Box>
+          </>
+        )}
+        {value === 4 && (
+          <>
+            <Typography variant="h6" gutterBottom>
               Department Overview
             </Typography>
             <Typography>View and edit department information.</Typography>
@@ -122,7 +137,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 4 && (
+        {value === 5 && (
           <>
             <Typography variant="h6" gutterBottom>
               Section Control
@@ -133,7 +148,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 5 && (
+        {value === 6 && (
           <>
             <Typography variant="h6" gutterBottom>
               Branch Control
@@ -144,7 +159,7 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
-        {value === 6 && (
+        {value === 7 && (
           <>
             <Typography variant="h6" gutterBottom>
               Role Assignment

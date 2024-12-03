@@ -14,10 +14,10 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { ConfirmDialog } from "../../components/common/ConfirmationModal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import DepartmentForm from "./DepartmentForm";
-import { Department } from "../../api/services/department";
+import { Division } from "../../api/services/division";
+import DivisionForm from "./DivisionForm";
 
-export default function DepartmentTable({
+export default function DivisionTable({
   onPageChange,
   pageProps,
   customInputs,
@@ -64,12 +64,12 @@ export default function DepartmentTable({
     try {
       setLoading(true);
 
-      const responseUpdate = await Department.updateDepartment({
+      const responseUpdate = await Division.updateDivision({
         id: selectedRow.id,
         body: {
           b_active: updatedStatus,
-          department_description: selectedRow.label,
-          department_id: selectedRow.data_id,
+          division_description: selectedRow.label,
+          division_id: selectedRow.data_id,
         },
       });
       toast.executeToast(responseUpdate.message, "top-center", true, {
@@ -89,16 +89,16 @@ export default function DepartmentTable({
     if (!selectedRow) return;
     try {
       setLoading(true);
-      const response = await Department.deleteDepartment(selectedRow.id);
+      const response = await Division.deleteDivision(selectedRow.id);
       toast.executeToast(response.message, "top-center", true, {
         type: "success",
       });
 
       await getDataList();
     } catch (error) {
-      console.error("Error deleting Department:", error);
+      console.error("Error deleting Division:", error);
       toast.executeToast(
-        "Failed to delete Department. Please try again.",
+        "Failed to delete Division. Please try again.",
         "top-center",
         true,
         { type: "error" }
@@ -112,13 +112,12 @@ export default function DepartmentTable({
   const getDataList = async () => {
     try {
       setLoading(true);
-      const response = await Department.getDepartment();
+      const response = await Division.getDivision();
       const data = response.map((row: any) => ({
         id: row.id,
-        division_id: row.division_id,
-        label: row.department_description,
+        label: row.division_description,
         active: row.b_active,
-        data_id: row.department_id,
+        data_id: row.division_id,
         created_at: row.created_at,
         updated_at: row.updated_at,
       }));
@@ -195,10 +194,10 @@ export default function DepartmentTable({
     <>
       <Dialog open={open} onClose={handleOpenClose}>
         <DialogTitle>
-          {selectedRow ? "Edit Department" : "New Department"}
+          {selectedRow ? "Edit Division" : "New Division"}
         </DialogTitle>
         <DialogContent>
-          <DepartmentForm
+          <DivisionForm
             refetch={getDataList}
             onClose={handleOpenClose}
             defaultValues={selectedRow}
@@ -225,7 +224,7 @@ export default function DepartmentTable({
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <Button variant="contained" color="success" onClick={handleOpenClose}>
-          New Department
+          New Division
         </Button>
       </Box>
       <TableComponents

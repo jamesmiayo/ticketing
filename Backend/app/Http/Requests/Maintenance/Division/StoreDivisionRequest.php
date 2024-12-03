@@ -31,6 +31,7 @@ class StoreDivisionRequest extends FormRequest
         return [
             'division_id' => mt_rand(1000, 9999),
             'division_description' => $this->division_description,
+            'b_active' => true,
         ];
     }
 }
