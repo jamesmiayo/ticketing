@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
@@ -19,7 +18,7 @@ export default function TicketPriority({ ticketPriority, isLoading }: any) {
     ],
   };
 
-  const options = {
+  const options:any = {
     plugins: {
       legend: {
         position: "bottom",

@@ -1,5 +1,5 @@
 // App.js
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import PrivateRoute from "./pages/private/privateRoute.tsx";
 import PublicRoute from "./pages/public/publicRoute";
 import LoginPage from "./modules/Login/LoginPage";

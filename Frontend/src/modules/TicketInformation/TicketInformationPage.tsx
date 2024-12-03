@@ -2,7 +2,7 @@ import { Box, Container, Typography } from "@mui/material";
 import ChatBox from "./ChatBox";
 import TicketDetails from "./TicketDetails";
 import TicketSideBar from "../Ticketing/TicketSideBar";
-import { ticketApi, TicketInformation } from "../../api/services/ticket";
+import { ticketApi } from "../../api/services/ticket";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TicketLog from "./TicketLog";
@@ -15,7 +15,7 @@ export function useQuery() {
 const TicketInformationPage = () => {
   const query = useQuery();
   const ticketId = query.get("id");
-  const [ticket, setTicket] = useState<TicketInformation | null>(null);
+  const [ticket, setTicket] = useState<any | null>(null);
   const [activeSection, setActiveSection] = useState<string>("Ticket");
   const [ isLoading , setIsLoading ] = useState(false);
   const fetchTicketInformation = async () => {

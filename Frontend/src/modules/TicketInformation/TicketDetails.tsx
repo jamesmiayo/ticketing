@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
@@ -13,8 +12,6 @@ import {
 } from "@mui/material";
 import {
   AccessTime,
-  Attachment,
-  Close,
   LocationOn,
   Person,
   Phone,
@@ -37,6 +34,7 @@ interface TicketDetailsProps {
         };
       };
     };
+    ticket_priority:string;
     ticket_logs_latest?: {
       assignee?: {
         name?: string;
@@ -52,11 +50,11 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
 }) => {
   const theme = useTheme();
 
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
-  const handleOpenClose = () => {
-    setOpen((prev) => !prev);
-  };
+  // const handleOpenClose = () => {
+  //   setOpen((prev) => !prev);
+  // };
 
   return (
     <Box sx={{ width: "480px" }}>
@@ -168,7 +166,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                 </Typography>
               </Box>
 
-              <Box mb={3}>
+              {/* <Box mb={3}>
                 <Divider sx={{ my: 3 }} />
                 <Typography variant="subtitle1" gutterBottom>
                   Attachments
@@ -195,7 +193,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                 >
                   Close Ticket
                 </Button>
-              </Box>
+              </Box> */}
             </>
           )}
         </CardContent>

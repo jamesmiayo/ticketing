@@ -51,7 +51,7 @@ export default function BranchListTable({ data, isLoading }: any) {
             maxWidth: '1200px',
             margin: '0 auto'
         }}>
-            {dataTicket.status_counts && dataTicket.status_counts.map(({ label, value }, index) => (
+            {dataTicket.status_counts && dataTicket.status_counts.map(({ label, value } : any, index : number) => (
                 <TicketCard key={index} title={label} count={value}  color={cardColors[index]}/>
             ))}
         </div>

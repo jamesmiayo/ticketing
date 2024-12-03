@@ -14,7 +14,6 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { ConfirmDialog } from "../../components/common/ConfirmationModal";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { Section } from "../../api/services/section";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
 import SubCategoryForm from "./SubCategoryForm";
 
