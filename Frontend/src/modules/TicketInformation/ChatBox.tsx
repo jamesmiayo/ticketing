@@ -362,12 +362,14 @@ export default function ChatBox({ ticketDetail }: any) {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Paper elevation={3} sx={{ p: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Tooltip title="Send File Attachment">
                 <Button
                   sx={{ textTransform: "none" }}
                   onClick={() => setOpen(!open)}
                 >
                   <Attachment />
                 </Button>
+                </Tooltip>
                 <InputComponent
                   name="message"
                   register={register}

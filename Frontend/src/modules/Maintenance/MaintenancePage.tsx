@@ -7,7 +7,6 @@ import SubCategoryTable from "./SubCategoryTable";
 import BranchTable from "./BranchTable";
 import RoleTable from "./RoleTable";
 import UserManagementTable from "./UserManagementTable";
-import RoleTable from "./RoleTable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
