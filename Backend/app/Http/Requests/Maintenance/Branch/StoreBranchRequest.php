@@ -11,7 +11,8 @@ class StoreBranchRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Store Branch');
+        return true;
+        // return $this->user()->can('Can Store Branch');
     }
 
     /**
@@ -23,7 +24,6 @@ class StoreBranchRequest extends FormRequest
     {
         return [
             'branch_description' => 'required',
-            'b_active' => 'required',
         ];
     }
 
@@ -32,7 +32,7 @@ class StoreBranchRequest extends FormRequest
         return [
             'branch_id' => mt_rand(1000, 9999),
             'branch_description' => $this->branch_description,
-            'b_active' => $this->b_active,
+            'b_active' => true,
         ];
     }
 }

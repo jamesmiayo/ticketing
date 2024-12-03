@@ -8,6 +8,8 @@ use LdapRecord\Models\Entry;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use LdapRecord\Container;
+use Illuminate\Support\Arr;
 
 class LdapAuthenticationService
 {
@@ -27,6 +29,12 @@ class LdapAuthenticationService
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
 
+        $connection = Container::getDefaultConnection();
+
+        if (!$connection->auth()->attempt($user->getDn(), $this->request->password)) {
+            return response()->json(['status' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid credentials.'], Response::HTTP_BAD_REQUEST);
+        }
+
         $role = Role::where('name', $user['description'][0])->first();
 
         $localUser = User::updateOrCreate(
@@ -36,13 +44,12 @@ class LdapAuthenticationService
                 'name' => $user->getName(),
                 'description' => $user['description'][0] ?? null,
                 'division' => $user->getDn(),
-                'password' => Hash::make( $this->request->password)
+                'password' => Hash::make($this->request->password)
             ]
         );
 
-        if(!empty($role)){
-            $localUser->assignRole($role->name);
-            $localUser->givePermissionTo($role->permissions->pluck('name'));
+        if(count($localUser->roles) === 0){
+            $localUser->assignRole('User');
         }
 
         $token = $localUser->createToken('SAFC')->plainTextToken;
@@ -51,7 +58,8 @@ class LdapAuthenticationService
             'status' => Response::HTTP_OK,
             'message' => 'Login successful.',
             'user' => $localUser,
-            'permissions' => !empty($role) ? $localUser->getAllPermissions()->pluck('name') : null,
+            'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
+            'role' => $localUser->roles->pluck('name'),
             'access_token' => $token,
         ], Response::HTTP_OK);
     }

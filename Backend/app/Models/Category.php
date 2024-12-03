@@ -14,4 +14,8 @@ class Category extends Model
     public function ticket_hdr() {
         return $this->belongsTo(TicketHdr::class);
     }
+
+    public function sub_category(){
+        return $this->hasMany(SubCategory::class);
+    }
 }

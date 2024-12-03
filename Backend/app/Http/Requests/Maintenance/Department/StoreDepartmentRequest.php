@@ -11,7 +11,8 @@ class StoreDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Create Department');
+        return true;
+        // return $this->user()->can('Can Create Department');
     }
 
     /**
@@ -22,8 +23,8 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'division_id' => 'required',
             'department_description' => 'required',
-            'b_active' => 'required',
         ];
     }
 
@@ -31,8 +32,9 @@ class StoreDepartmentRequest extends FormRequest
     {
         return [
             'department_id' => mt_rand(1000, 9999),
+            'division_id' => $this->division_id,
             'department_description' => $this->department_description,
-            'b_active' => $this->b_active,
+            'b_active' => true,
         ];
     }
 }

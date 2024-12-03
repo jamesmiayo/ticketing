@@ -1,85 +1,48 @@
-import React, { useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import Dashboard from './modules/Dashboard/DashboardPage';
-import LoginPage from './modules/Login/LoginPage';
-import Sidebar from './components/navigation/SideBar'; // Sidebar component
-import UserPage from './modules/Dashboard/UserPage'; // User page for profile details
+// App.js
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import PrivateRoute from "./pages/private/privateRoute.tsx";
+import PublicRoute from "./pages/public/publicRoute";
+import LoginPage from "./modules/Login/LoginPage";
+import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
+import { LoaderProvider } from "./context/LoaderContext";
+import { usePrivateRoutes } from "./pages/private/PrivateRoute.ts";
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userData, setUserData] = useState<any>(null); // Store user data after login
-
-  // Function to handle login logic
-  const handleLogin = (user: any) => {
-    setIsLoggedIn(true);
-    setUserData(user); // Store user data on successful login
-  };
-
-  // Function to handle logout logic
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserData(null); // Clear user data on logout
-  };
+function App() {
+  const newPrivateRoutes = usePrivateRoutes();
 
   return (
-    <Router>
-      <Routes>
-        {/* Login Route */}
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/" /> // Redirect to dashboard if already logged in
-            ) : (
-              <LoginPage onLogin={handleLogin} />
-            )
-          }
-        />
+    <AuthProvider>
+      <ToastProvider>
+        <LoaderProvider>
+          <BrowserRouter future={{ v7_startTransition: true }}>
+            <Routes>
+              <Route index element={<LoginPage />} />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
 
-        {/* Dashboard Route - Protected Route */}
-        <Route
-          path="/"
-          element={
-            isLoggedIn ? (
-              <div style={{ display: 'flex' }}>
-                {/* Sidebar is visible when logged in */}
-                <Sidebar onLogout={handleLogout} />
-                <div style={{ flex: 1 }}>
-                  <Dashboard onLogout={handleLogout} />
-                </div>
-              </div>
-            ) : (
-              <Navigate to="/login" /> // Redirect to login if not logged in
-            )
-          }
-        />
-
-        {/* User Profile Route */}
-        <Route
-          path="/user"
-          element={
-            isLoggedIn ? (
-              <div style={{ display: 'flex' }}>
-                {/* Sidebar remains visible */}
-                <Sidebar onLogout={handleLogout} />
-                <div style={{ flex: 1 }}>
-                  {/* Pass the userData to UserPage component */}
-                  <UserPage user={userData} />
-                </div>
-              </div>
-            ) : (
-              <Navigate to="/login" /> // Redirect to login if not logged in
-            )
-          }
-        />
-      </Routes>
-    </Router>
+              {newPrivateRoutes.privateRoutes.map(
+                (route) =>
+                  route.show && (
+                    <Route
+                      key={String(route.id)}
+                      path={route.path}
+                      element={<PrivateRoute component={route.component} />}
+                    />
+                  )
+              )}
+            </Routes>
+          </BrowserRouter>
+        </LoaderProvider>
+      </ToastProvider>
+    </AuthProvider>
   );
-};
+}
 
 export default App;

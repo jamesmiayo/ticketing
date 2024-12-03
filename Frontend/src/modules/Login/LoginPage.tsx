@@ -1,119 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
   Button,
   Box,
   Typography,
-  Container,
   InputAdornment,
   IconButton,
-} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { LoginAPI } from '../../api/services/login';
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+  Link,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useExecuteToast } from "../../context/ToastContext";
+import { useLoader } from "../../context/LoaderContext";
 
-interface LoginPageProps {
-  onLogin: (user: any) => void; // Function to pass user data upon login
+interface FormData {
+  username: string;
+  password: string;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
-
+const LoginPage: React.FC<any> = () => {
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
+  const toast = useExecuteToast();
+  const { isLoading, showLoader, hideLoader } = useLoader();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  const [error, setError] = useState("");
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try{
-      const response = await LoginAPI.login({
-        username: formData.username,
-        password: formData.password,
+  const onSubmit = async (data: FormData) => {
+    showLoader();
+    try {
+      const response = await loginUser(data.username, data.password);
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
       });
-    }catch(e){
-      console.log(e)
+      navigate("/dashboard");
+    } catch (e: any) {
+      if (e.response && e.response.status === 400) {
+        setError("Invalid username or password. Please try again.");
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
+    } finally {
+      hideLoader();
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+      }}
+    >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          marginTop: 8,
+          width: { xs: "90%", sm: "70%", md: "50%", lg: "40%" },
+          maxWidth: "500px",
+          backgroundColor: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
+          overflow: "hidden",
+          padding: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography variant="h5">Login</Typography>
+        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          Login to your account
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{ mb: 3, color: "text.secondary", textAlign: "center" }}
+        >
+          Enter your details to log in and access your account.
+        </Typography>
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           sx={{
-            mt: 1,
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
             gap: 2,
           }}
         >
-          {error && <Typography color="error">{error}</Typography>}
+          {error && (
+            <Typography color="error" sx={{ textAlign: "center" }}>
+              {error}
+            </Typography>
+          )}
 
-          <TextField
-            label="Username"
+          <Controller
             name="username"
-            variant="outlined"
-            fullWidth
-            value={formData.username}
-            onChange={handleInputChange}
-            required
+            control={control}
+            defaultValue=""
+            rules={{ required: "Username is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Username"
+                variant="outlined"
+                fullWidth
+                error={!!errors.username}
+                helperText={errors.username ? errors.username.message : ""}
+              />
+            )}
           />
 
-          <TextField
-            label="Password"
+          <Controller
             name="password"
-            type={showPassword ? 'text' : 'password'}
-            variant="outlined"
-            fullWidth
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleTogglePasswordVisibility}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+            control={control}
+            defaultValue=""
+            rules={{ required: "Password is required" }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                variant="outlined"
+                fullWidth
+                error={!!errors.password}
+                helperText={errors.password ? errors.password.message : ""}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleTogglePasswordVisibility}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
           />
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <FormControlLabel
+              control={<Checkbox defaultChecked />}
+              label="Remember me"
+            />
+            <Link href="#" underline="none" sx={{ fontSize: "14px" }}>
+              Forgot password?
+            </Link>
+          </Box>
 
           <Button
             type="submit"
             variant="contained"
             color="primary"
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              py: 1.5,
+              background: "linear-gradient(90deg, #0056FF, #007FFF)",
+              color: "#fff",
+              fontWeight: "bold",
+            }}
+            disabled={isLoading}
+            startIcon={isLoading ? <CircularProgress size={20} /> : null}
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

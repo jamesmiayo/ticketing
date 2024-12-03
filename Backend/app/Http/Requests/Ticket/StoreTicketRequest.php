@@ -4,7 +4,6 @@ namespace App\Http\Requests\Ticket;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-
 class StoreTicketRequest extends FormRequest
 {
     /**
@@ -23,20 +22,33 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required',
+            'subcategory_id' => 'required',
             'title' => 'required',
             'body' => 'required',
+            'b_status' => 'required',
         ];
     }
 
     public function getTicketHdr(): array
     {
         return [
+            'ticket_id' => mt_rand(1000, 9999),
             'emp_id' => Auth::user()->id,
-            'category_id' => $this->category_id,
+            'subcategory_id' => $this->subcategory_id,
             'title' => $this->title,
             'body' => $this->body,
-            'status' => $this->status,
+            'b_status' => $this->b_status,
+        ];
+    }
+
+    public function getTicketStatus($ticket_id): array
+    {
+        return [
+            'ticket_id' => $ticket_id,
+            'status' => $this->b_status,
+            'emp_id' => null,
+            'remarks' => '',
+            'updated_by' => Auth::user()->id,
         ];
     }
 }

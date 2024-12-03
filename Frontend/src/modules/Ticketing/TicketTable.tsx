@@ -1,95 +1,197 @@
-import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  TableContainer,
-  Paper,
-} from '@mui/material';
+import { Dialog, IconButton, Tooltip } from "@mui/material";
+import TableComponents from "../../components/common/TableComponents";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaRegUserCircle } from "react-icons/fa";
+import { GridRenderCellParams } from "@mui/x-data-grid";
+import { useState } from "react";
+import TicketAssignee from "./TicketAssignee";
+import { FaRegFlag } from "react-icons/fa";
+import TicketPriority from "./TicketPriority";
+import { FaCheckCircle } from "react-icons/fa";
+import TicketStatus from "./TicketStatus";
 
-// Updated Ticket interface with 'status' field
-interface Ticket {
-  ticketNo: string;
-  dateTime: string;
-  title: string;
-  concern: string;
-  category: string;
-  department: string;
-  section: string;
-  tech: string;
-  status: string; // Add status field
-}
+// interface Ticket {
+//   ticketNo: string;
+//   dateTime: string;
+//   title: string;
+//   concern: string;
+//   category: string;
+//   department: string;
+//   section: string;
+//   tech: string;
+//   status: string;
+// }
 
-const TicketTable: React.FC<{ tickets: Ticket[] }> = ({ tickets }) => {
-  // Optional: Map status codes to readable values
-  const statusMap: Record<string, string> = {
-    a: 'Open',
-    r: 'Resolved',
-    p: 'In Progress', // Example: Add more statuses as needed
+export default function TicketTable({
+  tickets,
+  isLoading,
+  isOptions = false,
+  onPageChange,
+  pageProps,
+  customInputs,
+  onSubmit,
+  onReset,
+  maxCount,
+  refetch,
+}: any) {
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<any>();
+  const [modal, setModal] = useState<any>();
+  const navigate = useNavigate();
+
+  const handleViewClick = (params: any) => {
+    navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  return (
-    <TableContainer
-      component={Paper}
-      sx={{ maxWidth: '100%', margin: '20px auto' }}
-    >
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">
-              <Typography variant="h6">Ticket No</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Datetime</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Title</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Concern</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Category</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Assigned Department</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Assigned Section</Typography>
-            </TableCell>
-            <TableCell align="left">
-              <Typography variant="h6">Assigned Tech</Typography>
-            </TableCell>
-            {/* Add Status Column */}
-            <TableCell align="left">
-              <Typography variant="h6">Status</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tickets.map((ticket, index) => (
-            <TableRow key={index}>
-              <TableCell align="left">{ticket.ticketNo}</TableCell>
-              <TableCell align="left">{ticket.dateTime}</TableCell>
-              <TableCell align="left">{ticket.title}</TableCell>
-              <TableCell align="left">{ticket.concern}</TableCell>
-              <TableCell align="left">{ticket.category}</TableCell>
-              <TableCell align="left">{ticket.department}</TableCell>
-              <TableCell align="left">{ticket.section}</TableCell>
-              <TableCell align="left">{ticket.tech}</TableCell>
-              {/* Display Status with mapped readable value */}
-              <TableCell align="left">
-                {statusMap[ticket.status] || 'Unknown'}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-};
+  function handleAssigneClick(params: any, value: any) {
+    setModal(value);
+    setData(params);
+    setOpen(true);
+  }
 
-export default TicketTable;
+  function handlePriorityColor(priority: string): React.CSSProperties {
+    switch (priority) {
+      case "Critical":
+        return { backgroundColor: "darkred" };
+      case "High":
+        return { backgroundColor: "red" };
+      case "Medium":
+        return { backgroundColor: "#ff9800" };
+      case "Low":
+        return { backgroundColor: "#4caf50" };
+      default:
+        return { backgroundColor: "#2196f3" };
+    }
+  }
+
+  const columns = [
+    { field: "ticket_id", headerName: "Ticket ID", width: 100 },
+    {
+      field: "Assignee",
+      headerName: "Assignee To",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.ticket_logs_latest?.assignee?.name || "No Assignee",
+    },
+    {
+      field: "requestor",
+      headerName: "Request By",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.requestor.name,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params: any) => params.row.ticket_logs_latest?.ticket_status,
+    },
+    { field: "title", headerName: "Title", width: 200 },
+    {
+      field: "ticket_priority",
+      headerName: "Priority",
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => (
+        <div
+          style={{
+            ...handlePriorityColor(params.value),
+            borderRadius: "4px",
+            padding: "4px 8px",
+            textAlign: "center",
+            color: "white",
+          }}
+        >
+          {params.value || "N/A"}
+        </div>
+      ),
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.sub_category?.category?.category_description ||
+        "No Assignee",
+    },
+    {
+      field: "sub_category",
+      headerName: "Category",
+      width: 200,
+      renderCell: (params: any) =>
+        params.row.sub_category?.subcategory_description || "No Assignee",
+    },
+    { field: "created_at", headerName: "Date Time", width: 180 },
+    ...(isOptions
+      ? [
+          {
+            field: "view",
+            headerName: "Options",
+            width: "100%",
+            sortable: false,
+            renderCell: (params: GridRenderCellParams) => (
+              <>
+                <Tooltip title={"View"}>
+                  <IconButton onClick={() => handleViewClick(params.row)}>
+                    <FaEye />
+                  </IconButton>
+                </Tooltip>
+                {params.row.b_status !== "7" && (
+                  <>
+                    <Tooltip title="Assign Ticket">
+                      <IconButton
+                        onClick={() => handleAssigneClick(params.row, "assign")}
+                      >
+                        <FaRegUserCircle />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Change Priority">
+                      <IconButton
+                        onClick={() =>
+                          handleAssigneClick(params.row, "priority")
+                        }
+                      >
+                        <FaRegFlag />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Done This Ticket">
+                      <IconButton
+                        onClick={() => handleAssigneClick(params.row, "status")}
+                      >
+                        <FaCheckCircle />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            ),
+          },
+        ]
+      : []),
+  ];
+  return (
+    <>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        {modal === "priority" ? (
+          <TicketPriority data={data} setOpen={setOpen} refetch={refetch} />
+        ) : modal === "status" ? (
+          <TicketStatus data={data} setOpen={setOpen} refetch={refetch} />
+        ) : (
+          <TicketAssignee data={data} setOpen={setOpen} refetch={refetch} />
+        )}
+      </Dialog>
+
+      <TableComponents
+        columns={columns}
+        rows={tickets}
+        onPageChange={onPageChange}
+        pageProps={pageProps}
+        height={600}
+        customInputs={customInputs}
+        onSubmit={onSubmit}
+        onReset={onReset}
+        maxCount={maxCount}
+        isLoading={isLoading}
+      />
+    </>
+  );
+}

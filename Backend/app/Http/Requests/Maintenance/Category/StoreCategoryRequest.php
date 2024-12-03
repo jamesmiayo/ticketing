@@ -11,7 +11,8 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Create Category');
+        return true;
+        // return $this->user()->can('Can Create Category');
     }
 
     /**
@@ -31,6 +32,7 @@ class StoreCategoryRequest extends FormRequest
         return [
             'category_id' => mt_rand(1000, 9999),
             'category_description' => $this->category_description,
+            'b_active' => true
         ];
     }
 }

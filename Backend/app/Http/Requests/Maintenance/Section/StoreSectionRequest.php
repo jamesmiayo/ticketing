@@ -11,7 +11,8 @@ class StoreSectionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('Can Create Section');
+        return true;
+        // return $this->user()->can('Can Create Section');
     }
 
     /**
@@ -24,7 +25,6 @@ class StoreSectionRequest extends FormRequest
         return [
             'department_id' => 'required',
             'section_description' => 'required',
-            'b_active' => 'required',
         ];
     }
 
@@ -34,7 +34,7 @@ class StoreSectionRequest extends FormRequest
             'department_id' => $this->department_id,
             'section_id' => mt_rand(1000, 9999),
             'section_description' => $this->section_description,
-            'b_active' => $this->b_active,
+            'b_active' => true,
         ];
     }
 }

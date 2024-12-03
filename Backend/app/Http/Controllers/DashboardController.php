@@ -10,84 +10,152 @@ use App\Models\Branch;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
+use App\Models\SubCategory;
+use App\Services\TicketHdrRoleDataService;
 
 class DashboardController extends Controller
 {
     protected $ticketHdr;
 
+    protected $role;
+
     public function __construct(TicketHdr $ticketHdr)
     {
         $this->ticketHdr = $ticketHdr;
+        $this->role = Auth::user()->roles->first()->name;
     }
 
     public function __invoke(): JsonResponse
     {
         return response()->json([
             'status' => Response::HTTP_OK,
-            'total_ticket' => $this->ticketHdr->count(),
-            'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
-            'total_ticket_branch' => $this->getTicketPerBranch(),
+            'latest_ticket' => $this->ticketData()->latest()->take(10)->get(),
+            'total_priority' => $this->getTicketPerPriority(),
             'total_ticket_category' => $this->getTicketPerCategory(),
-            'total_today_created_ticket' =>  $this->getTicketPerDay(),
+            'total_ticket_branch' => $this->getTicketPerBranch(),
+            'total_ticket_count' => $this->getTicketCountsByStatus(),
+            'total_today_created_ticket' => $this->getTicketPerDay(),
         ], Response::HTTP_OK);
-        // if (Auth::user()->can('Can View Dashboard') && Auth::user()->hasRoles('Admin')) {
-        //     return response()->json([
-        //         'status' => Response::HTTP_OK,
-        //         'total_ticket_count' => $this->getTicketCountsByStatus($this->ticketHdr->get()),
-        //         'total_ticket_branch' => $this->getTicketPerBranch(),
-        //         'total_ticket_category' => $this->getTicketPerCategory(),
-        //         'total_today_created_ticket' =>  $this->getTicketPerDay(),
-        //     ], Response::HTTP_OK);
-        // } else {
-        //     return response()->json([
-        //         'status' => Response::HTTP_OK,
-        //         'data' => $this->ticketHdr->where('emp_id', Auth::user()->id)->latest()->get(),
-        //     ], Response::HTTP_OK);
-        // }
     }
 
-    public function getTicketPerDay(): array
+    public function ticketData($data = [])
     {
-        $today = Carbon::now();
-
-        return [
-            'total_created' => $this->ticketHdr->whereDate('created_at', $today)->count(),
-            'total_open' => $this->ticketHdr->whereDate('created_at', $today)->where('status', GlobalConstants::OPEN)->count(),
-            'total_resolved' => $this->ticketHdr->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED)->count(),
-        ];
+        switch ($this->role) {
+            case 'Admin':
+                $ticketData = $this->ticketHdr->getTicketLog($data);
+                break;
+            case 'Head':
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
+                    $query->whereHas('requestor.section.department', function ($subQuery) {
+                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
+                    })->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) {
+                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
+                    });
+                });
+                break;
+            case 'Manager':
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
+                    $query->whereHas('requestor.section', function ($subQuery) {
+                        $subQuery->where('department_id', Auth::user()->section->department_id);
+                    })->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) {
+                        $subQuery->where('department_id', Auth::user()->section->department_id);
+                    });
+                });
+                break;
+            case 'Supervisor':
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
+                    $query->whereHas('requestor', function ($subQuery) {
+                        $subQuery->where('section_id', Auth::user()->section_id);
+                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
+                        $subQuery->where('section_id', Auth::user()->section_id);
+                    });
+                });
+                break;
+            default:
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
+                    $query->whereHas('requestor', function ($subQuery) {
+                        $subQuery->where('section_id', Auth::user()->section_id);
+                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
+                        $subQuery->where('id', Auth::user()->id);
+                    });
+                });
+        }
+        return $ticketData;
     }
 
-    public function getTicketCountsByStatus($data): array
+    public function getTicketPerPriority(): array
     {
-        $statuses = GlobalConstants::getStatusesType();
+        $priorities = GlobalConstants::getPrioritiesType();
 
         $ticketCounts = [];
-        foreach ($statuses as $status => $label) {
-            $ticketCounts[$label] = $data->filter(function ($item) use ($status) {
-                return $item->status == $status;
-            })->count();
+
+        foreach ($priorities as $key => $label) {
+            $ticketCounts[] = $this->ticketData()->get()->where('priority', $key)->count();
         }
 
-        $formattedCounts = array_map(function($label, $count) {
+        $nullPriorityCount = $this->ticketData()->get()->whereNull('priority')->count();
+
+        $ticketCounts[] = $nullPriorityCount;
+
+        return $ticketCounts;
+    }
+
+    public function getTicketCountsByStatus($branch = null)
+    {
+        // Start with the base query
+        $ticketsQuery = $this->ticketData();
+
+        // Apply branch filtering if branch is specified
+        if ($branch !== null) {
+            $ticketsQuery = $ticketsQuery->whereHas('requestor', function ($query) use ($branch) {
+                $query->where('branch_id', $branch);
+            });
+        }
+
+        $statuses = GlobalConstants::getStatusesType();
+        $ticketCounts = [];
+        $totalTickets = 0;
+
+        // Iterate through statuses to count tickets for each
+        foreach ($statuses as $status => $label) {
+            $count = $ticketsQuery->whereHas('ticket_logs_latest', function ($query) use ($status) {
+                $query->where('status', $status);
+            })->count();
+
+            $ticketCounts[$label] = $count;
+            $totalTickets += $count;
+        }
+
+        // Format the results
+        $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
+
+        // Add total tickets count
+        $formattedCounts[] = [
+            'label' => 'Total Tickets',
+            'value' => $totalTickets,
+        ];
 
         return $formattedCounts;
     }
 
-    public function getTicketPerCategory(): array
-    {
-        $ticketsPerCategory = $this->ticketHdr->get()->filter(function ($item) {
-            return isset($item->category_id);
-        })->groupBy(function ($item) {
-            return $item->category_id;
-        });
 
+    public function getTicketPerCategory()
+    {
+        $ticketsPerCategory = $this->ticketData()->get()->filter(function ($item) {
+            return isset($item->subcategory_id);
+        })->groupBy(function ($item) {
+            return $item->subcategory_id;
+        });
         $totalCountPerCategory = [];
+        $index = 0;
         foreach ($ticketsPerCategory as $categoryId => $tickets) {
-            $category = Category::find($categoryId);
+            $subcategory = SubCategory::with('category')->find($categoryId);
             $totalCountPerCategory[] = [
-                'category_name' => $category ? $category->category_description : 'Category Does Not Exist',
+                'id' => $index++,
+                'category' => $subcategory ? $subcategory->category->category_description : 'Category Does Not Exist',
+                'sub_category' => $subcategory ? $subcategory->subcategory_description : 'Sub Category Does Not Exist',
                 'total_tickets' => $tickets->count(),
             ];
         }
@@ -98,31 +166,46 @@ class DashboardController extends Controller
 
     public function getTicketPerBranch(): array
     {
-        $ticketsWithBranch = $this->ticketHdr->get()
+        $ticketsWithBranch = $this->ticketData()->get()
             ->filter(function ($item) {
-                return !empty($item->user) && !empty($item->user->branch_id);
+                return !empty($item->requestor) && !empty($item->requestor->branch_id);
             })
             ->groupBy(function ($item) {
-                return $item->user->branch_id;
+                return $item->requestor->branch_id;
             });
-
         $totalCountWithBranch = [];
+        $index = 0;
         foreach ($ticketsWithBranch as $branchId => $tickets) {
             $branch = Branch::find($branchId);
             $totalCountWithBranch[] = [
+                'id' => $index++,
                 'branch_name' => $branch ? $branch->branch_description : 'Branch Does Not Exist',
                 'total_tickets' => $tickets->count(),
-                'status_counts' => $this->getTicketCountsByStatus($tickets)
+                'status_counts' => $this->getTicketCountsByStatus($branch ? $branch->id : null) // Handle null branch case
             ];
         }
-
-        $totalCountWithoutBranch = $this->ticketHdr->get()->filter(function ($item) {
-            return !isset($item->user->branch_id);
+        $totalCountWithoutBranch = $this->ticketData()->get()->filter(function ($item) {
+            return !isset($item->requestor->branch_id);
         })->count();
 
         return [
             'total_count_with_branch' => $totalCountWithBranch,
             'total_count_without_branch' => $totalCountWithoutBranch,
+            'total_ticket_today' => $this->getTicketPerDay()
+        ];
+    }
+
+    public function getTicketPerDay(): array
+    {
+        $today = Carbon::now();
+        return [
+            'total_created' => $this->ticketData()->whereDate('created_at', $today)->count(),
+            'total_open' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->where('status', GlobalConstants::OPEN);
+            })->count(),
+            'total_resolved' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED);
+            })->count(),
         ];
     }
 }

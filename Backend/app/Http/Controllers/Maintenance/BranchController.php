@@ -8,7 +8,6 @@ use App\Http\Requests\Maintenance\Branch\UpdateBranchRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Models\Branch;
-use Illuminate\Support\Facades\Auth;
 
 class BranchController extends Controller
 {
