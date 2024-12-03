@@ -24,7 +24,6 @@ export interface Category {
 export const fetchCategories = async (): Promise<Category[]> => {
   try {
     const data = await getCategoryAPI.getAllData();
-    console.log('Fetched categories with subcategories:', data); // Log fetched data for debugging
     return data;
   } catch (error) {
     console.error('Error fetching categories:', error);

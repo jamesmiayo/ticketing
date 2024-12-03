@@ -24,6 +24,7 @@ class UpdateDepartmentRequest extends FormRequest
     {
         return [
             'department_description' => 'required',
+            'division_id' => 'required',
             'b_active' => 'required',
         ];
     }
@@ -31,9 +32,10 @@ class UpdateDepartmentRequest extends FormRequest
     public function getDepartmentData(): array
     {
         return [
-            'department_id' => mt_rand(1000, 9999),
+            'department_id' => $this->department_id,
             'department_description' => $this->department_description,
             'b_active' => $this->b_active,
+            'division_id' => $this->division_id,
         ];
     }
 }

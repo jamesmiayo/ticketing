@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TableComponents from "../../components/common/TableComponents";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import { FaEye } from "react-icons/fa";
@@ -52,7 +52,7 @@ export default function UserTicketTableRow({ data }: any) {
         <UserTicketSatisfactory data={dataValue} />
       </Dialog>
       <DialogContent>
-      <DialogTitle>Ticket Of {data?.name}</DialogTitle>
+      <DialogTitle>Ticket Of {data?.name} <br></br> Got {data?.satisfactory_percentage}% Customer SatisFactory In {data?.total_ticket} Tickets</DialogTitle>
         <TableComponents rows={row} columns={columns} />
       </DialogContent>
     </>

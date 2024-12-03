@@ -11,15 +11,16 @@ import {
 } from "@mui/material";
 import { AssignmentInd, Business, Group } from "@mui/icons-material";
 import { ticketAssign } from "../../schema/Ticket/createTicketAssign";
-import { Department } from "../../api/services/department";
 import { User } from "../../api/services/user";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
 import { statusListAssign } from "../../constants/constants";
 import SelectItem from "../../components/common/SelectItem";
 import InputComponent from "../../components/common/InputComponent";
+import { Division } from "../../api/services/division";
 
 export default function TicketAssignee({ data, setOpen, refetch }: any) {
+  const [division, setDivision] = useState<any>([]);
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState<any>([]);
   const [user, setUser] = useState<any>([]);
@@ -46,37 +47,22 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
       refetch();
       reset();
     } catch (error) {
-      console.error("Failed to assign ticket:", error);
-      toast.executeToast("Failed to assign ticket", "top-center", true, {
+      toast.executeToast(error?.response?.data?.message, "top-center", true, {
         type: "error",
       });
     }
   };
 
-  const getDepartment = async () => {
-    try {
-      const response = await Department.getDepartment();
-      const data = response.map((row: any) => ({
-        value: row.id,
-        label: row.department_description,
-        section: row.section,
-      }));
-      setDepartment(data);
-    } catch (error) {
-      console.error("Failed to fetch department:", error);
-    }
-  };
-
   const getUser = async () => {
     try {
-      const response = await User.getUser();
+      const response = await User.getUser(null);
       setUser(response);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
   };
 
-  const getSection = (departmentId: number) => {
+  const handleDepartment = (departmentId: number) => {
     const data = department
       .find((department: any) => department.value === departmentId)
       ?.section.map((row: any) => ({
@@ -87,9 +73,23 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     setUserOption([]);
   };
 
-  const handleSection = (sectionId: string) => {
+  const getDivision = async () => {
+    try {
+      const response = await Division.getDivision();
+      const data = response.map((row: any) => ({
+        value: row.id,
+        label: row.division_description,
+        department: row.department,
+      }));
+      setDivision(data);
+    } catch (error) {
+      console.error("Failed to fetch division:", error);
+    }
+  };
+
+  const handleSection = (section: string) => {
     const data = user
-      .filter((row: any) => row.section_id === sectionId)
+      .filter((row: any) => row.section_id === section)
       .map((row: any) => ({
         value: row.id,
         label: row.name,
@@ -97,8 +97,23 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     setUserOption(data);
   };
 
+  const handleDivision = (department: string) => {
+    const data = division
+      .find((row: any) => row.value == department)
+      ?.department.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.department_description,
+          section: row.section,
+        };
+      });
+    setDepartment(data);
+    setSection([]);
+    setUserOption([]);
+  };
+
   useEffect(() => {
-    getDepartment();
+    getDivision();
     getUser();
   }, []);
 
@@ -116,13 +131,23 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3} sx={{ mt: 2 }}>
             <SelectItem
+              label="Division"
+              control={control}
+              options={division}
+              errors={errors}
+              name="division"
+              fullWidth
+              sx={{ mt: 2 }}
+              onChange={(e: any) => handleDivision(e)}
+            />
+            <SelectItem
               label="Department"
               control={control}
               options={department}
               errors={errors}
               name="department"
               fullWidth
-              onChange={(e: any) => getSection(e)}
+              onChange={(e: any) => handleDepartment(e)}
               startAdornment={<Business color="action" />}
             />
             <SelectItem

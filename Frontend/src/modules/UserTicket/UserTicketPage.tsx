@@ -18,7 +18,10 @@ export default function UserTicketPage() {
         email: row.email,
         section: row?.section?.section_description,
         department: row?.section?.department?.department_description,
+        branch: row?.branch?.branch_description,
+        division: row?.section?.department?.division?.division_description,
         total_ticket: row?.ticketdtl?.length || 0,
+        satisfactory_percentage: row?.satisfactoryPercentage || 0,
         ticket_dtl: row?.ticketdtl || [],
       }));
       setData(data);

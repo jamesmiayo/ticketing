@@ -1,10 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-export const PermissionContext = createContext(null);
+export const PermissionContext = createContext<any>(null);
 
-export const PermissionProvider = ({ children }:any) => {
-  const [permission, setPermission] = useState<string[]>(
-    JSON.parse(localStorage.getItem("permissions") || 'null') 
+export const PermissionProvider = ({ children }: any) => {
+  const [permission, setPermission] = useState<any>(
+    JSON.parse(localStorage.getItem("permissions") || "[]")
   );
 
   return (
@@ -13,3 +13,5 @@ export const PermissionProvider = ({ children }:any) => {
     </PermissionContext.Provider>
   );
 };
+
+export const usePermission = () => useContext(PermissionContext);

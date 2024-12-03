@@ -2,6 +2,8 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import { LoginAPI } from "../api/services/login";
 import { LogoutAPI } from "../api/services/logout";
 import { validateToken } from "../api/services/validateToken";
+import { usePermission } from "../helpers/Providers/PermissionProvider";
+
 interface AuthContextType {
   user: any | null;
   isAuthenticated: boolean;
@@ -21,20 +23,16 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [user, setUser] = useState<any | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { setPermission } = usePermission();
 
   useEffect(() => {
     const initializeAuthState = async () => {
       const token = localStorage.getItem("token");
       if (token) {
-        const isValid = await validateToken();
-        if (isValid) {
+        const response = await validateToken();
+        if (response?.isValid) {
           setIsAuthenticated(true);
-          const userData = localStorage.getItem("userData");
-          const parsedUserData =
-            userData && typeof userData === "string"
-              ? JSON.parse(userData)
-              : null;
-          setUser(parsedUserData);
+          setUser(response?.user);
         } else {
           setIsAuthenticated(false);
           setUser(null);
@@ -53,7 +51,11 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       if (response.access_token) {
         localStorage.setItem("token", response.access_token);
         localStorage.setItem("userData", JSON.stringify(response.user));
-        localStorage.setItem("permissions", response.permissions);
+        localStorage.setItem(
+          "permissions",
+          JSON.stringify(response.permissions)
+        );
+        setPermission(JSON.stringify(response.permissions));
         localStorage.setItem("role", response.role);
         setUser(response.user);
         setIsAuthenticated(true);
@@ -69,10 +71,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const logoutUser = async () => {
     try {
       const response = await LogoutAPI.logout();
-      localStorage.removeItem("token");
-      localStorage.removeItem("userData");
+      localStorage.clear();
       setUser(null);
       setIsAuthenticated(false);
+      setPermission(null);
       return { message: response.message };
     } catch (error) {
       console.error("Logout failed", error);

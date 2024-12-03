@@ -89,7 +89,6 @@ export default function CategoryManagementTable({
     if (!selectedCategory) return;
     try {
       setLoading(true);
-      console.log(selectedCategory);
       const response = await getCategoryAPI.deleteCategory(selectedCategory.id);
       toast.executeToast(response.message, "top-center", true, {
         type: "success",

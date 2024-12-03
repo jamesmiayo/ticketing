@@ -16,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $data = Role::latest()->get();
+        $data = Role::with('permissions')->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 

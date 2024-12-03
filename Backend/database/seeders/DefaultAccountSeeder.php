@@ -14,7 +14,7 @@ class DefaultAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Supervisor', 'Manager', 'Tech' , 'User'];
+        $roles = ['Admin', 'Head' , 'Manager' , 'Supervisor', 'Tech' , 'User'];
 
         foreach ($roles as $roleName) {
             Role::create(['name' => $roleName]);
@@ -33,7 +33,7 @@ class DefaultAccountSeeder extends Seeder
                 'section_id' => 1
             ]);
 
-            $supervisor->assignRole('Supervisor');
+            $supervisor->assignRole('Admin');
 
             $manager = User::create([
                 'emp_id' => mt_rand(1000, 9999),

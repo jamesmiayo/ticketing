@@ -158,7 +158,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
 
               <Box display="flex" alignItems="center" mb={2}>
                 <AccessTime sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">Urgent</Typography>
+                <Typography variant="body1">{ticketDetail?.ticket_priority || 'N/A'}</Typography>
               </Box>
               <Box display="flex" alignItems="center" mb={2}>
                 <Person sx={{ mr: 1, color: theme.palette.primary.main }} />

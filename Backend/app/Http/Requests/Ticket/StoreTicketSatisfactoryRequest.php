@@ -4,7 +4,7 @@ namespace App\Http\Requests\Ticket;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-
+use App\Constants\GlobalConstants;
 class StoreTicketSatisfactoryRequest extends FormRequest
 {
     /**
@@ -44,6 +44,17 @@ class StoreTicketSatisfactoryRequest extends FormRequest
             'satisfactory_5' => $this->satisfactory_5,
             'overall_satisfaction' => $this->overall_satisfaction,
             'user_id' => Auth::user()->id, // Assuming you have a User model and Laravel's auth() function. Replace with your actual method.
+        ];
+    }
+
+    public function getTicketStatus(): array
+    {
+        return [
+            'ticket_id' => $this->ticket_id,
+            'status' => GlobalConstants::COMPLETED,
+            'emp_id' => null,
+            'remarks' => "Ticket Completed",
+            'updated_by' => Auth::user()->id,
         ];
     }
 }
