@@ -11,13 +11,13 @@ import { Permission } from "../../api/services/permission";
 import { useExecuteToast } from "../../context/ToastContext";
 
 interface PermissionType {
-  id: number;
+  id: string;
   name: string;
   checked: boolean;
+  permissions:any;
 }
-
 interface RoleUserPermissionProps {
-  data: PermissionType[];
+  data: any;
   refetch: () => void;
   onClose: any;
 }
@@ -44,7 +44,7 @@ export default function RoleUserPermission({
       const permissionsWithChecked = response.map((perm: PermissionType) => ({
         ...perm,
         checked:
-          data?.permissions?.some((item) => item.id === perm.id) || false,
+          data?.permissions?.some((item:any) => item.id === perm.id) || false,
       }));
       setPermissions(permissionsWithChecked);
       setValue(
@@ -71,8 +71,8 @@ export default function RoleUserPermission({
       .filter((permission) => permission.checked)
       .map((permission) => permission.name);
     try {
-      const response = Permission.assignRolePermission(
-        data.id,
+      const response:any = Permission.assignRolePermission(
+        data?.id,
         checkedPermissions
       );
       toast.executeToast(response.message, "top-center", true, {
@@ -99,14 +99,13 @@ export default function RoleUserPermission({
         </Box>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          {permissions.map((permission, index) => (
+          {permissions?.map((permission:any, index:any) => (
             <Controller
               key={permission.id}
-              name={`permissions[${index}].checked`}
+              name={`permissions.${index}.checked`} 
               control={control}
               render={({ field }) => (
                 <FormControlLabel
-                // sx={{ backgroundColor: 'white' , padding: 1, borderRadius: 2 ,  boxShadow: 3 }}
                   control={
                     <Checkbox
                       {...field}

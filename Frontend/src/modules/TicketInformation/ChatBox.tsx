@@ -31,15 +31,10 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { useForm } from "react-hook-form";
 import { ticketApi } from "../../api/services/ticket";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { messageValidationSchema } from "../../schema/Ticket/createMessage";
+import { messageValidationSchema, messageValidationSchemaFormtype } from "../../schema/Ticket/createMessage";
 import InputComponent from "../../components/common/InputComponent";
 import { useAuth } from "../../context/AuthContext";
 import AttachmentCmp from "./AttachmentCmp";
-
-interface TicketMessage {
-  ticket_id: string;
-  message: string;
-}
 
 export default function ChatBox({ ticketDetail }: any) {
   const { user } = useAuth();
@@ -59,7 +54,7 @@ export default function ChatBox({ ticketDetail }: any) {
     formState: { errors },
     handleSubmit,
     reset,
-  } = useForm<TicketMessage>({
+  } = useForm<messageValidationSchemaFormtype>({
     resolver: yupResolver(messageValidationSchema),
   });
 
@@ -362,13 +357,13 @@ export default function ChatBox({ ticketDetail }: any) {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Paper elevation={3} sx={{ p: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Tooltip title="Send File Attachment">
-                <Button
-                  sx={{ textTransform: "none" }}
-                  onClick={() => setOpen(!open)}
-                >
-                  <Attachment />
-                </Button>
+                <Tooltip title="Send File Attachment">
+                  <Button
+                    sx={{ textTransform: "none" }}
+                    onClick={() => setOpen(!open)}
+                  >
+                    <Attachment />
+                  </Button>
                 </Tooltip>
                 <InputComponent
                   name="message"

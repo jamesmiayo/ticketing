@@ -1,5 +1,4 @@
-import { Box, Container, Table } from "@mui/material";
-import React from "react";
+import { Box, Table } from "@mui/material";
 import {
   TableBody,
   TableCell,

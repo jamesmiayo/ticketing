@@ -35,7 +35,6 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
     control,
     reset,
     formState: { errors },
-    register,
     setValue,
   } = useForm<any>({
     resolver: yupResolver(createTicketSatisfactory),
@@ -65,7 +64,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
       });
       refetch();
       reset();
-    } catch (error) {
+    } catch (error: any) {
       toast.executeToast(error?.response?.data?.message, "top-center", true, {
         type: "error",
       });
@@ -232,7 +231,14 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                             color="error"
                             sx={{ mt: 0.5, display: "block" }}
                           >
-                            {errors[rating.name]?.message}
+                            {
+                              (
+                                errors.rating as Record<
+                                  string,
+                                  { message: string }
+                                >
+                              )[rating.name]?.message
+                            }
                           </Typography>
                         )}
                       </Box>

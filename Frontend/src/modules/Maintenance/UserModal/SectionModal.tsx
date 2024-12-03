@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Department } from "../../../api/services/department";
 import {
   sectionUser,
   sectionUserFormType,
@@ -20,7 +19,6 @@ export default function SectionModal({ data, setOpen, refetch }: any) {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<sectionUserFormType>({
     resolver: yupResolver(sectionUser),

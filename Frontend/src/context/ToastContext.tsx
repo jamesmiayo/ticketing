@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toastify s
 
 export interface ToastContextSetup {
   executeToast: (
-    message: string,
+    message: any,
     position: ToastPosition,
     hideProgressBar: boolean,
     options?: Partial<ToastOptions>

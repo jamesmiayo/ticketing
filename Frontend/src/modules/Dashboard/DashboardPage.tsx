@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Paper, Typography, Button } from "@mui/material";
-import { ticketApi } from "../../api/services/ticket";
+import { Box, Typography } from "@mui/material";
 import { OverviewAPI } from "../../api/services/getOverview";
 import TodaySummaryComponent from "./TodaySummaryComponent";
 import BranchListTable from "./BranchListTable";

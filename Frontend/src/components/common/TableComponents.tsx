@@ -1,14 +1,14 @@
 import { Box, Grid, Button, Pagination, Stack } from "@mui/material";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
 
-interface DataGridProps<T> {
-  columns: GridColDef[];
-  rows: GridRowsProp;
+interface DataGridProps{
+  columns:any;
+  rows: any;
   height?: number;
   width?: string;
   onPageChange?: (page: number) => void;
@@ -29,7 +29,7 @@ interface DataGridProps<T> {
   onReset?: () => void;
 }
 
-const TableComponents = <T,>({
+const TableComponents = ({
   columns,
   rows,
   onPageChange,
@@ -41,7 +41,7 @@ const TableComponents = <T,>({
   maxCount,
   isLoading = false,
   onReset
-}: DataGridProps<T>) => {
+}: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
 
@@ -51,7 +51,7 @@ const TableComponents = <T,>({
   ) => {
     setPage(newPage);
     setSearchParams({ page: newPage.toString() });
-    onPageChange(newPage);
+    onPageChange?.(newPage);
   };
 
   return (
@@ -69,7 +69,7 @@ const TableComponents = <T,>({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              onSubmit();
+              onSubmit?.();
             }}
           >
             <Grid style={{ display: "flex", gap: 5 }}>
