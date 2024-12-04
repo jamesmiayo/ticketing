@@ -79,7 +79,7 @@ class User extends Authenticatable
 
     public function ticketdtl()
     {
-        return $this->hasMany(TicketStatus::class, 'emp_id');
+        return $this->hasMany(TicketStatus::class, 'emp_id')->latest()->take(1);
     }
 
     public static function getUserData($searchParams)
@@ -119,18 +119,19 @@ class User extends Authenticatable
         });
     }
     public function satisfactoryPercentage()
-    {
-        return $this->ticketdtl
-            ->map(function ($ticket) {
-                return optional($ticket->tickets->ticket_satisfactory)->average_satisfactory;
-            })
-            ->filter(function ($average) {
-                return !is_null($average);
-            })
-            ->pipe(function ($averages) {
-                $totalSum = $averages->sum();
-                $totalCount = $averages->count();
-                return $totalCount > 0 ? ($totalSum / $totalCount) : 0;
-            });
-    }
+{
+    return $this->ticketdtl
+        ->filter(function ($ticket) {
+            return optional($ticket->tickets->ticket_satisfactory)->average_satisfactory !== null;
+        })
+        ->map(function ($ticket) {
+            return optional($ticket->tickets->ticket_satisfactory)->average_satisfactory;
+        })
+        ->pipe(function ($averages) {
+            $totalSum = $averages->sum();
+            $totalCount = $averages->count();
+            return $totalCount > 0 ? ($totalSum / $totalCount) : 0;
+        });
+}
+
 }

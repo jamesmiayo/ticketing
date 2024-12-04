@@ -67,9 +67,15 @@ class TicketSatisfactory extends Model
             $this->satisfactory_5,
         ];
 
-        $average = array_sum($ratings) / count($ratings);
+        // Avoid division by zero
+        $totalRatings = count($ratings);
+        $average = $totalRatings > 0 ? array_sum($ratings) / $totalRatings : 0;
+
+        // Calculate percentage
         $percentage = ($average / 5) * 100;
 
-        return $percentage || 0;
+        // Return numeric value or default to 0
+        return is_numeric($percentage) ? $percentage : 0;
     }
+
 }

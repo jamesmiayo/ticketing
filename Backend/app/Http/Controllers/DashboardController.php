@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $this->role = Auth::user()->roles->first()->name;
     }
 
-    public function __invoke(): JsonResponse
+    public function index(): JsonResponse
     {
         return response()->json([
            'status' => Response::HTTP_OK,
@@ -33,8 +33,8 @@ class DashboardController extends Controller
             'total_priority' => $this->getTicketPerPriority(),
             'total_ticket_category' => $this->getTicketPerCategory(),
             'total_ticket_branch' => $this->getTicketPerBranch(),
-            //'total_ticket_count' => $this->getTicketCountsByStatus(),
-           // 'total_today_created_ticket' => $this->getTicketPerDay(),
+            'total_ticket_count' => $this->getTicketCountsByStatus(),
+           'total_today_created_ticket' => $this->getTicketPerDay(),
         ], Response::HTTP_OK);
     }
 
@@ -102,10 +102,7 @@ class DashboardController extends Controller
 
     public function getTicketCountsByStatus($branch = null)
     {
-        // Start with the base query
         $ticketsQuery = $this->ticketData();
-
-        // Apply branch filtering if branch is specified
         if ($branch !== null) {
             $ticketsQuery = $ticketsQuery->whereHas('requestor', function ($query) use ($branch) {
                 $query->where('branch_id', $branch);
@@ -116,22 +113,17 @@ class DashboardController extends Controller
         $ticketCounts = [];
         $totalTickets = 0;
 
-        // Iterate through statuses to count tickets for each
         foreach ($statuses as $status => $label) {
-            $count = $ticketsQuery->whereHas('ticket_logs_latest', function ($query) use ($status) {
+            $count = (clone $ticketsQuery)->whereHas('ticket_logs_latest', function ($query) use ($status) {
                 $query->where('status', $status);
             })->count();
-
             $ticketCounts[$label] = $count;
             $totalTickets += $count;
         }
-
-        // Format the results
         $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
 
-        // Add total tickets count
         $formattedCounts[] = [
             'label' => 'Total Tickets',
             'value' => $totalTickets,
