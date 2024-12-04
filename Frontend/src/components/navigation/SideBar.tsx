@@ -14,6 +14,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
+import { IoSettingsSharp } from "react-icons/io5";
+import { FaUser } from "react-icons/fa";
 
 const Sidebar = ({ children }: any) => {
   const { permission } = useContext(PermissionContext);
@@ -42,11 +44,11 @@ const Sidebar = ({ children }: any) => {
       icon: <BsTicketDetailed />,
       show: permission?.includes("Can View User Ticket"),
     },
-    { title: "Profile", path: "/profile", icon: <MdDashboard />, show: true },
+    { title: "Profile", path: "/profile", icon: <FaUser />, show: true },
     {
       title: "Maintenance",
       path: "/maintenance",
-      icon: <MdDashboard />,
+      icon: <IoSettingsSharp />,
       show: permission?.includes("Can View Maintenance"),
     },
   ];
@@ -58,7 +60,7 @@ const Sidebar = ({ children }: any) => {
 
   const handleLogout = async () => {
     try {
-      const response:any = await logoutUser();
+      const response: any = await logoutUser();
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
@@ -138,49 +140,51 @@ const Sidebar = ({ children }: any) => {
                 flexGrow: 1,
               }}
             >
-              {navItems 
-              .filter(item => item.show) 
-              .map((item, index) => (
-                <ListItem disablePadding key={index} sx={{ marginTop: 1 }}>
-                  <ListItemButton
-                    onClick={() => handleNavigation(item.path, item.title)}
-                    sx={{
-                      margin: 0,
-                      transition:
-                        "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
-                      borderLeft:
-                        item.title === activeNavItem
-                          ? "10px solid white"
-                          : "10px solid transparent",
-                      color: "white",
-                      "&:hover": {
-                        borderLeft: "10px solid white",
+              {navItems
+                .filter((item) => item.show)
+                .map((item, index) => (
+                  <ListItem disablePadding key={index} sx={{ marginTop: 1 }}>
+                    <ListItemButton
+                      onClick={() => handleNavigation(item.path, item.title)}
+                      sx={{
+                        margin: 0,
+                        transition:
+                          "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
+                        borderLeft:
+                          item.title === activeNavItem
+                            ? "10px solid white"
+                            : "10px solid transparent",
                         color: "white",
-                      },
-                      display: "flex",
-                      justifyContent: sidebarOpen ? "space-between" : "center",
-                      alignItems: "center",
-                      padding: sidebarOpen ? "10px 16px" : "10px",
-                    }}
-                  >
-                    {item.icon && (
-                      <ListItemIcon
-                        sx={{
+                        "&:hover": {
+                          borderLeft: "10px solid white",
                           color: "white",
-                          minWidth: "auto",
-                          marginRight: sidebarOpen ? "8px" : "0",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        {item.icon}
-                      </ListItemIcon>
-                    )}
-                    {sidebarOpen && <ListItemText primary={item.title} />}
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                        },
+                        display: "flex",
+                        justifyContent: sidebarOpen
+                          ? "space-between"
+                          : "center",
+                        alignItems: "center",
+                        padding: sidebarOpen ? "10px 16px" : "10px",
+                      }}
+                    >
+                      {item.icon && (
+                        <ListItemIcon
+                          sx={{
+                            color: "white",
+                            minWidth: "auto",
+                            marginRight: sidebarOpen ? "8px" : "0",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {item.icon}
+                        </ListItemIcon>
+                      )}
+                      {sidebarOpen && <ListItemText primary={item.title} />}
+                    </ListItemButton>
+                  </ListItem>
+                ))}
             </List>
 
             {/* Logout button at the bottom */}
