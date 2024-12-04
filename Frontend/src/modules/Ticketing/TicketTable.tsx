@@ -10,18 +10,6 @@ import TicketPriority from "./TicketPriority";
 import { FaCheckCircle } from "react-icons/fa";
 import TicketStatus from "./TicketStatus";
 
-// interface Ticket {
-//   ticketNo: string;
-//   dateTime: string;
-//   title: string;
-//   concern: string;
-//   category: string;
-//   department: string;
-//   section: string;
-//   tech: string;
-//   status: string;
-// }
-
 export default function TicketTable({
   tickets,
   isLoading,
@@ -69,28 +57,27 @@ export default function TicketTable({
     {
       field: "Assignee",
       headerName: "Assignee To",
-      width: 200,
+      width: 110,
       renderCell: (params: any) =>
         params.row.ticket_logs_latest?.assignee?.name || "No Assignee",
     },
     {
       field: "requestor",
       headerName: "Request By",
-      width: 200,
-      renderCell: (params: any) =>
-        params.row.requestor.name,
+      width: 110,
+      renderCell: (params: any) => params.row.requestor.name,
     },
     {
       field: "status",
       headerName: "Status",
-      width: 150,
+      width: 110,
       renderCell: (params: any) => params.row.ticket_logs_latest?.ticket_status,
     },
     { field: "title", headerName: "Title", width: 200 },
     {
       field: "ticket_priority",
       headerName: "Priority",
-      width: 150,
+      width: 180,
       renderCell: (params: GridRenderCellParams) => (
         <div
           style={{
@@ -108,7 +95,7 @@ export default function TicketTable({
     {
       field: "category",
       headerName: "Category",
-      width: 200,
+      width: 180,
       renderCell: (params: any) =>
         params.row.sub_category?.category?.category_description ||
         "No Assignee",
@@ -116,7 +103,7 @@ export default function TicketTable({
     {
       field: "sub_category",
       headerName: "Category",
-      width: 200,
+      width: 180,
       renderCell: (params: any) =>
         params.row.sub_category?.subcategory_description || "No Assignee",
     },
@@ -126,7 +113,7 @@ export default function TicketTable({
           {
             field: "view",
             headerName: "Options",
-            width: "100%",
+            width: 180,
             sortable: false,
             renderCell: (params: GridRenderCellParams) => (
               <>

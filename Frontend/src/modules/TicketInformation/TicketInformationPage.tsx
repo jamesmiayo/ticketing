@@ -17,9 +17,9 @@ const TicketInformationPage = () => {
   const ticketId = query.get("id");
   const [ticket, setTicket] = useState<any | null>(null);
   const [activeSection, setActiveSection] = useState<string>("Ticket");
-  const [ isLoading , setIsLoading ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const fetchTicketInformation = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const response = await ticketApi.getInformation(ticketId);
       if (response !== undefined) {
@@ -27,8 +27,8 @@ const TicketInformationPage = () => {
       }
     } catch (error) {
       console.error("Error fetching ticket information:", error);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -60,30 +60,26 @@ const TicketInformationPage = () => {
             setActiveSection={setActiveSection}
           />
           <Box sx={{ flex: 1, paddingLeft: 2 }}>
-
-              {activeSection === "Ticket" && (
-                           <Container
-                           sx={{
-                             display: "flex",
-                             height: "80vh",
-                             justifyContent: "center",
-                           }}
-                         >
-                  <ChatBox ticketDetail={ticket} />
-                  <TicketDetails ticketDetail={ticket} isLoading={isLoading}/>
-                </Container>
-              )}
-              {activeSection === "Analysis" && (
-                 <TicketAnalysis data={ticket}/>
-                )}
-              {activeSection === "Costs" && (
-                <Typography variant="h6">Costs Section</Typography>
-              )}
-              {activeSection === "Logs" && 
+            {activeSection === "Ticket" && (
+              <Box
+                sx={{
+                  display: "flex",
+                }}
+              >
+                <ChatBox ticketDetail={ticket} />
+                <TicketDetails ticketDetail={ticket} isLoading={isLoading} />
+              </Box>
+            )}
+            {activeSection === "Analysis" && <TicketAnalysis data={ticket} />}
+            {activeSection === "Costs" && (
+              <Typography variant="h6">Costs Section</Typography>
+            )}
+            {activeSection === "Logs" && (
               <>
-                 <TicketLog data={ticket}/>
-                </>}
-              {activeSection === "All" && "All"}
+                <TicketLog data={ticket} />
+              </>
+            )}
+            {activeSection === "All" && "All"}
           </Box>
         </Container>
       </Box>

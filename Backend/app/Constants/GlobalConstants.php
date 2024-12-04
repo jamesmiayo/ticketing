@@ -12,7 +12,6 @@ class GlobalConstants
     const IN_REVIEW = 6;
     const COMPLETED  = 7;
 
-
     public static function getStatusesType()
     {
         return [
@@ -30,7 +29,7 @@ class GlobalConstants
     {
         return static::getStatusesType()[$Type] ?? null;
     }
-    
+
     const LOW = 1;
     const MEDIUM = 2;
     const HIGH = 3;
@@ -55,9 +54,9 @@ class GlobalConstants
     const OKAY = 2;
     const GOOD = 3;
     const AMAZING = 4;
-    
 
-    
+
+
     public static function getSatisfactionsType()
     {
         return [
@@ -68,12 +67,12 @@ class GlobalConstants
             self::AMAZING => 'AMAZING',
         ];
     }
-    
+
     public static function getSatisfactionType($type)
     {
         return static::getSatisfactionsType()[$type] ?? null;
     }
-    
+
 
 //      Response::HTTP_OK; // 200
 // Response::HTTP_CREATED; // 201

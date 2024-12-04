@@ -24,7 +24,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', DashboardController::class);
+    Route::get('dashboard', [DashboardController::class , 'index']);
     Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     //maintenance routes

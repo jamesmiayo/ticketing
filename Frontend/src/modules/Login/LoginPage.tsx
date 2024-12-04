@@ -7,9 +7,12 @@ import {
   InputAdornment,
   IconButton,
   CircularProgress,
-  FormControlLabel,
-  Checkbox,
-  Link,
+  // FormControlLabel,
+  // Checkbox,
+  CardContent,
+  Card,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
@@ -35,6 +38,8 @@ const LoginPage: React.FC<any> = () => {
   } = useForm<FormData>();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -60,136 +65,209 @@ const LoginPage: React.FC<any> = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-      }}
-    >
+    <>
       <Box
         sx={{
-          width: { xs: "90%", sm: "70%", md: "50%", lg: "40%" },
-          maxWidth: "500px",
-          backgroundColor: "#fff",
-          borderRadius: "16px",
-          boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.1)",
-          overflow: "hidden",
-          padding: 4,
+          minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          background: "linear-gradient(45deg, #62cff4 30%, #2c67f2 90%)",
+          padding: theme.spacing(2),
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-          Login to your account
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{ mb: 3, color: "text.secondary", textAlign: "center" }}
-        >
-          Enter your details to log in and access your account.
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
+        <Card
+          elevation={10}
           sx={{
-            width: "100%",
+            width: isMobile ? "100%" : "400px",
+            borderRadius: theme.shape.borderRadius,
+            overflow: "hidden",
+          }}
+        >
+          <CardContent sx={{ padding: theme.spacing(4) }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              align="center"
+              sx={{ fontWeight: 700 }}
+            >
+              Welcome Back
+            </Typography>
+            <Typography
+              variant="body2"
+              gutterBottom
+              align="center"
+              sx={{ marginBottom: theme.spacing(3) }}
+            >
+              Please sign in to your account
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              {error && (
+                <Typography color="error" sx={{ textAlign: "center" }}>
+                  {error}
+                </Typography>
+              )}
+
+              <Controller
+                name="username"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Username is required" }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Username"
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.username}
+                    helperText={errors.username ? errors.username.message : ""}
+                  />
+                )}
+              />
+
+              <Controller
+                name="password"
+                control={control}
+                defaultValue=""
+                rules={{ required: "Password is required" }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    variant="outlined"
+                    fullWidth
+                    error={!!errors.password}
+                    helperText={errors.password ? errors.password.message : ""}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleTogglePasswordVisibility}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                {/* <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Remember me"
+                /> */}
+              </Box>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{
+                  mt: 2,
+                  py: 1.5,
+                  background: "linear-gradient(90deg, #0056FF, #007FFF)",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={20} /> : null}
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+            </Box>
+            <Typography
+              variant="body2"
+              align="center"
+              sx={{ marginTop: theme.spacing(2) }}
+            ></Typography>
+          </CardContent>
+        </Card>
+        <Box
+          sx={{
+            position: "relative",
+            top: "50px",
+            right: 0,
+            left: 0,
+            bottom: 0,
             display: "flex",
             flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             gap: 2,
           }}
         >
-          {error && (
-            <Typography color="error" sx={{ textAlign: "center" }}>
-              {error}
-            </Typography>
-          )}
-
-          <Controller
-            name="username"
-            control={control}
-            defaultValue=""
-            rules={{ required: "Username is required" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Username"
-                variant="outlined"
-                fullWidth
-                error={!!errors.username}
-                helperText={errors.username ? errors.username.message : ""}
-              />
-            )}
-          />
-
-          <Controller
-            name="password"
-            control={control}
-            defaultValue=""
-            rules={{ required: "Password is required" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                variant="outlined"
-                fullWidth
-                error={!!errors.password}
-                helperText={errors.password ? errors.password.message : ""}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={handleTogglePasswordVisibility}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-
-          <Box
+          <Typography
+            variant="body2"
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
+              fontWeight: "600",
+              fontSize: "12px",
+              textAlign: "center",
             }}
           >
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Remember me"
-            />
-            <Link href="#" underline="none" sx={{ fontSize: "14px" }}>
-              Forgot password?
-            </Link>
-          </Box>
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+            © 2024
+            <span style={{ margin: "0 8px", fontWeight: "bold" }}>
+              SAFC Information Technology Group.
+            </span>
+          </Typography>
+          <Typography
+            variant="body2"
             sx={{
-              mt: 2,
-              py: 1.5,
-              background: "linear-gradient(90deg, #0056FF, #007FFF)",
-              color: "#fff",
-              fontWeight: "bold",
+              fontWeight: "600",
+              fontSize: "12px",
+              textAlign: "center",
             }}
-            disabled={isLoading}
-            startIcon={isLoading ? <CircularProgress size={20} /> : null}
           >
-            {isLoading ? "Logging in..." : "Login"}
-          </Button>
+            All rights reserved.
+          </Typography>
+          {/* <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            fontWeight: "600",
+            fontSize: "12px",
+            color: "blue",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Link href="/privacy-policy" sx={{ color: "blue" }}>
+            Privacy Policy |
+          </Link>
+          <Link href="/terms-of-service" sx={{ color: "blue" }}>
+            Terms of Service |
+          </Link>
+          <Link href="/support" sx={{ color: "blue" }}>
+            Support |
+          </Link>
+          <Link href="/contact-us" sx={{ color: "blue" }}>
+            Contact Us
+          </Link>
+        </Box> */}
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
