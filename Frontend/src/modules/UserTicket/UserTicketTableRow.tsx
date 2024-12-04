@@ -38,7 +38,7 @@ export default function UserTicketTableRow({ data }: any) {
         id: index,
         ticket_id: row.tickets.ticket_id,
         ticket_title: row.tickets.title,
-        ticket_priority: row.tickets.ticket_priority,
+        ticket_priority: row.tickets.ticket_priority || 'N/A',
         ticket_status: row.tickets.ticket_status,
         time_finished: row.tickets.time_finished,
         tickets: row.tickets,
