@@ -31,7 +31,10 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { useForm } from "react-hook-form";
 import { ticketApi } from "../../api/services/ticket";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { messageValidationSchema, messageValidationSchemaFormtype } from "../../schema/Ticket/createMessage";
+import {
+  messageValidationSchema,
+  messageValidationSchemaFormtype,
+} from "../../schema/Ticket/createMessage";
 import InputComponent from "../../components/common/InputComponent";
 import { useAuth } from "../../context/AuthContext";
 import AttachmentCmp from "./AttachmentCmp";
@@ -132,7 +135,7 @@ export default function ChatBox({ ticketDetail }: any) {
         sx={{
           display: "flex",
           flexDirection: "column",
-          height: "80vh",
+          height: "87vh",
         }}
       >
         <Container
