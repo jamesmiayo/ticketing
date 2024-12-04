@@ -9,10 +9,10 @@ export default function TicketSideBar({
 }) {
   const items = [
     { label: "Ticket" },
-    { label: "Analysis" },
-    { label: "Costs" },
+    // { label: "Analysis" },
+    // { label: "Costs" },
     { label: "Logs" },
-    { label: "All" },
+    // { label: "All" },
   ];
 
   return (
@@ -21,7 +21,7 @@ export default function TicketSideBar({
       sx={{
         backgroundColor: "white",
         padding: 2,
-        width: "200px",
+        maxwidth: "200px",
         height: "300px",
       }}
     >

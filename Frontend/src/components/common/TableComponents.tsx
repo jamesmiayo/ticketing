@@ -6,8 +6,8 @@ import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
 
-interface DataGridProps{
-  columns:any;
+interface DataGridProps {
+  columns: any;
   rows: any;
   height?: number;
   width?: string;
@@ -40,7 +40,7 @@ const TableComponents = ({
   onSubmit,
   maxCount,
   isLoading = false,
-  onReset
+  onReset,
 }: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -72,9 +72,9 @@ const TableComponents = ({
               onSubmit?.();
             }}
           >
-            <Grid style={{ display: "flex", gap: 5 }}>
+            <Grid container spacing={2}>
               {customInputs.map((inputProps, index) => (
-                <Grid item key={index}>
+                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                   {inputProps.type === "text" ? (
                     <InputComponent {...inputProps} />
                   ) : inputProps.type === "select" ? (
@@ -84,13 +84,14 @@ const TableComponents = ({
                   ) : null}
                 </Grid>
               ))}
-              <Box
-                sx={{
+              <Grid
+                item
+                xs={12}
+                style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginLeft: "12px",
-                  gap: 1,
+                  gap: 16,
                 }}
               >
                 <Button variant="contained" color="primary" type="submit">
@@ -104,11 +105,12 @@ const TableComponents = ({
                 >
                   Clear
                 </Button>
-              </Box>
+              </Grid>
             </Grid>
           </form>
         </div>
       )}
+
       <div style={{ height: height, width: width }}>
         <DataGrid
           rows={rows}
@@ -165,6 +167,12 @@ const TableComponents = ({
                   },
                   "& .MuiPaginationItem-root:hover": {
                     backgroundColor: "#e3f2fd",
+                  },
+                  "& .MuiDataGrid-virtualScroller": {
+                    overflowX: "auto !important",
+                  },
+                  "& .MuiDataGrid-root": {
+                    overflowX: "visible",
                   },
                 }}
               />
