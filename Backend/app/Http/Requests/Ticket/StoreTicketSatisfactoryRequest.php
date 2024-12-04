@@ -47,7 +47,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
         ];
     }
 
-    public function getTicketStatus(): array
+    public function getTicketStatus($lastAssignee): array
     {
         return [
             'ticket_id' => $this->ticket_id,

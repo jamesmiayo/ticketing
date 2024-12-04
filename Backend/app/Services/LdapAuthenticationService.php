@@ -44,7 +44,9 @@ class LdapAuthenticationService
                 'name' => $user->getName(),
                 'description' => $user['description'][0] ?? null,
                 'division' => $user->getDn(),
-                'password' => Hash::make($this->request->password)
+                'password' => Hash::make($this->request->password),
+                'section_id' => null,
+                'branch_id' => null
             ]
         );
 
