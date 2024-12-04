@@ -28,13 +28,13 @@ class DashboardController extends Controller
     public function __invoke(): JsonResponse
     {
         return response()->json([
-            'status' => Response::HTTP_OK,
+           'status' => Response::HTTP_OK,
             'latest_ticket' => $this->ticketData()->latest()->take(10)->get(),
             'total_priority' => $this->getTicketPerPriority(),
             'total_ticket_category' => $this->getTicketPerCategory(),
             'total_ticket_branch' => $this->getTicketPerBranch(),
-            'total_ticket_count' => $this->getTicketCountsByStatus(),
-            'total_today_created_ticket' => $this->getTicketPerDay(),
+            //'total_ticket_count' => $this->getTicketCountsByStatus(),
+           // 'total_today_created_ticket' => $this->getTicketPerDay(),
         ], Response::HTTP_OK);
     }
 

@@ -24,7 +24,7 @@ class LdapAuthenticationService
     public function authenticate(): JsonResponse
     {
         $user = Entry::where('samaccountname', $this->request->username)->first();
-
+	
         if (empty($user)) {
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
