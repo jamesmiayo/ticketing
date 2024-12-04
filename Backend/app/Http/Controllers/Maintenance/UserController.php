@@ -42,7 +42,7 @@ class UserController extends Controller
 
     public function showProfile()
     {
-        $data = Auth::user()->with('roles' , 'section' , 'section.department' , 'section.department.division')->first();
+        $data = User::with('roles' , 'section' , 'section.department' , 'section.department.division')->where('id' ,  Auth::user()->id)->first();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
