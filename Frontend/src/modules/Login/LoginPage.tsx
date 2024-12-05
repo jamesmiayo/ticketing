@@ -20,6 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useExecuteToast } from "../../context/ToastContext";
 import { useLoader } from "../../context/LoaderContext";
+import logo from "../../assets/images/enhance LOGO II 002.png";
 
 interface FormData {
   username: string;
@@ -77,6 +78,25 @@ const LoginPage: React.FC<any> = () => {
           padding: theme.spacing(2),
         }}
       >
+        <Box
+          sx={{
+            width: "100px",
+            height: "100px",
+            background: "linear-gradient(145deg, #ffffff, #d1d9e6)",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "8px 8px 16px #c3cfd9, -8px -8px 16px #ffffff",
+            marginBottom: theme.spacing(4),
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "90%", objectFit: "contain" }}
+          />
+        </Box>
         <Card
           elevation={10}
           sx={{
@@ -93,7 +113,7 @@ const LoginPage: React.FC<any> = () => {
               align="center"
               sx={{ fontWeight: 700 }}
             >
-              Welcome Back
+              Ticketing System
             </Typography>
             <Typography
               variant="body2"
