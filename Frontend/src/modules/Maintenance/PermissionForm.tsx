@@ -4,8 +4,6 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputComponent from '../../components/common/InputComponent'
 import { useExecuteToast } from '../../context/ToastContext'
-import { role, roleFormtype } from '../../schema/Role/role'
-import { Role } from '../../api/services/role'
 import {
   permission,
   permissionFormtype,
@@ -47,7 +45,7 @@ const PermissionForm: React.FC<Props> = ({
     setLoading(true)
     try {
       if (defaultValues) {
-        const response = await Role.updateRole({
+        const response = await Permission.updatePermission({
           id: defaultValues.id,
           body: data,
         })
@@ -65,7 +63,7 @@ const PermissionForm: React.FC<Props> = ({
     } catch (error) {
       console.error('Error saving category:', error)
       toast.executeToast(
-        'Failed to save category. Please try again.',
+        'Failed to save Permission. Please try again.',
         'top-center',
         true,
         { type: 'error' }

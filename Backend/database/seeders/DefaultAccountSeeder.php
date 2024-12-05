@@ -20,14 +20,14 @@ class DefaultAccountSeeder extends Seeder
             Role::create(['name' => $roleName]);
         }
 
-        if (env('AUTHENTICATION') === 'LDAP'){
+        // if (env('AUTHENTICATION') === 'LDAP'){
 
             $users = ['user.marketing', 'user.investigator', 'user.credit' , 'user.specialist'];
 
             $supervisor = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.marketing',
-                'name' => 'user.marketing',
+                'name' => 'User Marketing',
                 'email' => 'user.marketing@gmail.com',
                 'password' => Hash::make('password'),
                 'section_id' => 1
@@ -38,7 +38,7 @@ class DefaultAccountSeeder extends Seeder
             $manager = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.investigator',
-                'name' => 'user.investigator',
+                'name' => 'User Investigator',
                 'email' => 'user.investigator@gmail.com',
                 'password' => Hash::make('password'),
                 'section_id' => 2
@@ -49,7 +49,7 @@ class DefaultAccountSeeder extends Seeder
             $tech = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.credit',
-                'name' => 'user.credit',
+                'name' => 'User Credit',
                 'email' => 'user.credit@gmail.com',
                 'password' => Hash::make('password'),
                 'section_id' => 3
@@ -66,40 +66,40 @@ class DefaultAccountSeeder extends Seeder
             //         'password' => Hash::make('password')
             //     ]);
             // }
-        }else{
+        // }else{
 
-            $supervisor = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'supervisor',
-                'name' => 'supervisor',
-                'email' => 'supervisor@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 1
-            ]);
+        //     $supervisor = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'supervisor',
+        //         'name' => 'supervisor',
+        //         'email' => 'supervisor@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 1
+        //     ]);
 
-            $supervisor->assignRole('Supervisor');
+        //     $supervisor->assignRole('Supervisor');
 
-            $manager = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'manager',
-                'name' => 'manager',
-                'email' => 'manager@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 2
-            ]);
+        //     $manager = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'manager',
+        //         'name' => 'manager',
+        //         'email' => 'manager@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 2
+        //     ]);
 
-            $manager->assignRole('Manager');
+        //     $manager->assignRole('Manager');
 
-            $tech = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'tech',
-                'name' => 'tech',
-                'email' => 'tech@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 3
-            ]);
+        //     $tech = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'tech',
+        //         'name' => 'tech',
+        //         'email' => 'tech@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 3
+        //     ]);
 
-            $tech->assignRole('tech');
-        }
+        //     $tech->assignRole('tech');
+        // }
     }
 }
