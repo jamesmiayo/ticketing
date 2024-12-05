@@ -35,7 +35,7 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        $data = Role::create($request->getPermissionData());
+        $data = Permission::create($request->getPermissionData());
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
