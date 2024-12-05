@@ -31,9 +31,9 @@ class DashboardController extends Controller
            'status' => Response::HTTP_OK,
             'latest_ticket' => $this->ticketData()->latest()->take(10)->get(),
             'total_priority' => $this->getTicketPerPriority(),
+            'total_ticket_count' => $this->getTicketCountsByStatus(),
             'total_ticket_category' => $this->getTicketPerCategory(),
             'total_ticket_branch' => $this->getTicketPerBranch(),
-            'total_ticket_count' => $this->getTicketCountsByStatus(),
            'total_today_created_ticket' => $this->getTicketPerDay(),
         ], Response::HTTP_OK);
     }
@@ -103,6 +103,7 @@ class DashboardController extends Controller
     public function getTicketCountsByStatus($branch = null)
     {
         $ticketsQuery = $this->ticketData();
+
         if ($branch !== null) {
             $ticketsQuery = $ticketsQuery->whereHas('requestor', function ($query) use ($branch) {
                 $query->where('branch_id', $branch);
@@ -117,9 +118,11 @@ class DashboardController extends Controller
             $count = (clone $ticketsQuery)->whereHas('ticket_logs_latest', function ($query) use ($status) {
                 $query->where('status', $status);
             })->count();
+
             $ticketCounts[$label] = $count;
             $totalTickets += $count;
         }
+
         $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);

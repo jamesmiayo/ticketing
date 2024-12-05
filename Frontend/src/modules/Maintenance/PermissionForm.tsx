@@ -4,8 +4,6 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputComponent from '../../components/common/InputComponent'
 import { useExecuteToast } from '../../context/ToastContext'
-import { role, roleFormtype } from '../../schema/Role/role'
-import { Role } from '../../api/services/role'
 import {
   permission,
   permissionFormtype,

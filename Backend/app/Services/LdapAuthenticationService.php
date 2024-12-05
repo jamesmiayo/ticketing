@@ -44,7 +44,16 @@ class LdapAuthenticationService
         if ($localUser) {
             $localUser->update([
                 'emp_id' => mt_rand(1000, 9999),
+                'description' => $user['description'][0] ?? null,
+                'division' => $user->getDn(),
+                'password' => Hash::make($this->request->password),
+            ]);
+        } else {
+            // If user does not exist, create a new record
+            $localUser = User::create([
+                'username' => $this->request->username,
                 'name' => $user->getName(),
+                'emp_id' => mt_rand(1000, 9999),
                 'description' => $user['description'][0] ?? null,
                 'division' => $user->getDn(),
                 'password' => Hash::make($this->request->password),
