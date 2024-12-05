@@ -107,13 +107,13 @@ export default function PermissionTable({
   }, [])
 
   const columns = [
-    {
-      field: 'data_id',
-      headerName: 'Guard Name',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-    },
+    // {
+    //   field: 'data_id',
+    //   headerName: 'Guard Name',
+    //   flex: 1,
+    //   headerAlign: 'center',
+    //   align: 'center',
+    // },
     { field: 'label', headerName: 'Description', flex: 1 },
     { field: 'created_at', headerName: 'Created Date', flex: 1 },
     { field: 'updated_at', headerName: 'Updated Date', flex: 1 },
