@@ -1,41 +1,42 @@
-import React, { useState } from "react";
-import { Typography, Tabs, Tab, Paper, Box } from "@mui/material";
-import CategoryManagementTable from "./CategoryManagementTable";
-import DepartmentTable from "./DepartmentTable";
-import SectionTable from "./SectionTable";
-import SubCategoryTable from "./SubCategoryTable";
-import BranchTable from "./BranchTable";
-import RoleTable from "./RoleTable";
-import UserManagementTable from "./UserManagementTable";
-import DivisionTable from "./DivisionTable";
+import React, { useState } from 'react'
+import { Typography, Tabs, Tab, Paper, Box } from '@mui/material'
+import CategoryManagementTable from './CategoryManagementTable'
+import DepartmentTable from './DepartmentTable'
+import SectionTable from './SectionTable'
+import SubCategoryTable from './SubCategoryTable'
+import BranchTable from './BranchTable'
+import RoleTable from './RoleTable'
+import UserManagementTable from './UserManagementTable'
+import DivisionTable from './DivisionTable'
+import PermissionTable from './PermissionTable'
 
 export default function MaintenancePage() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(0)
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   return (
     <Box
       component="main"
       sx={{
         p: 3,
-        minHeight: "100vh",
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
       }}
     >
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "800px",
-          backgroundColor: "#010001",
+          width: '100%',
+          maxWidth: '1000px',
+          backgroundColor: '#010001',
           borderRadius: 1,
-          display: "flex",
-          justifyContent: "center",
+          display: 'flex',
+          justifyContent: 'center',
         }}
       >
         <Tabs
@@ -44,17 +45,17 @@ export default function MaintenancePage() {
           aria-label="maintenance tabs"
           allowScrollButtonsMobile
           sx={{
-            "& .MuiTabs-indicator": {
+            '& .MuiTabs-indicator': {
               height: 3,
-              borderRadius: "3px 3px 0 0",
-              backgroundColor: "#fff",
+              borderRadius: '3px 3px 0 0',
+              backgroundColor: '#fff',
             },
-            "& .MuiTab-root": {
-              color: "white",
+            '& .MuiTab-root': {
+              color: 'white',
             },
-            "& .Mui-selected": {
-              color: "#ffff",
-              fontWeight: "bold",
+            '& .Mui-selected': {
+              color: '#ffff',
+              fontWeight: 'bold',
             },
           }}
         >
@@ -66,6 +67,7 @@ export default function MaintenancePage() {
           <Tab label="Section" />
           <Tab label="Branch" />
           <Tab label="Roles" />
+          <Tab label="Permission" />
         </Tabs>
       </Box>
 
@@ -73,8 +75,8 @@ export default function MaintenancePage() {
         elevation={0}
         sx={{
           p: 2,
-          backgroundColor: "transparent",
-          width: "100%",
+          backgroundColor: 'transparent',
+          width: '100%',
           mt: 2,
         }}
       >
@@ -170,7 +172,18 @@ export default function MaintenancePage() {
             </Box>
           </>
         )}
+        {value === 8 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Permission
+            </Typography>
+            <Typography>Manage Permission List.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <PermissionTable />
+            </Box>
+          </>
+        )}
       </Paper>
     </Box>
-  );
+  )
 }
