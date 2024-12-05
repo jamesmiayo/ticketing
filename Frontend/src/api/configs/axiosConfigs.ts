@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosHeaders, AxiosResponse } from "axios";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'http://192.168.10.214:8080/api',
+  baseURL: import.meta.env.VITE_BASE_URL + 'api',
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
