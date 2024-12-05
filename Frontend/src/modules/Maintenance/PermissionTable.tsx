@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Switch,
   Tooltip,
 } from '@mui/material'
 import TableComponents from '../../components/common/TableComponents'
