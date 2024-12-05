@@ -47,7 +47,7 @@ const PermissionForm: React.FC<Props> = ({
     setLoading(true)
     try {
       if (defaultValues) {
-        const response = await Role.updateRole({
+        const response = await Permission.updatePermission({
           id: defaultValues.id,
           body: data,
         })
@@ -65,7 +65,7 @@ const PermissionForm: React.FC<Props> = ({
     } catch (error) {
       console.error('Error saving category:', error)
       toast.executeToast(
-        'Failed to save category. Please try again.',
+        'Failed to save Permission. Please try again.',
         'top-center',
         true,
         { type: 'error' }

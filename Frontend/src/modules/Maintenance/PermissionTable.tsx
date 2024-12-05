@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Switch,
   Tooltip,
 } from '@mui/material'
 import TableComponents from '../../components/common/TableComponents'
@@ -15,7 +14,6 @@ import { ConfirmDialog } from '../../components/common/ConfirmationModal'
 import { CiEdit } from 'react-icons/ci'
 import { MdDelete } from 'react-icons/md'
 import { Division } from '../../api/services/division'
-import DivisionForm from './DivisionForm'
 import PermissionForm from './PermissionForm'
 import { Permission } from '../../api/services/permission'
 
@@ -27,7 +25,6 @@ export default function PermissionTable({
   maxCount,
 }: any) {
   const [open, setOpen] = useState(false)
-  const [confirmOpen, setConfirmOpen] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [dataList, setDataList] = useState([])
   const [loading, setLoading] = useState(true)
@@ -47,7 +44,7 @@ export default function PermissionTable({
     setSelectedRow(dataActive)
 
     if (!isEdit) {
-      setConfirmOpen(true)
+      return
     } else {
       setOpen(true)
     }
@@ -64,7 +61,7 @@ export default function PermissionTable({
     if (!selectedRow) return
     try {
       setLoading(true)
-      const response = await Division.deleteDivision(selectedRow.id)
+      const response = await Permission.deletePermission(selectedRow.id)
       toast.executeToast(response.message, 'top-center', true, {
         type: 'success',
       })

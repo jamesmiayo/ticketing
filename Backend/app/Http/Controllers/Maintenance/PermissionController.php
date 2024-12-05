@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Maintenance;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Models\Role;
@@ -58,9 +58,9 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePermissionRequest $request, string $id)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        $role->update($request->getRoleData());
+        $permission->update($request->getRoleData());
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
     }
 
