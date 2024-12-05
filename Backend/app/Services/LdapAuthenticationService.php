@@ -24,7 +24,7 @@ class LdapAuthenticationService
     public function authenticate(): JsonResponse
     {
         $user = Entry::where('samaccountname', $this->request->username)->first();
-	
+
         if (empty($user)) {
             return response()->json(['status' => Response::HTTP_NOT_FOUND, 'message' => 'User not found.'], Response::HTTP_NOT_FOUND);
         }
@@ -37,20 +37,33 @@ class LdapAuthenticationService
 
         $role = Role::where('name', $user['description'][0])->first();
 
-        $localUser = User::updateOrCreate(
-            ['username' =>  $this->request->username],
-            [
+        $localUser = User::where('username', $this->request->username)
+            ->where('name', $user->getName())
+            ->first();
+
+
+        if ($localUser) {
+            $localUser->update([
                 'emp_id' => mt_rand(1000, 9999),
+                'description' => $user['description'][0] ?? null,
+                'division' => $user->getDn(),
+                'password' => Hash::make($this->request->password),
+            ]);
+        } else {
+            // If user does not exist, create a new record
+            $localUser = User::create([
+                'username' => $this->request->username,
                 'name' => $user->getName(),
+                'emp_id' => mt_rand(1000, 9999),
                 'description' => $user['description'][0] ?? null,
                 'division' => $user->getDn(),
                 'password' => Hash::make($this->request->password),
                 'section_id' => null,
                 'branch_id' => null
-            ]
-        );
+            ]);
+        }
 
-        if(count($localUser->roles) === 0){
+        if (count($localUser->roles) === 0) {
             $localUser->assignRole('User');
         }
 
