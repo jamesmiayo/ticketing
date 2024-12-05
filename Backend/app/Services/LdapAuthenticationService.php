@@ -35,7 +35,7 @@ class LdapAuthenticationService
             return response()->json(['status' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid credentials.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $role = Role::where('name', $user['description'][0])->first();
+        // $role = Role::where('name', $user['description'][0])->first();
 
         $localUser = User::where('username', $this->request->username)
             ->where('name', $user->getName())
