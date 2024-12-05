@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -9,6 +9,8 @@ import {
   Typography,
   useTheme,
   Skeleton,
+  Button,
+  Dialog,
 } from "@mui/material";
 import {
   AccessTime,
@@ -17,9 +19,13 @@ import {
   Phone,
   Work,
 } from "@mui/icons-material";
+import TicketStatus from "../Ticketing/TicketStatus";
+import TicketAssignee from "../Ticketing/TicketAssignee";
+import TicketPriority from "../Ticketing/TicketPriority";
 
 interface TicketDetailsProps {
   ticketDetail: {
+    b_status: string;
     id: any;
     ticket_id?: string;
     requestor?: {
@@ -34,7 +40,7 @@ interface TicketDetailsProps {
         };
       };
     };
-    ticket_priority:string;
+    ticket_priority: string;
     ticket_logs_latest?: {
       assignee?: {
         name?: string;
@@ -50,123 +56,160 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
 }) => {
   const theme = useTheme();
 
-  // const [open, setOpen] = useState(false);
+  const tools = [
+    {
+      label: "Assign Ticket",
+      onClick: () => handleAssigneClick("assignee"),
+      icon: <Person />,
+    },
+    {
+      label: "Change Priority",
+      onClick: () => handleAssigneClick("priority"),
+      icon: <Person />,
+    },
+    {
+      label: "Done This Ticket",
+      onClick: () => handleAssigneClick("status"),
+      icon: <Person />,
+    },
+  ];
 
-  // const handleOpenClose = () => {
-  //   setOpen((prev) => !prev);
-  // };
-
+  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState<any>();
+  function handleAssigneClick(value: any) {
+    setModal(value);
+    setOpen(true);
+  }
   return (
-    <Box sx={{ width: "480px" }}>
-      <Card elevation={3}>
-        <CardContent>
-          {isLoading ? (
-            <Skeleton
-              variant="rectangular"
-              height={605}
-              width="100%"
-              sx={{ borderRadius: 1 }}
-            />
-          ) : (
-            <>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-              >
-                <Typography variant="h5" component="h2">
-                  Ticket Details ({ticketDetail?.ticket_id || "N/A"})
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 3 }} />
+    <>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        {modal === "priority" ? (
+          <TicketPriority data={ticketDetail} setOpen={setOpen} />
+        ) : modal === "status" ? (
+          <TicketStatus data={ticketDetail} setOpen={setOpen} />
+        ) : (
+          <TicketAssignee data={ticketDetail} setOpen={setOpen} />
+        )}
+      </Dialog>
 
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
-                    <Typography variant="body1">
-                      {ticketDetail?.requestor?.name || "No Name"}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <Work sx={{ mr: 1, color: theme.palette.primary.main }} />
-                    <Typography variant="body1">Developer</Typography>
-                  </Box>
+      <Box sx={{ width: "480px" }}>
+        <Card elevation={3}>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton
+                variant="rectangular"
+                height={605}
+                width="100%"
+                sx={{ borderRadius: 1 }}
+              />
+            ) : (
+              <>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={2}
+                >
+                  <Typography variant="h5" component="h2">
+                    Ticket Details ({ticketDetail?.ticket_id || "N/A"})
+                  </Typography>
+                </Box>
+                <Divider sx={{ mb: 3 }} />
+
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Box display="flex" alignItems="center" mb={2}>
+                      <Person
+                        sx={{ mr: 1, color: theme.palette.primary.main }}
+                      />
+                      <Typography variant="body1">
+                        {ticketDetail?.requestor?.name || "No Name"}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" alignItems="center" mb={2}>
+                      <Work sx={{ mr: 1, color: theme.palette.primary.main }} />
+                      <Typography variant="body1">Developer</Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box display="flex" alignItems="center" mb={2}>
+                      <LocationOn
+                        sx={{ mr: 1, color: theme.palette.primary.main }}
+                      />
+                      <Typography variant="body1">
+                        {ticketDetail?.requestor?.branch?.branch_description ||
+                          "No Branch"}
+                      </Typography>
+                    </Box>
+                    <Box display="flex" alignItems="center" mb={2}>
+                      <Phone
+                        sx={{ mr: 1, color: theme.palette.primary.main }}
+                      />
+                      <Typography variant="body1">09495915119</Typography>
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <LocationOn
-                      sx={{ mr: 1, color: theme.palette.primary.main }}
-                    />
-                    <Typography variant="body1">
-                      {ticketDetail?.requestor?.branch?.branch_description ||
-                        "No Branch"}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" mb={2}>
-                    <Phone sx={{ mr: 1, color: theme.palette.primary.main }} />
-                    <Typography variant="body1">09495915119</Typography>
-                  </Box>
+
+                <Divider sx={{ my: 3 }} />
+
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Box mb={2}>
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="subtitle1"
+                        gutterBottom
+                      >
+                        Department
+                      </Typography>
+                      <Chip
+                        label={
+                          ticketDetail?.requestor?.section?.department
+                            ?.department_description || "No Department"
+                        }
+                        color="primary"
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Box mb={2}>
+                      <Typography
+                        sx={{ fontWeight: "bold" }}
+                        variant="subtitle1"
+                        gutterBottom
+                      >
+                        Section
+                      </Typography>
+                      <Chip
+                        label={
+                          ticketDetail?.requestor?.section
+                            ?.section_description || "No Section"
+                        }
+                        color="primary"
+                      />
+                    </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
 
-              <Divider sx={{ my: 3 }} />
+                <Divider sx={{ my: 3 }} />
 
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Box mb={2}>
-                    <Typography
-                      sx={{ fontWeight: "bold" }}
-                      variant="subtitle1"
-                      gutterBottom
-                    >
-                      Department
-                    </Typography>
-                    <Chip
-                      label={
-                        ticketDetail?.requestor?.section?.department
-                          ?.department_description || "No Department"
-                      }
-                      color="primary"
-                    />
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box mb={2}>
-                    <Typography
-                      sx={{ fontWeight: "bold" }}
-                      variant="subtitle1"
-                      gutterBottom
-                    >
-                      Section
-                    </Typography>
-                    <Chip
-                      label={
-                        ticketDetail?.requestor?.section?.section_description ||
-                        "No Section"
-                      }
-                      color="primary"
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <AccessTime
+                    sx={{ mr: 1, color: theme.palette.primary.main }}
+                  />
+                  <Typography variant="body1">
+                    {ticketDetail?.ticket_priority || "N/A"}
+                  </Typography>
+                </Box>
+                <Box display="flex" alignItems="center" mb={2}>
+                  <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
+                  <Typography variant="body1">
+                    Assigned to:{" "}
+                    {ticketDetail?.ticket_logs_latest?.assignee?.name || "None"}
+                  </Typography>
+                </Box>
 
-              <Divider sx={{ my: 3 }} />
-
-              <Box display="flex" alignItems="center" mb={2}>
-                <AccessTime sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">{ticketDetail?.ticket_priority || 'N/A'}</Typography>
-              </Box>
-              <Box display="flex" alignItems="center" mb={2}>
-                <Person sx={{ mr: 1, color: theme.palette.primary.main }} />
-                <Typography variant="body1">
-                  Assigned to:{" "}
-                  {ticketDetail?.ticket_logs_latest?.assignee?.name || "None"}
-                </Typography>
-              </Box>
-
-              {/* <Box mb={3}>
+                {/* <Box mb={3}>
                 <Divider sx={{ my: 3 }} />
                 <Typography variant="subtitle1" gutterBottom>
                   Attachments
@@ -194,11 +237,75 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                   Close Ticket
                 </Button>
               </Box> */}
-            </>
-          )}
-        </CardContent>
-      </Card>
-    </Box>
+              </>
+            )}
+            {ticketDetail?.b_status !== "7" && (
+              <>
+                <Divider sx={{ my: 3 }} />
+                {tools.map((items, index) => (
+                  <Button
+                    key={index}
+                    variant="outlined"
+                    startIcon={items.icon}
+                    onClick={items.onClick}
+                    sx={{
+                      mb: 2,
+                      borderRadius: "8px",
+                      padding: "10px 16px",
+                      textTransform: "none",
+                      borderColor: theme.palette.primary.main,
+                      color: theme.palette.primary.main,
+                      "&:hover": {
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.common.white,
+                        "& .MuiSvgIcon-root": {
+                          color: theme.palette.common.white,
+                        },
+                      },
+                      transition: "all 0.3s ease",
+                      mr: 2,
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {items.label}
+                    </Typography>
+                  </Button>
+                ))}
+              </>
+            )}
+
+            {/* <Tooltip title="Assign Ticket">
+            <IconButton
+            // onClick={() => handleAssigneClick(params.row, "assign")}
+            >
+              <FaRegUserCircle />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Change Priority">
+            <IconButton
+            // onClick={() => handleAssigneClick(params.row, "priority")}
+            >
+              <FaRegFlag />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Done This Ticket">
+            <IconButton
+            // onClick={() => handleAssigneClick(params.row, "status")}
+            >
+              <FaCheckCircle />
+            </IconButton>
+          </Tooltip> */}
+            {/* )} */}
+          </CardContent>
+        </Card>
+      </Box>
+    </>
   );
 };
 

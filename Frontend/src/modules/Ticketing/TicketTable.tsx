@@ -1,14 +1,21 @@
-import { Dialog, IconButton, Tooltip } from "@mui/material";
+import {
+  //  Dialog,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaRegUserCircle } from "react-icons/fa";
+import {
+  FaEye,
+  //  FaRegUserCircle
+} from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import { useState } from "react";
-import TicketAssignee from "./TicketAssignee";
-import { FaRegFlag } from "react-icons/fa";
-import TicketPriority from "./TicketPriority";
-import { FaCheckCircle } from "react-icons/fa";
-import TicketStatus from "./TicketStatus";
+// import { useState } from "react";
+// import TicketAssignee from "./TicketAssignee";
+// import { FaRegFlag } from "react-icons/fa";
+// import TicketPriority from "./TicketPriority";
+// import { FaCheckCircle } from "react-icons/fa";
+// import TicketStatus from "./TicketStatus";
 
 export default function TicketTable({
   tickets,
@@ -20,22 +27,22 @@ export default function TicketTable({
   onSubmit,
   onReset,
   maxCount,
-  refetch,
-}: any) {
-  const [open, setOpen] = useState(false);
-  const [data, setData] = useState<any>();
-  const [modal, setModal] = useState<any>();
+}: // refetch,
+any) {
+  // const [open, setOpen] = useState(false);
+  // const [data, setData] = useState<any>();
+  // const [modal, setModal] = useState<any>();
   const navigate = useNavigate();
 
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  function handleAssigneClick(params: any, value: any) {
-    setModal(value);
-    setData(params);
-    setOpen(true);
-  }
+  // function handleAssigneClick(params: any, value: any) {
+  //   setModal(value);
+  //   setData(params);
+  //   setOpen(true);
+  // }
 
   function handlePriorityColor(priority: string): React.CSSProperties {
     switch (priority) {
@@ -122,7 +129,7 @@ export default function TicketTable({
                     <FaEye />
                   </IconButton>
                 </Tooltip>
-                {params.row.b_status !== "7" && (
+                {/* {params.row.b_status !== "7" && (
                   <>
                     <Tooltip title="Assign Ticket">
                       <IconButton
@@ -148,7 +155,7 @@ export default function TicketTable({
                       </IconButton>
                     </Tooltip>
                   </>
-                )}
+                )} */}
               </>
             ),
           },
@@ -157,7 +164,7 @@ export default function TicketTable({
   ];
   return (
     <>
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      {/* <Dialog open={open} onClose={() => setOpen(false)}>
         {modal === "priority" ? (
           <TicketPriority data={data} setOpen={setOpen} refetch={refetch} />
         ) : modal === "status" ? (
@@ -165,7 +172,7 @@ export default function TicketTable({
         ) : (
           <TicketAssignee data={data} setOpen={setOpen} refetch={refetch} />
         )}
-      </Dialog>
+      </Dialog> */}
 
       <TableComponents
         columns={columns}
