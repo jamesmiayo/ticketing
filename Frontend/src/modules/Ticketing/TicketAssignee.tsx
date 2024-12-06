@@ -26,7 +26,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState<any>([]);
   const [userData, setUserData] = useState<any>([]);
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [userOption, setUserOption] = useState<any>([]);
   const toast = useExecuteToast();
 
@@ -117,6 +117,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   };
 
   useEffect(() => {
+    getUser();
     getDivision();
     handleDivision('1');
   }, []); 
