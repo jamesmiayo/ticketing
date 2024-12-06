@@ -9,6 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,8 @@ class User extends Authenticatable
         'emp_id',
         'username',
         'branch_id',
-        'section_id'
+        'section_id',
+        'profile_picture'
     ];
 
     /**
@@ -52,6 +54,14 @@ class User extends Authenticatable
         ];
     }
 
+    protected function profilePicture(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? asset('storage/' . $value)
+                : asset('storage/default_profile.jpg')
+        );
+    }
     public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);

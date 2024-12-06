@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Avatar,
   Box,
@@ -7,16 +5,22 @@ import {
   CardContent,
   Container,
   IconButton,
-  Link,
-  Skeleton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
   Typography,
   styled,
+  useTheme,
+  Link,
+  Skeleton,
 } from "@mui/material";
-import {
-  Edit,
-} from "@mui/icons-material";
+import { CameraAlt, Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { User } from "../../api/services/user";
+import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
@@ -31,18 +35,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-// const ActionLink = styled(Link)(({ theme }) => ({
-//   color: theme.palette.primary.main,
-//   textDecoration: "none",
-//   display: "inline-flex",
-//   alignItems: "center",
-//   "&:hover": {
-//     textDecoration: "underline",
-//   },
-// }));
-
 export default function UserProfile() {
+  const theme = useTheme();
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [data, setData] = useState<any>([]);
 
   const dashboardFetchData = async () => {
@@ -56,9 +54,52 @@ export default function UserProfile() {
       setLoading(false);
     }
   };
+
+  const { user } = useAuth();
+
   useEffect(() => {
     dashboardFetchData();
   }, []);
+
+  const handleOpenDialog = () => setOpen(true);
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setSelectedFile(null);
+    setPreview("/placeholder.svg");
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+      setPreview(URL.createObjectURL(event.target.files[0]));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("profile_picture", selectedFile);
+
+    try {
+      const response = await User.uploadProfile(formData);
+      toast.success("Files uploaded successfully!");
+
+      setData((prev: any) => ({
+        ...prev,
+        profile_picture: response.data.path,
+      }));
+      await dashboardFetchData();
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      toast.error("Files upload failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log(data?.profile_picture);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -66,24 +107,33 @@ export default function UserProfile() {
         <CardContent sx={{ width: "100%", textAlign: "center" }}>
           <Box sx={{ position: "relative", display: "inline-block" }}>
             <Avatar
-              src="/placeholder.svg"
-              sx={{ width: 120, height: 120, mb: 2 }}
+              src={data?.profile_picture}
+              sx={{
+                width: 120,
+                height: 120,
+                mb: 2,
+                border: `4px solid ${theme.palette.background.paper}`,
+                boxShadow: theme.shadows[3],
+              }}
             />
             <IconButton
-              size="small"
+              size="large"
+              onClick={handleOpenDialog}
               sx={{
                 position: "absolute",
-                bottom: 16,
-                right: 0,
-                backgroundColor: "background.paper",
-                border: "1px solid",
-                borderColor: "divider",
+                bottom: -10,
+                right: -10,
+                backgroundColor: theme.palette.primary.main,
+                color: "#fff",
+                boxShadow: theme.shadows[3],
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                },
               }}
             >
-              <Edit fontSize="small" />
+              <CameraAlt fontSize="small" />
             </IconButton>
           </Box>
-
           <Box
             sx={{
               display: "flex",
@@ -109,33 +159,106 @@ export default function UserProfile() {
             ) : (
               <>
                 <Typography variant="h5" gutterBottom>
-                  {data?.name}
+                  {user?.name}
                 </Typography>
                 <Typography variant="h6" gutterBottom>
-                  {data?.section?.department?.division?.division_description}
+                  {user?.section?.department?.division?.division_description}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
-                  {data?.section?.department?.department_description}
+                  {user?.section?.department?.department_description}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
-                  {data?.section?.section_description}
+                  {user?.section?.section_description}
                 </Typography>
                 <Link
-                  href={`mailto:${data?.email}`}
+                  href={`mailto:${user?.email}`}
                   color="primary"
                   sx={{ mb: 2, display: "block" }}
                 >
-                  {data?.email}
+                  {user?.email}
                 </Link>
               </>
             )}
           </Box>
         </CardContent>
       </StyledCard>
-      {/* <TicketList
-        ticketList={totalTicket?.total_ticket_count}
-        isLoading={loading}
-      /> */}
+
+      <Dialog
+        open={open}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiPaper-root": {
+            borderRadius: "16px",
+            padding: theme.spacing(2),
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            textAlign: "center",
+            fontWeight: "bold",
+            paddingBottom: theme.spacing(1),
+          }}
+        >
+          Update Profile Picture
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center" }}>
+          <Avatar
+            src={preview || data?.profile_picture}
+            sx={{
+              width: 120,
+              height: 120,
+              margin: "0 auto",
+              border: `4px solid ${theme.palette.background.default}`,
+              boxShadow: theme.shadows[3],
+            }}
+          />
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              mt: 3,
+              backgroundColor: theme.palette.primary.main,
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: theme.palette.primary.dark,
+              },
+            }}
+          >
+            Choose File
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </Button>
+          {selectedFile && (
+            <Typography sx={{ mt: 2 }} color="textSecondary">
+              {selectedFile.name}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "space-between" }}>
+          <Button
+            onClick={handleCloseDialog}
+            startIcon={<Close />}
+            sx={{ color: theme.palette.error.main }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleUpload}
+            variant="contained"
+            color="primary"
+            disabled={!selectedFile}
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
