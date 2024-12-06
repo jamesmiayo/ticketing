@@ -17,7 +17,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import SelectItem from "../../components/common/SelectItem";
 import InputComponent from "../../components/common/InputComponent";
 import { Division } from "../../api/services/division";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 export default function TicketAssignee({ data, setOpen, refetch }: any) {
