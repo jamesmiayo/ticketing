@@ -1,13 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-} from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Avatar,
   Box,
@@ -249,16 +240,19 @@ export default function ChatBox({ ticketDetail }: any) {
                         >
                           <Tooltip title={message.user.name}>
                             <Avatar
+                              src={message.user.profile_picture || undefined}
                               sx={{
                                 width: 32,
                                 height: 32,
-                                bgcolor:
-                                  message.sender === "user"
+                                bgcolor: !message.user.profile_picture
+                                  ? message.sender === "user"
                                     ? "primary.main"
-                                    : "secondary.main",
+                                    : "secondary.main"
+                                  : "transparent",
                               }}
                             >
-                              {message.user.name.charAt(0).toUpperCase()}
+                              {!message.user.profile_picture &&
+                                message.user.name.charAt(0).toUpperCase()}
                             </Avatar>
                           </Tooltip>
                         </ListItemAvatar>
@@ -308,32 +302,16 @@ export default function ChatBox({ ticketDetail }: any) {
                           >
                             <List>
                               {message.documents?.map(
-                                (
-                                  document: {
-                                    file_url:
-                                      | string
-                                      | number
-                                      | boolean
-                                      | ReactElement<
-                                          any,
-                                          string | JSXElementConstructor<any>
-                                        >
-                                      | Iterable<ReactNode>
-                                      | ReactPortal
-                                      | null
-                                      | undefined;
-                                  },
-                                  index: Key | null | undefined
-                                ) => (
+                                (document: any, index: any) => (
                                   <ListItem key={index}>
                                     <a
-                                      href={document.file_url as string}
+                                      href={document.file_url}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       style={{ textDecoration: "none" }}
                                     >
                                       <img
-                                        src={document.file_url as string}
+                                        src={document.file_url}
                                         alt={`Document ${index}`}
                                         style={{
                                           maxWidth: "300px",
