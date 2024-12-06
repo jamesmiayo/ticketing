@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Services\LdapAuthenticationService;
 use App\Services\ApiAuthenticationService;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -37,12 +38,24 @@ class AuthController extends Controller
     {
         $token = request()->bearerToken();
         $personalAccessToken = PersonalAccessToken::findToken($token);
-        $user = User::find($personalAccessToken)->first();
-
+        $user = User::find($personalAccessToken->tokenable_id);
+    
         if ($personalAccessToken && !empty($user)) {
-            return new JsonResponse(['isValid' => true, 'roles' => $user->roles->pluck('name')->first(), 'user' => $user], Response::HTTP_OK);
+            // $user->profile_picture = $user->profile_picture 
+            //     ? url(Storage::url($user->profile_picture)) 
+            //     : null;
+    
+            return new JsonResponse([
+                'isValid' => true,
+                'roles' => $user->roles->pluck('name')->first(),
+                'user' => $user,
+            ], Response::HTTP_OK);
         } else {
-            return new JsonResponse(['status' => Response::HTTP_UNAUTHORIZED, 'message' => 'Token expired'], Response::HTTP_UNAUTHORIZED);
+            return new JsonResponse([
+                'status' => Response::HTTP_UNAUTHORIZED,
+                'message' => 'Token expired',
+            ], Response::HTTP_UNAUTHORIZED);
         }
     }
+    
 }

@@ -187,7 +187,6 @@ const Sidebar = ({ children }: any) => {
                 ))}
             </List>
 
-            {/* Logout button at the bottom */}
             <Box sx={{ marginBottom: "16px", width: "100%" }}>
               <ListItem disablePadding sx={{ marginTop: 1 }}>
                 <ListItemButton

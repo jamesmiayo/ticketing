@@ -60,5 +60,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('branch', [UserController::class, 'updateUserBranch']);
         Route::post('section', [UserController::class, 'updateUserSection']);
         Route::post('role', [UserController::class, 'updateUserRole']);
+        Route::post('upload-profile', [UserController::class, 'uploadProfilePicture']);
     });
 });
