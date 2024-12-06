@@ -16,7 +16,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
 
-	  
+
 	return (new LdapAuthenticationService($request))->authenticate();
         if (env('AUTHENTICATION') == 'LDAP') {
             return (new LdapAuthenticationService($request))->authenticate();
@@ -38,7 +38,6 @@ class AuthController extends Controller
         $token = request()->bearerToken();
         $personalAccessToken = PersonalAccessToken::findToken($token);
         $user = User::find($personalAccessToken)->first();
-
         if ($personalAccessToken && !empty($user)) {
             return new JsonResponse(['isValid' => true, 'roles' => $user->roles->pluck('name')->first(), 'user' => $user], Response::HTTP_OK);
         } else {

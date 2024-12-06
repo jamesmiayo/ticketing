@@ -7,6 +7,7 @@ export const ticketValidationSchema = Yup.object().shape({
   category: Yup.string().required(warningMessage),
   subcategory_id: Yup.string().required(warningMessage),
   status: Yup.string().required(warningMessage),
+  division_id: Yup.string().required(warningMessage)
 });
 
 export type ticketValidationSchemaFormtype = Yup.InferType<typeof ticketValidationSchema>;

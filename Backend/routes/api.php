@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('priority', [TicketHdrController::class , 'updatePriority']);
         Route::post('upload', [TicketDocumentController::class, 'store']);
         Route::get('documents', [TicketDocumentController::class, 'getByAuthenticatedUser']);
+        Route::put('change-status/{ticket_id}', [TicketHdrController::class, 'changeTicketStatus']);
     });
 
     Route::prefix('user')->group(function () {

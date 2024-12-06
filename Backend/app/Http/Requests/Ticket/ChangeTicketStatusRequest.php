@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Ticket;
 
-use App\Constants\GlobalConstants;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreTicketStatusRequest extends FormRequest
+class ChangeTicketStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,19 +23,17 @@ class StoreTicketStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ticket_id' => 'required',
-            'emp_id' => 'required',
-            'remarks' => 'nullable',
+            'status' => 'required',
         ];
     }
 
-    public function getTicketStatus(): array
+    public function getChangeStatusData($ticket): array
     {
         return [
-            'ticket_id' => $this->ticket_id,
-            'status' => GlobalConstants::IN_PROGRESS,
-            'emp_id' => $this->emp_id,
-            'remarks' => $this->remarks,
+            'ticket_id' => $ticket->id,
+            'status' => $this->status,
+            'emp_id' => Auth::user('Can Change Status') ? $ticket->ticket_logs_latest->assignee->id : Auth::user()->id,
+            'remarks' => '',
             'updated_by' => Auth::user()->id,
         ];
     }

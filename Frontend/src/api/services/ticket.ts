@@ -5,6 +5,7 @@ interface TicketData {
   concern: string;
   subcategory_id: string;
   status: string;
+  division_id: string;
 }
 
 interface Category {
@@ -87,12 +88,14 @@ export const ticketApi = {
     concern,
     subcategory_id,
     status,
+    division_id
   }: TicketData) {
     try {
       const response = await apiClient.request({
         url: "/ticket/ticket-hdr",
         method: "POST",
         data: {
+          division_id: division_id,
           title,
           body: concern,
           subcategory_id,
@@ -156,7 +159,6 @@ export const ticketApi = {
           ticket_id,
           message: data.message,
           emp_id: data.emp_id,
-          status: data.status,
           remarks: data.remarks,
         },
       });
@@ -226,4 +228,18 @@ export const ticketApi = {
       throw error;
     }
   },
+
+  changeStatusTicket: async function (ticket_id: any , data: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/change-status/${ticket_id}`,
+        method: "PUT",
+        data: data
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  }
 };

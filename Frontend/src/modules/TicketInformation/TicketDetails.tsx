@@ -22,6 +22,7 @@ import {
 import TicketStatus from "../Ticketing/TicketStatus";
 import TicketAssignee from "../Ticketing/TicketAssignee";
 import TicketPriority from "../Ticketing/TicketPriority";
+import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -69,6 +70,11 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     },
     {
       label: "Done This Ticket",
+      onClick: () => handleAssigneClick("done"),
+      icon: <Person />,
+    },
+    {
+      label: "Change Status",
       onClick: () => handleAssigneClick("status"),
       icon: <Person />,
     },
@@ -85,8 +91,10 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
       <Dialog open={open} onClose={() => setOpen(false)}>
         {modal === "priority" ? (
           <TicketPriority data={ticketDetail} setOpen={setOpen} />
-        ) : modal === "status" ? (
+        ) : modal === "done" ? (
           <TicketStatus data={ticketDetail} setOpen={setOpen} />
+        )  : modal === "status" ? (
+          <TicketChangeStatus data={ticketDetail} setOpen={setOpen} />
         ) : (
           <TicketAssignee data={ticketDetail} setOpen={setOpen} />
         )}

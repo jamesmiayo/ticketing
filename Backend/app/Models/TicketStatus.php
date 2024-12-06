@@ -15,7 +15,10 @@ class TicketStatus extends Model
         'ticket_id',
         'emp_id',
         'status',
-        'remarks'
+        'remarks',
+        'division_id',
+        'department_id',
+        'section_id'
     ];
     protected $with = ['assignee:id,name,section_id', 'updated_by:id,name'];
 

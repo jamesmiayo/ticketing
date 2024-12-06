@@ -11,6 +11,7 @@ interface TicketCreationFormProps {
   onCreate: (ticket: any) => void;
   refetch: any;
   categories: any;
+  division: any;
   subcategories: any;
   handleSubCategoryList: any;
 }
@@ -24,6 +25,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
   refetch,
   categories,
+  division,
   subcategories,
   handleSubCategoryList,
 }) => {
@@ -111,6 +113,16 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               options={statusOptions}
               errors={errors}
               name="status"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <SelectItem
+              label="Division"
+              control={control}
+              options={division}
+              errors={errors}
+              name="division_id"
               fullWidth
             />
           </Grid>

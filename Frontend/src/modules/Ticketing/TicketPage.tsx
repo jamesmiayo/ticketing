@@ -21,10 +21,12 @@ import { priorityList, statusList } from "../../constants/constants";
 import { useQuery } from "../TicketInformation/TicketInformationPage";
 import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
+import { Division } from "../../api/services/division";
 
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
+  const [division, setDivision] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -86,6 +88,22 @@ const TicketPage: React.FC = () => {
         };
       });
       setCategories(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
+
+  const getDivisionList = async () => {
+    try {
+      const response = await Division.getDivision();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.division_description,
+        };
+      });
+      setDivision(data);
     } catch (error) {
       console.error("Error fetching category list:", error);
       throw error;
@@ -176,10 +194,11 @@ const TicketPage: React.FC = () => {
     fetchData(null, page);
   };
   useEffect(() => {
+    getDivisionList();
     getCategoryList();
     fetchData(null, page);
   }, [page]);
-  console.log(user)
+
   return (
     <Box sx={{ display: "flex" }}>
       <Box
@@ -221,6 +240,7 @@ const TicketPage: React.FC = () => {
               <TicketCreationForm
                   onCreate={() => setOpen(false)}
                   refetch={() => fetchData(null, page)}
+                  division={division}
                   categories={categories}
                   subcategories={subcategories}
                   handleSubCategoryList={handleSubCategoryList}

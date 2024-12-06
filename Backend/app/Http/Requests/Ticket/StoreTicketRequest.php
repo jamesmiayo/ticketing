@@ -26,6 +26,7 @@ class StoreTicketRequest extends FormRequest
             'title' => 'required',
             'body' => 'required',
             'b_status' => 'required',
+            'division_id' => 'required',
         ];
     }
 
@@ -44,6 +45,7 @@ class StoreTicketRequest extends FormRequest
     public function getTicketStatus($ticket_id): array
     {
         return [
+            'division_id' => $this->division_id,
             'ticket_id' => $ticket_id,
             'status' => $this->b_status,
             'emp_id' => null,
