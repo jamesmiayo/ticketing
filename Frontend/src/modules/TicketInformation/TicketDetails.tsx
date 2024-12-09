@@ -19,10 +19,14 @@ import {
   Phone,
   Work,
 } from "@mui/icons-material";
-import TicketStatus from "../Ticketing/TicketStatus";
 import TicketAssignee from "../Ticketing/TicketAssignee";
 import TicketPriority from "../Ticketing/TicketPriority";
 import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { changeTicketStatus, changeTicketStatusFormtype } from "../../schema/Ticket/changeTicketStatus";
+import { ticketApi } from "../../api/services/ticket";
+import { useExecuteToast } from "../../context/ToastContext";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -56,7 +60,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   isLoading,
 }) => {
   const theme = useTheme();
-
+  const toast = useExecuteToast();
   const tools = [
     {
       label: "Assign Ticket",
@@ -70,7 +74,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     },
     {
       label: "Done This Ticket",
-      onClick: () => handleAssigneClick("done"),
+      onClick: () => onSubmit(),
       icon: <Person />,
     },
     {
@@ -82,18 +86,31 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
 
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState<any>();
+
   function handleAssigneClick(value: any) {
     setModal(value);
     setOpen(true);
   }
+  
+  const onSubmit = async () => {
+    try {
+      const response = await ticketApi.changeStatusTicket(ticketDetail.id, {status: '7'});
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
+    } catch (error: any) {
+      toast.executeToast(error?.response?.data?.message, "top-center", true, {
+        type: "error",
+      });
+    }
+  };
+
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)}>
         {modal === "priority" ? (
           <TicketPriority data={ticketDetail} setOpen={setOpen} />
-        ) : modal === "done" ? (
-          <TicketStatus data={ticketDetail} setOpen={setOpen} />
-        )  : modal === "status" ? (
+        ) : modal === "status" ? (
           <TicketChangeStatus data={ticketDetail} setOpen={setOpen} />
         ) : (
           <TicketAssignee data={ticketDetail} setOpen={setOpen} />

@@ -14,6 +14,7 @@ interface TicketCreationFormProps {
   division: any;
   subcategories: any;
   handleSubCategoryList: any;
+  handleCategoryList:any;
 }
 
 const statusOptions = [
@@ -28,6 +29,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   division,
   subcategories,
   handleSubCategoryList,
+  handleCategoryList,
 }) => {
   const toast = useExecuteToast();
   const {
@@ -83,7 +85,17 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               fullWidth
             />
           </Grid>
-
+          <Grid item xs={12}>
+            <SelectItem
+              label="Division"
+              control={control}
+              options={division}
+              errors={errors}
+              name="division_id"
+              onChange={(e:any) => handleCategoryList(e)}
+              fullWidth
+            />
+          </Grid>
           <Grid item xs={12}>
             <SelectItem
               label="Category"
@@ -116,17 +128,6 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
               fullWidth
             />
           </Grid>
-          <Grid item xs={12}>
-            <SelectItem
-              label="Division"
-              control={control}
-              options={division}
-              errors={errors}
-              name="division_id"
-              fullWidth
-            />
-          </Grid>
-
           <Grid item xs={12} sx={{ marginTop: 2 }}>
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Create Ticket

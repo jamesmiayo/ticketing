@@ -1,4 +1,5 @@
 import {
+  Dialog,
   //  Dialog,
   IconButton,
   Tooltip,
@@ -6,16 +7,12 @@ import {
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
 import {
+  FaCheckCircle,
   FaEye,
-  //  FaRegUserCircle
 } from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-// import { useState } from "react";
-// import TicketAssignee from "./TicketAssignee";
-// import { FaRegFlag } from "react-icons/fa";
-// import TicketPriority from "./TicketPriority";
-// import { FaCheckCircle } from "react-icons/fa";
-// import TicketStatus from "./TicketStatus";
+import { useState } from "react";
+import TicketStatus from "./TicketStatus";
 
 export default function TicketTable({
   tickets,
@@ -29,20 +26,19 @@ export default function TicketTable({
   maxCount,
 }: // refetch,
 any) {
-  // const [open, setOpen] = useState(false);
-  // const [data, setData] = useState<any>();
-  // const [modal, setModal] = useState<any>();
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<any>();
   const navigate = useNavigate();
 
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
 
-  // function handleAssigneClick(params: any, value: any) {
-  //   setModal(value);
-  //   setData(params);
-  //   setOpen(true);
-  // }
+  function handleAssigneClick(params: any) {
+    console.log(params)
+    setData(params);
+    setOpen(true);
+  }
 
   function handlePriorityColor(priority: string): React.CSSProperties {
     switch (priority) {
@@ -129,33 +125,15 @@ any) {
                     <FaEye />
                   </IconButton>
                 </Tooltip>
-                {/* {params.row.b_status !== "7" && (
-                  <>
-                    <Tooltip title="Assign Ticket">
-                      <IconButton
-                        onClick={() => handleAssigneClick(params.row, "assign")}
-                      >
-                        <FaRegUserCircle />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Change Priority">
-                      <IconButton
-                        onClick={() =>
-                          handleAssigneClick(params.row, "priority")
-                        }
-                      >
-                        <FaRegFlag />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Done This Ticket">
-                      <IconButton
-                        onClick={() => handleAssigneClick(params.row, "status")}
-                      >
-                        <FaCheckCircle />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                )} */}
+                {params.row.ticket_logs_latest?.status == "7" && (
+                <Tooltip title="Done This Ticket">
+                  <IconButton
+                    onClick={() => handleAssigneClick(params.row)}
+                  >
+                    <FaCheckCircle />
+                  </IconButton>
+                </Tooltip>
+                )}
               </>
             ),
           },
@@ -164,15 +142,9 @@ any) {
   ];
   return (
     <>
-      {/* <Dialog open={open} onClose={() => setOpen(false)}>
-        {modal === "priority" ? (
-          <TicketPriority data={data} setOpen={setOpen} refetch={refetch} />
-        ) : modal === "status" ? (
-          <TicketStatus data={data} setOpen={setOpen} refetch={refetch} />
-        ) : (
-          <TicketAssignee data={data} setOpen={setOpen} refetch={refetch} />
-        )}
-      </Dialog> */}
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <TicketStatus data={data} setOpen={setOpen} />
+      </Dialog>
 
       <TableComponents
         columns={columns}

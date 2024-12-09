@@ -70,6 +70,7 @@ export default function CategoryManagementTable({
           b_active: updatedStatus,
           category_description: selectedCategory.label,
           category_id: selectedCategory.category_id,
+          division_id: selectedCategory.division.id
         },
       });
       toast.executeToast(responseUpdate.message, "top-center", true, {
@@ -117,6 +118,7 @@ export default function CategoryManagementTable({
         id: row.id,
         label: row.category_description,
         sub_category: row.sub_category,
+        division_id: row.division.id,
         active: row.b_active,
         category_id: row.category_id,
         created_at: row.created_at,

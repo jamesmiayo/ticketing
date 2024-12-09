@@ -101,6 +101,7 @@ const TicketPage: React.FC = () => {
         return {
           value: row.id,
           label: row.division_description,
+          category: row.category
         };
       });
       setDivision(data);
@@ -109,6 +110,16 @@ const TicketPage: React.FC = () => {
       throw error;
     }
   };
+  
+  function handleCategoryList(e:any){
+    const data = division
+      .find((category: any) => category.value == e)
+      ?.category.map((row: any) => {
+        return { value: row.id, label: row.category_description , sub_category: row.sub_category };
+      });
+    setCategories(data);
+    setSubCategories([]);
+  }
 
   function handleSubCategoryList(e: any) {
     const data = categories
@@ -244,6 +255,7 @@ const TicketPage: React.FC = () => {
                   categories={categories}
                   subcategories={subcategories}
                   handleSubCategoryList={handleSubCategoryList}
+                  handleCategoryList={handleCategoryList}
                 />
               </DialogContent>
             </>

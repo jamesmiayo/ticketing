@@ -5,11 +5,16 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Department;
 use App\Models\Division;
-
+use App\Models\Branch;
 class DepartmentSeeder extends Seeder
 {
     public function run()
     {
+        Branch::create([
+            'branch_id' => 'D0012',
+            'branch_description' => 'Head Office Branch'
+        ]);
+
         $division = Division::create([
             'division_id' => 'D0012',
             'division_description' => 'Information Technology'

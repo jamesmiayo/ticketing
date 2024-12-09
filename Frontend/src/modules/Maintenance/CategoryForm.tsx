@@ -6,6 +6,8 @@ import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
 import { category, categoryFormtype } from "../../schema/Category/category";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
+import { Division } from "../../api/services/division";
+import SelectItem from "../../components/common/SelectItem";
 
 interface Props {
   refetch: () => void;
@@ -16,22 +18,39 @@ interface Props {
 const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
   const [loading, setLoading] = useState(false);
   const toast = useExecuteToast();
-
+  const [division, setDivision] = useState([]);
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<categoryFormtype>({
     resolver: yupResolver(category),
   });
-
+  const getDivisionList = async () => {
+    try {
+      const response = await Division.getDivision();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.division_description,
+        };
+      });
+      setDivision(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
   useEffect(() => {
+    getDivisionList();
     if (defaultValues) {
       reset({
         category_description: defaultValues.label,
         category_id: defaultValues.category_id,
         b_active: defaultValues.active,
+        division_id: defaultValues.division_id,
       });
     }
   }, [defaultValues, reset]);
@@ -90,6 +109,16 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
               />
             </Grid>
           )}
+          <Grid item xs={12}>
+            <SelectItem
+              label="Division"
+              control={control}
+              options={division}
+              errors={errors}
+              name="division_id"
+              fullWidth
+            />
+          </Grid>
           <Grid item xs={12}>
             <InputComponent
               name="category_description"
