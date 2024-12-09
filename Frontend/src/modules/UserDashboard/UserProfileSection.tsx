@@ -84,7 +84,7 @@ export default function UserProfile() {
 
     try {
       const response = await User.uploadProfile(formData);
-      toast.success("Files uploaded successfully!");
+      toast.success(response.message);
 
       setData((prev: any) => ({
         ...prev,
@@ -92,9 +92,9 @@ export default function UserProfile() {
       }));
       await dashboardFetchData();
       handleCloseDialog();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error uploading profile picture:", error);
-      toast.error("Files upload failed.");
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }

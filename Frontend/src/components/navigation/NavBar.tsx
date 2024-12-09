@@ -13,10 +13,9 @@ const NavBar: React.FC = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        justifyContent: "end",
-        alignItems: "center",
         padding: 1,
+        position: "fixed",
+        right: 0,
       }}
     >
       <Toolbar>
