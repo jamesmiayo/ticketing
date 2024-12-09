@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 import Sidebar from "../../components/navigation/SideBar";
 import NavBar from "../../components/navigation/NavBar";
-import { Container } from "@mui/material";
 
 const PrivateRoute = ({ component: Component }: any) => {
   const token = localStorage.getItem("token");
