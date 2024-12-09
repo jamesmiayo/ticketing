@@ -36,6 +36,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     reset,
     formState: { errors },
     register,
+    watch,
   } = useForm<any>({
     resolver: yupResolver(ticketAssign),
   });
@@ -73,7 +74,6 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
         label: row.section_description,
       }));
     setSection(data || []);
-    // setUserOption([]);
   };
 
   const getDivision = async () => {
@@ -90,18 +90,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     }
   };
 
-  const handleSection = (section: string) => {
-    const data = userData
-      .filter((row: any) => row.section_id === section)
-      ?.map((row: any) => ({
-        value: row.id,
-        label: row.name,
-      }));
-    setUserOption(data);
-  };
-
   const handleDivision = (department: string) => {
-
     const data = division
       .find((row: any) => row.value == department)
       ?.department?.map((row: any) => {
@@ -116,12 +105,53 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     setUserOption([]);
   };
 
+  const handleSection = (section: any) => {
+    const data = userData
+      .filter((row: any) => row.section_id === section)
+      ?.map((row: any) => ({
+        value: row.id,
+        label: row.name,
+      }));
+    setUserOption(data);
+  };
+
+  //
+  const divisionCode = watch("division");
+  const departmentCode = watch("department");
+  const sectionCode = watch("section");
+
   useEffect(() => {
     getUser();
     getDivision();
-    handleDivision('1');
-  }, []); 
-  
+    getUser();
+
+    reset({
+      division: "2",
+      department: "1",
+      section: "1",
+      assignee: "1",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (divisionCode) {
+      handleDivision(divisionCode);
+    }
+    if (departmentCode) {
+      handleDepartment(Number(departmentCode));
+    }
+    if (sectionCode) {
+      handleSection(Number(sectionCode));
+    }
+  }, [
+    divisionCode,
+    departmentCode,
+    sectionCode,
+    section,
+    division,
+    department,
+  ]);
+
   return (
     <>
       <DialogTitle>
