@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Card,
@@ -27,6 +27,7 @@ import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
 // import { changeTicketStatus, changeTicketStatusFormtype } from "../../schema/Ticket/changeTicketStatus";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -47,6 +48,7 @@ interface TicketDetailsProps {
     };
     ticket_priority: string;
     ticket_logs_latest?: {
+      status: string;
       assignee?: {
         name?: string;
       };
@@ -59,6 +61,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   ticketDetail,
   isLoading,
 }) => {
+  const { permission } = useContext(PermissionContext);
   const theme = useTheme();
   const toast = useExecuteToast();
   const tools = [
@@ -264,46 +267,47 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
               </Box> */}
               </>
             )}
-            {ticketDetail?.b_status !== "7" && (
-              <>
-                <Divider sx={{ my: 3 }} />
-                {tools.map((items, index) => (
-                  <Button
-                    key={index}
-                    variant="outlined"
-                    startIcon={items.icon}
-                    onClick={items.onClick}
-                    sx={{
-                      mb: 2,
-                      borderRadius: "8px",
-                      padding: "10px 16px",
-                      textTransform: "none",
-                      borderColor: theme.palette.primary.main,
-                      color: theme.palette.primary.main,
-                      "&:hover": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.common.white,
-                        "& .MuiSvgIcon-root": {
-                          color: theme.palette.common.white,
-                        },
-                      },
-                      transition: "all 0.3s ease",
-                      mr: 2,
-                    }}
-                  >
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 500,
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {items.label}
-                    </Typography>
-                  </Button>
-                ))}
-              </>
-            )}
+          {(ticketDetail?.ticket_logs_latest?.status != "7" || permission.includes('Can Modify Ticket')) && (
+  <>
+    <Divider sx={{ my: 3 }} />
+    {tools.map((items, index) => (
+      <Button
+        key={index}
+        variant="outlined"
+        startIcon={items.icon}
+        onClick={items.onClick}
+        sx={{
+          mb: 2,
+          borderRadius: "8px",
+          padding: "10px 16px",
+          textTransform: "none",
+          borderColor: theme.palette.primary.main,
+          color: theme.palette.primary.main,
+          "&:hover": {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+            "& .MuiSvgIcon-root": {
+              color: theme.palette.common.white,
+            },
+          },
+          transition: "all 0.3s ease",
+          mr: 2,
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: 500,
+            fontSize: "0.9rem",
+          }}
+        >
+          {items.label}
+        </Typography>
+      </Button>
+    ))}
+  </>
+)}
+
 
             {/* <Tooltip title="Assign Ticket">
             <IconButton
