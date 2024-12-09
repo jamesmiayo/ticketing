@@ -9,7 +9,6 @@ import TicketList from "../Ticketing/TicketList";
 import TicketPriority from "./TicketPriority";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import TicketTable from "../Ticketing/TicketTable";
-import { FaUserMinus } from "react-icons/fa";
 
 const Dashboard: React.FC = () => {
   const { permission } = useContext(PermissionContext);
