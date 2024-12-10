@@ -9,7 +9,7 @@ import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
 interface TicketCreationFormProps {
   onCreate: (ticket: any) => void;
-  refetch: any;
+  refetch?: any;
   categories: any;
   division: any;
   subcategories: any;

@@ -112,18 +112,18 @@ class TicketHdrController extends Controller
         if (empty($ticket->ticket_logs_latest->assignee)) {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'Cannot Close the Ticket Without Assignee'], Response::HTTP_FORBIDDEN);
         }
-
-        if ($ticket->requestor->id !== Auth::user()->id || !Auth::user('Can Done Ticket')) {
+        if ($ticket->requestor->id === Auth::user()->id || Auth::user('Can Done Ticket')) {
+            $ticket->update(['b_status' => GlobalConstants::COMPLETED]);
+            TicketSatisfactory::create($request->getTicketSatisfactoryData());
+            // TicketStatus::create($request->getTicketStatus($ticket->ticket_logs_latest->assignee->id));
+            return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Thank You For Answering.'], Response::HTTP_OK);
+        } else {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'You do not have permission to done this ticket as it is not assigned to you..'], Response::HTTP_FORBIDDEN);
         }
-
-        $ticket->update(['b_status' => GlobalConstants::COMPLETED]);
-        TicketSatisfactory::create($request->getTicketSatisfactoryData());
-        TicketStatus::create($request->getTicketStatus($ticket->ticket_logs_latest->assignee->id));
-        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Thank You For Answering.'], Response::HTTP_OK);
     }
 
-    public function changeTicketStatus(ChangeTicketStatusRequest $request , string $ticket){
+    public function changeTicketStatus(ChangeTicketStatusRequest $request, string $ticket)
+    {
         $ticket = TicketHdr::where('id', $ticket)->first();
 
         if (empty($ticket->ticket_logs_latest->assignee)) {
@@ -133,9 +133,8 @@ class TicketHdrController extends Controller
         if ($ticket->ticket_logs_latest->assignee->id === Auth::user()->id || Auth::user('Can Change Status')) {
             TicketStatus::create($request->getChangeStatusData($ticket));
             return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Ticket Status Successfully Changed.'], Response::HTTP_OK);
-        }else{
+        } else {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'You do not have permission to done this ticket as it is not assigned to you..'], Response::HTTP_FORBIDDEN);
         }
-
     }
 }

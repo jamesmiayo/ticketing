@@ -11,12 +11,14 @@ import {
 } from "../../schema/User/UpdateUserBranchSection";
 import SelectItem from "../../components/common/SelectItem";
 import { User } from "../../api/services/user";
+import { useAuth } from "../../context/AuthContext";
 
 export default function UpdateUserBranchSection({ onClose }: any) {
   const [branch, setBranch] = useState<any>([]);
   const [division, setDivision] = useState<any>([]);
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState([]);
+  const { setUser } = useAuth();
 
   const toast = useExecuteToast();
   const {
@@ -87,6 +89,7 @@ export default function UpdateUserBranchSection({ onClose }: any) {
   ) => {
     try {
       const response = await User.updateUserBranchSection(formData);
+      setUser(response.data);
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
@@ -96,7 +99,6 @@ export default function UpdateUserBranchSection({ onClose }: any) {
       onClose(false);
     }
   };
-
   useEffect(() => {
     fetchBranch();
     fetchDivision();

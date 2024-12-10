@@ -125,7 +125,7 @@ any) {
                     <FaEye />
                   </IconButton>
                 </Tooltip>
-                {params.row.ticket_logs_latest?.status == "7" && (
+                {params.row.ticket_logs_latest?.status == "7" && params.row.b_status != "7" && (
                 <Tooltip title="Done This Ticket">
                   <IconButton
                     onClick={() => handleAssigneClick(params.row)}
