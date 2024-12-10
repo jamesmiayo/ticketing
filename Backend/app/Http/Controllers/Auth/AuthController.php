@@ -38,13 +38,11 @@ class AuthController extends Controller
     {
         $token = request()->bearerToken();
         $personalAccessToken = PersonalAccessToken::findToken($token);
-        $user = User::find($personalAccessToken->tokenable_id);
-
+        $user = User::find($personalAccessToken?->tokenable_id);
+        
         if ($personalAccessToken && !empty($user)) {
-            // $user->profile_picture = $user->profile_picture
-            //     ? url(Storage::url($user->profile_picture))
-            //     : null;
-
+            $user->load(['section.department', 'section.department.division']);
+        
             return new JsonResponse([
                 'isValid' => true,
                 'roles' => $user->roles->pluck('name')->first(),
@@ -56,6 +54,7 @@ class AuthController extends Controller
                 'message' => 'Token expired',
             ], Response::HTTP_UNAUTHORIZED);
         }
+        
     }
 
 }

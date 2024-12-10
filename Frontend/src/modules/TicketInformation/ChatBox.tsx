@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   Avatar,
   Box,
-  Button,
   CircularProgress,
-  Container,
   List,
   ListItem,
   ListItemAvatar,
@@ -16,19 +14,62 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  TextField,
+  IconButton,
 } from "@mui/material";
 import { Attachment, Send as SendIcon } from "@mui/icons-material";
+import { format } from "date-fns";
 import { useExecuteToast } from "../../context/ToastContext";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { ticketApi } from "../../api/services/ticket";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   messageValidationSchema,
   messageValidationSchemaFormtype,
 } from "../../schema/Ticket/createMessage";
-import InputComponent from "../../components/common/InputComponent";
 import { useAuth } from "../../context/AuthContext";
 import AttachmentCmp from "./AttachmentCmp";
+import { styled } from "@mui/material/styles";
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[3],
+  overflow: "hidden",
+}));
+
+const MessageBubble = styled(Paper)(
+  ({ theme, isUser }: { theme: any; isUser: boolean }) => ({
+    padding: theme.spacing(1.5),
+    maxWidth: "30%",
+    backgroundColor: isUser
+      ? theme.palette.primary.light
+      : theme.palette.grey[100],
+    alignSelf: isUser ? "flex-end" : "flex-start",
+    borderRadius: 16,
+    marginLeft: isUser ? "auto" : 0,
+    marginRight: isUser ? 0 : "auto",
+    display: "flex",
+    flexDirection: isUser ? "row-reverse" : "row",
+    gap: theme.spacing(1),
+  })
+);
+
+const ScrollableContainer = styled(Box)({
+  flex: 1,
+  overflowY: "auto",
+  "&::-webkit-scrollbar": {
+    width: "0.4em",
+  },
+  "&::-webkit-scrollbar-track": {
+    boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+    webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(0,0,0,.1)",
+    borderRadius: "10px",
+  },
+});
 
 export default function ChatBox({ ticketDetail }: any) {
   const { user } = useAuth();
@@ -39,65 +80,57 @@ export default function ChatBox({ ticketDetail }: any) {
   const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
 
-  const handleOpenClose = () => {
-    setOpen((prev) => !prev);
-  };
+  const handleOpenClose = () => setOpen((prev) => !prev);
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<messageValidationSchemaFormtype>({
-    resolver: yupResolver(messageValidationSchema),
-  });
+  const { control, handleSubmit, reset } =
+    useForm<messageValidationSchemaFormtype>({
+      resolver: yupResolver(messageValidationSchema),
+    });
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const fetchMessage = async () => {
     try {
+      setLoading(true);
       const response = await ticketApi.getMessage({
         ticket_id: ticketDetail.id,
       });
-      setLoading(true);
       setMessages(response.data);
     } catch (error) {
+      console.error("Error fetching messages:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      scrollToBottom();
-    }, 1000);
     fetchMessage();
+    const timer = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timer);
   }, [ticketDetail]);
 
   useEffect(() => {
-    if (user) {
-      setUserLoaded(true);
-    }
+    if (user) setUserLoaded(true);
   }, [user]);
 
   const onSubmit = async (data: any) => {
     setSending(true);
-    const formData = { ticket_id: ticketDetail?.id, message: data.message };
     try {
-      const response = await ticketApi.createMessage(formData);
+      const response = await ticketApi.createMessage({
+        ticket_id: ticketDetail?.id,
+        message: data.message,
+      });
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
       reset();
       await fetchMessage();
     } catch (error) {
-      console.error("Error creating ticket:", error);
+      console.error("Error creating message:", error);
     } finally {
       setSending(false);
     }
@@ -107,11 +140,8 @@ export default function ChatBox({ ticketDetail }: any) {
     <>
       <Dialog open={open} onClose={handleOpenClose}>
         <DialogTitle>
-          <Typography variant="h5" align="center" fontWeight="bold">
-            Upload File
-            <Box component="span" sx={{ color: "error.main", ml: 1 }}>
-              {ticketDetail?.ticket_id}
-            </Box>
+          <Typography variant="h6" align="center" fontWeight="bold">
+            Upload File for Ticket {ticketDetail?.ticket_id}
           </Typography>
         </DialogTitle>
         <DialogContent>
@@ -122,252 +152,188 @@ export default function ChatBox({ ticketDetail }: any) {
           />
         </DialogContent>
       </Dialog>
-      <Box
+      <StyledPaper
         sx={{
+          height: "87vh",
           display: "flex",
           flexDirection: "column",
-          height: "87vh",
+          minWidth: "500px",
         }}
       >
-        <Container
-          maxWidth="sm"
-          sx={{
-            flex: 1,
-            width: "700px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Paper
-            elevation={3}
-            sx={{
-              flex: 1,
-              mb: 2,
-              overflow: "auto",
-              p: 2,
-              maxHeight: "700px",
-            }}
-          >
-            {!userLoaded || loading ? (
-              <List>
-                {Array.from(new Array(10)).map((_, index) => (
-                  <ListItem
-                    key={index}
-                    sx={{
-                      justifyContent:
-                        index % 2 === 0 ? "flex-start" : "flex-end",
-                    }}
-                  >
-                    <Skeleton
-                      variant="circular"
-                      width={40}
-                      height={40}
-                      sx={{
-                        mr: index % 2 === 0 ? 2 : 0,
-                        ml: index % 2 !== 0 ? 2 : 0,
-                      }}
-                    />
-                    <Skeleton
-                      variant="rectangular"
-                      height={40}
-                      width="60%"
-                      sx={{ borderRadius: 1 }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            ) : (
-              <List>
-                <Paper
-                  elevation={3}
+        <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
+          <Typography variant="h6">
+            Ticket: {ticketDetail?.ticket_id}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {ticketDetail?.body}
+          </Typography>
+        </Box>
+        <ScrollableContainer p={2}>
+          {!userLoaded || loading ? (
+            <List>
+              {Array.from(new Array(5)).map((_, index) => (
+                <ListItem
+                  key={index}
                   sx={{
-                    position: "sticky",
-                    top: 0,
-                    backgroundColor: "#f5f5f5",
-                    padding: 2,
-                    zIndex: 100,
-                    marginBottom: 2,
-                    borderRadius: 2,
+                    justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
                   }}
                 >
+                  <Skeleton
+                    variant="circular"
+                    width={40}
+                    height={40}
+                    sx={{
+                      mr: index % 2 === 0 ? 2 : 0,
+                      ml: index % 2 !== 0 ? 2 : 0,
+                    }}
+                  />
+                  <Skeleton
+                    variant="rectangular"
+                    height={40}
+                    width="60%"
+                    sx={{ borderRadius: 2 }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <List>
+              {messages.map((message: any) => (
+                <Box key={message.id}>
                   <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    align={message.user?.id === user?.id ? "right" : "left"}
                     sx={{
-                      fontSize: 15,
-                    }}
-                  >
-                    {ticketDetail?.body}
-                  </Typography>
-                </Paper>
-                {messages.map((message: any) => (
-                  <ListItem
-                    key={message.id}
-                    sx={{
-                      justifyContent:
+                      display: "block",
+                      margin:
                         message.user?.id === user?.id
-                          ? "flex-end"
-                          : "flex-start",
+                          ? "0 0 4px auto"
+                          : "0 auto 4px 0",
+                      fontSize: "0.75rem",
                     }}
                   >
-                    <Container>
-                      <Paper
-                        elevation={1}
-                        sx={{
-                          p: 2,
-                          maxWidth: "70%",
-                          bgcolor:
-                            message.user?.id === user?.id
-                              ? "primary.light"
-                              : "background.paper",
-                          alignSelf:
-                            message.user?.id === user?.id
-                              ? "flex-end"
-                              : "flex-start",
-                          borderRadius: 2,
-                          ml: message.user?.id === user?.id ? "auto" : 0,
-                          mr: message.user?.id === user?.id ? 0 : "auto",
-                          display: "flex",
-                          flexDirection:
-                            message.user?.id === user?.id ? "row-reverse" : "",
-                          gap: 2,
-                        }}
-                      >
-                        <ListItemAvatar
-                          sx={{
-                            minWidth: 0,
-                            mr: message.user?.id === user?.id ? 0 : 2,
-                            ml: message.user?.id === user?.id ? 2 : 0,
-                          }}
-                        >
-                          <Tooltip title={message.user.name}>
-                            <Avatar
-                              src={message.user.profile_picture || undefined}
-                              sx={{
-                                width: 32,
-                                height: 32,
-                                bgcolor: !message.user.profile_picture
-                                  ? message.sender === "user"
-                                    ? "primary.main"
-                                    : "secondary.main"
-                                  : "transparent",
-                              }}
-                            >
-                              {!message.user.profile_picture &&
-                                message.user.name.charAt(0).toUpperCase()}
-                            </Avatar>
-                          </Tooltip>
-                        </ListItemAvatar>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <ListItemText
-                            primary={message.message}
+                    {format(
+                      new Date(message.created_at),
+                      "EEE, MMM d yyyy,  h:mm a"
+                    )}
+                  </Typography>
+                  <ListItem sx={{ alignItems: "flex-start" }}>
+                    <MessageBubble
+                      isUser={message.user?.id === user?.id}
+                      theme={undefined}
+                    >
+                      <ListItemAvatar sx={{ minWidth: 0 }}>
+                        <Tooltip title={message.user.name}>
+                          <Avatar
+                            src={message.user.profile_picture}
                             sx={{
-                              "& .MuiListItemText-primary": {
-                                color:
-                                  message.sender === "user"
-                                    ? "primary.contrastText"
-                                    : "text.primary",
-                              },
+                              width: 40,
+                              height: 40,
+                              bgcolor: !message.user.profile_picture
+                                ? message.user?.id === user?.id
+                                  ? "primary.main"
+                                  : "secondary.main"
+                                : "transparent",
                             }}
-                          />
-                        </Box>
-                      </Paper>
-                      {message.documents.length > 0 && (
-                        <Container
+                          >
+                            {!message.user.profile_picture &&
+                              message.user.name.charAt(0).toUpperCase()}
+                          </Avatar>
+                        </Tooltip>
+                      </ListItemAvatar>
+                      <Box sx={{ display: "flex", flexDirection: "column" }}>
+                        <ListItemText
+                          primary={message.message}
                           sx={{
-                            maxWidth: "70%",
-                            alignSelf:
-                              message.user?.id === user?.id
-                                ? "flex-end"
-                                : "flex-start",
-                            borderRadius: 2,
-                            ml: message.user?.id === user?.id ? "auto" : 0,
-                            mr: message.user?.id === user?.id ? 0 : "auto",
-                            display: "flex",
-                            flexDirection:
-                              message.user?.id === user?.id
-                                ? "row-reverse"
-                                : "",
-                            marginTop: "20px",
+                            "& .MuiListItemText-primary": {
+                              color:
+                                message.user?.id === user?.id
+                                  ? "primary.contrastText"
+                                  : "text.primary",
+                            },
                           }}
-                        >
+                        />
+                        {message.documents.length > 0 && (
                           <Box
                             sx={{
                               display: "flex",
-                              alignItems: "center",
+                              flexWrap: "wrap",
+                              gap: 1,
+                              mt: 1,
                             }}
                           >
-                            <List>
-                              {message.documents?.map(
-                                (document: any, index: any) => (
-                                  <ListItem key={index}>
-                                    <a
-                                      href={document.file_url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      style={{ textDecoration: "none" }}
-                                    >
-                                      <img
-                                        src={document.file_url}
-                                        alt={`Document ${index}`}
-                                        style={{
-                                          maxWidth: "300px",
-                                          borderRadius: "8px",
-                                          boxShadow:
-                                            "0px 2px 5px rgba(0,0,0,0.1)",
-                                        }}
-                                      />
-                                    </a>
-                                  </ListItem>
-                                )
-                              )}
-                            </List>
+                            {message.documents.map(
+                              (document: any, index: number) => (
+                                <a
+                                  key={index}
+                                  href={document.file_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{ textDecoration: "none" }}
+                                >
+                                  <img
+                                    src={document.file_url}
+                                    alt={`Document ${index}`}
+                                    style={{
+                                      maxWidth: "100px",
+                                      maxHeight: "100px",
+                                      borderRadius: "8px",
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                </a>
+                              )
+                            )}
                           </Box>
-                        </Container>
-                      )}
-                    </Container>
+                        )}
+                      </Box>
+                    </MessageBubble>
                   </ListItem>
-                ))}
-                <div ref={messagesEndRef} />
-              </List>
-            )}
-          </Paper>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Paper elevation={3} sx={{ p: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Tooltip title="Send File Attachment">
-                  <Button
-                    sx={{ textTransform: "none" }}
-                    onClick={() => setOpen(!open)}
-                  >
-                    <Attachment />
-                  </Button>
-                </Tooltip>
-                <InputComponent
-                  name="message"
-                  register={register}
-                  errors={errors}
+                </Box>
+              ))}
+              <div ref={messagesEndRef} />
+            </List>
+          )}
+        </ScrollableContainer>
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ p: 2, borderTop: 1, borderColor: "divider" }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Tooltip title="Send File Attachment">
+              <IconButton onClick={handleOpenClose} size="small">
+                <Attachment />
+              </IconButton>
+            </Tooltip>
+            <Controller
+              name="message"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
                   fullWidth
                   variant="outlined"
                   placeholder="Type a message"
+                  size="small"
                   sx={{ mr: 1 }}
                 />
-                <Button
-                  color="primary"
-                  type="submit"
-                  aria-label="send message"
-                  disabled={sending}
-                >
-                  {sending ? <CircularProgress size={24} /> : <SendIcon />}
-                </Button>
-              </Box>
-            </Paper>
-          </form>
-        </Container>
-      </Box>
+              )}
+            />
+            <IconButton
+              color="primary"
+              type="submit"
+              aria-label="send message"
+              disabled={sending}
+              size="small"
+            >
+              {sending ? <CircularProgress size={24} /> : <SendIcon />}
+            </IconButton>
+          </Box>
+        </Box>
+      </StyledPaper>
     </>
   );
 }
