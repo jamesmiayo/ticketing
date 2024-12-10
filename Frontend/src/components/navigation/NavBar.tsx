@@ -8,8 +8,6 @@ import { useAuth } from "../../context/AuthContext";
 const NavBar: React.FC = () => {
   const { user } = useAuth();
 
-  console.log("this", user);
-
   return (
     <Box
       sx={{
@@ -22,7 +20,6 @@ const NavBar: React.FC = () => {
         <Box>
           <Avatar
             src={user?.profile_picture}
-            alt="Profile Avatar"
             sx={{
               cursor: "pointer",
               width: 40,

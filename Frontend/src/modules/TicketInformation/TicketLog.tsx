@@ -1,12 +1,5 @@
-import { Box, Table } from "@mui/material";
-import {
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Paper, Divider, Avatar, Stack } from "@mui/material";
+import { formatDistanceToNow } from "date-fns";
 
 export default function TicketLog({ data }: any) {
   return (
@@ -16,36 +9,64 @@ export default function TicketLog({ data }: any) {
         flexDirection: "column",
         height: "80vh",
         backgroundColor: "white",
+        overflowY: "auto",
+        p: 2,
       }}
     >
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Ticket ID</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Remarks</TableCell>
-              <TableCell>Assign By</TableCell>
-              <TableCell>Updated By</TableCell>
-              <TableCell>Time Difference</TableCell>
-              <TableCell>Updated At</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.ticket_statuses?.map((row: any) => (
-              <TableRow key={row.id}>
-                <TableCell>{row?.id}</TableCell>
-                <TableCell>{row?.ticket_status}</TableCell>
-                <TableCell>{row?.remarks}</TableCell>
-                <TableCell>{row?.assignee?.name}</TableCell>
-                <TableCell>{row?.updated_by?.name}</TableCell>
-                <TableCell>{row?.time_difference}</TableCell>
-                <TableCell>{row?.created_at}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
+        Ticket Log
+      </Typography>
+      {data?.ticket_statuses?.map((row: any) => (
+        <Paper
+          key={row.id}
+          elevation={2}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            p: 2,
+            mb: 2,
+            borderRadius: 2,
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={2} mb={1}>
+            <Avatar
+              src={row?.assignee?.profile_picture}
+              sx={{
+                cursor: "pointer",
+                width: 40,
+                height: 40,
+                marginLeft: 2,
+                "&:hover": {
+                  opacity: 0.8,
+                },
+              }}
+            />
+            <Box>
+              <Typography variant="subtitle1" fontWeight="bold">
+                {row?.assignee?.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {formatDistanceToNow(new Date(row?.created_at), {
+                  addSuffix: true,
+                })}
+              </Typography>
+            </Box>
+          </Stack>
+          <Divider sx={{ my: 1 }} />
+          <Typography variant="body1">
+            <strong>Status:</strong> {row?.ticket_status}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Remarks:</strong> {row?.remarks || "N/A"}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mt={1}>
+            Updated by: {row?.updated_by?.name || "Unknown"}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Time Difference: {row?.time_difference || "N/A"}
+          </Typography>
+        </Paper>
+      ))}
     </Box>
   );
 }

@@ -59,7 +59,7 @@ class TicketHdr extends Model
 
     public function ticket_statuses()
     {
-        return $this->hasMany(TicketStatus::class, 'ticket_id', 'id')->with('updated_by:id,name', 'assignee:id,name');
+        return $this->hasMany(TicketStatus::class, 'ticket_id', 'id')->with('updated_by:id,name', 'assignee:id,name,profile_picture');
     }
 
     public function sub_category()
