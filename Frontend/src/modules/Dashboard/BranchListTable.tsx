@@ -41,7 +41,13 @@ export default function BranchListTable({ data, isLoading }: any) {
   return (
     <>
      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-    <DialogTitle>Total Ticket in {dataTicket.branch_name}</DialogTitle>
+     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <DialogTitle>Total Ticket in {dataTicket.branch_name}</DialogTitle>
+  <Box sx={{  backgroundColor: "rgba(76, 175, 80, 0.1)" , borderRadius: 2, padding: 2 , margin: 2}}>
+    <Typography sx={{ fontSize: '15px' ,  fontWeight: "600", }}>Unassigned Ticket: {dataTicket?.status_counts?.unassigned_ticket} </Typography>
+  </Box>
+</Box>
+
     <DialogContent>
         <div style={{
             display: 'grid',
@@ -51,7 +57,7 @@ export default function BranchListTable({ data, isLoading }: any) {
             maxWidth: '1200px',
             margin: '0 auto'
         }}>
-            {dataTicket.status_counts && dataTicket.status_counts.map(({ label, value } : any, index : number) => (
+            {dataTicket?.status_counts?.formatted_counts && dataTicket?.status_counts?.formatted_counts.map(({ label, value } : any, index : number) => (
                 <TicketCard key={index} title={label} count={value}  color={cardColors[index]}/>
             ))}
         </div>

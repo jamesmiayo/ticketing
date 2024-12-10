@@ -20,7 +20,6 @@ import { CameraAlt, Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { User } from "../../api/services/user";
 import { toast } from "react-toastify";
-import { useAuth } from "../../context/AuthContext";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
@@ -54,8 +53,6 @@ export default function UserProfile() {
       setLoading(false);
     }
   };
-
-  const { user } = useAuth();
 
   useEffect(() => {
     dashboardFetchData();
@@ -99,7 +96,7 @@ export default function UserProfile() {
       setLoading(false);
     }
   };
-  console.log(data?.profile_picture);
+  console.log(data);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -159,23 +156,23 @@ export default function UserProfile() {
             ) : (
               <>
                 <Typography variant="h5" gutterBottom>
-                  {user?.name}
+                  {data?.name}
                 </Typography>
                 <Typography variant="h6" gutterBottom>
-                  {user?.section?.department?.division?.division_description}
+                  {data?.section?.department?.division?.division_description}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
-                  {user?.section?.department?.department_description}
+                  {data?.section?.department?.department_description}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
-                  {user?.section?.section_description}
+                  {data?.section?.section_description}
                 </Typography>
                 <Link
-                  href={`mailto:${user?.email}`}
+                  href={`mailto:${data?.email}`}
                   color="primary"
                   sx={{ mb: 2, display: "block" }}
                 >
-                  {user?.email}
+                  {data?.email}
                 </Link>
               </>
             )}

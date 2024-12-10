@@ -43,20 +43,23 @@ const Dashboard: React.FC = () => {
           gap: 2,
         }}
       >
-        <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-          Dashboard
+   <Box sx={{ display: "flex", gap: 2 }}>       
+    <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
+          Dashboard 
         </Typography>
+        </Box>
 
         <Box>
           <Box sx={{ display: "flex", gap: 2 }}>
             <TicketList
-              ticketList={totalTicket?.total_ticket_count}
+              ticketList={totalTicket?.total_ticket_count?.formatted_counts}
               isLoading={loading}
             />
             {permission?.includes("Can View Ticket Priority") && (
               <TicketPriority
                 ticketPriority={totalTicket?.total_priority}
                 isLoading={loading}
+                ticketUnassigned={totalTicket?.total_ticket_count?.unassigned_ticket}
               />
             )}
             {permission?.includes("Can View Today Summary") && (

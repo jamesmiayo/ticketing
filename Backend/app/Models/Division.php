@@ -15,4 +15,9 @@ class Division extends Model
     {
         return $this->hasMany(Department::class , 'division_id');
     }
+
+    public function category()
+    {
+        return $this->hasMany(Category::class , 'division_id');
+    }
 }

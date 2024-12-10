@@ -5,7 +5,7 @@ import { Pie } from "react-chartjs-2";
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function TicketPriority({ ticketPriority, isLoading }: any) {
+export default function TicketPriority({ ticketPriority, isLoading , ticketUnassigned }: any) {
   // Ticket priority data
   const data = {
     labels: ["Low", "Medium", "High", "Critical","Not Assign Yet"],
@@ -81,6 +81,21 @@ export default function TicketPriority({ ticketPriority, isLoading }: any) {
           ) : (
             <Pie data={data} options={options} />
           )}
+        </Box>
+        <Box sx={{                  borderRadius: 2,
+               backgroundColor: "rgba(76, 175, 80, 0.1)" , paddingX: 6 , paddingY: 1.5 }}>
+          <Typography
+            variant="caption"
+            gutterBottom
+            sx={{
+              mb: 2,
+              fontWeight: "700",
+              color: "text.primary",
+              textAlign: "center",
+            }}
+          >
+            Total Unassigned Ticket: {ticketUnassigned}
+          </Typography>
         </Box>
       </Paper>
     </Box>

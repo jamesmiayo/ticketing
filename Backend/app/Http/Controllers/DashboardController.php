@@ -129,6 +129,10 @@ class DashboardController extends Controller
             $totalTickets += $count;
         }
 
+        $nullEmpCount = (clone $ticketsQuery)->whereHas('ticket_logs_latest', function ($query) {
+            $query->whereNull('emp_id');
+        })->count();
+
         $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
@@ -138,7 +142,10 @@ class DashboardController extends Controller
             'value' => $totalTickets,
         ];
 
-        return $formattedCounts;
+        return [
+            'formatted_counts' => $formattedCounts,
+            'unassigned_ticket' => $nullEmpCount
+        ];
     }
 
 
@@ -206,6 +213,9 @@ class DashboardController extends Controller
             })->count(),
             'total_resolved' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
                 $query->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED);
+            })->count(),
+            'total_unassigned' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->whereNull('emp_id');
             })->count(),
         ];
     }

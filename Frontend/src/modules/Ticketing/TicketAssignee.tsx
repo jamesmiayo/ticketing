@@ -17,7 +17,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import SelectItem from "../../components/common/SelectItem";
 import InputComponent from "../../components/common/InputComponent";
 import { Division } from "../../api/services/division";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 export default function TicketAssignee({ data, setOpen, refetch }: any) {
@@ -123,6 +123,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   const sectionCode = watch("section");
 
   useEffect(() => {
+    getUser();
     getDivision();
     getUser();
 
@@ -174,13 +175,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
               options={division}
               errors={errors}
               name="division"
-              disabled={
-                ![
-                  "Can Change Division Assignee",
-                  "Can Change Department Assignee",
-                  "Can Change Section Assignee",
-                ].some((perm) => permission?.includes(perm))
-              }
+              disabled={!permission?.includes("Can Change Division Assignee")}
               fullWidth
               sx={{ mt: 2 }}
               onChange={(e: any) => handleDivision(e)}
@@ -191,12 +186,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
               options={department}
               errors={errors}
               name="department"
-              disabled={
-                ![
-                  "Can Change Department Assignee",
-                  "Can Change Section Assignee",
-                ].some((perm) => permission?.includes(perm))
-              }
+              disabled={!permission?.includes("Can Change Department Assignee")}
               fullWidth
               onChange={(e: any) => handleDepartment(e)}
               startAdornment={<Business color="action" />}

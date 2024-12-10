@@ -15,7 +15,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import { IoSettingsSharp } from "react-icons/io5";
-import { FaUser } from "react-icons/fa";
+// import { FaUser } from "react-icons/fa";
 
 const Sidebar = ({ children }: any) => {
   const { permission } = useContext(PermissionContext);
@@ -44,7 +44,7 @@ const Sidebar = ({ children }: any) => {
       icon: <BsTicketDetailed />,
       show: permission?.includes("Can View User Ticket"),
     },
-    { title: "Profile", path: "/profile", icon: <FaUser />, show: true },
+    // { title: "Profile", path: "/profile", icon: <FaUser />, show: true },
     {
       title: "Maintenance",
       path: "/maintenance",

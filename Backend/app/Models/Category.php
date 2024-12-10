@@ -9,10 +9,14 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id' , 'category_description' , 'b_active'];
+    protected $fillable = ['division_id', 'category_id' , 'category_description' , 'b_active'];
 
     public function ticket_hdr() {
         return $this->belongsTo(TicketHdr::class);
+    }
+
+    public function division() {
+        return $this->belongsTo(Division::class);
     }
 
     public function sub_category(){

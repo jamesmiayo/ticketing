@@ -79,6 +79,9 @@ export default function ChatBox({ ticketDetail }: any) {
   const [userLoaded, setUserLoaded] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
+  const [isMouseMoving, setIsMouseMoving] = useState(false);
+  const mouseMoveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleOpenClose = () => setOpen((prev) => !prev);
 
@@ -135,6 +138,41 @@ export default function ChatBox({ ticketDetail }: any) {
       setSending(false);
     }
   };
+
+  // Mouse move listener
+  useEffect(() => {
+    const handleMouseMove = () => {
+      setIsMouseMoving(true);
+      if (mouseMoveTimeoutRef.current) {
+        clearTimeout(mouseMoveTimeoutRef.current);
+      }
+      mouseMoveTimeoutRef.current = setTimeout(() => {
+        setIsMouseMoving(false);
+      }, 3000); // 3 seconds of inactivity before marking as not moving
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      if (mouseMoveTimeoutRef.current) {
+        clearTimeout(mouseMoveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isMouseMoving) {
+      intervalRef.current = setInterval(() => {
+        fetchMessage();
+      }, 10000); 
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isMouseMoving]);
 
   return (
     <>

@@ -56,7 +56,7 @@ class TicketHdrRoleDataService
                 break;
             default:
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('ticket_logs_latest', function ($subQuery) {
+                    $query->whereHas('requestor', function ($subQuery) {
                         $subQuery->where('section_id', Auth::user()->section_id);
                     })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
                         $subQuery->where('id', Auth::user()->id);
