@@ -26,9 +26,11 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState<any>([]);
   const [userData, setUserData] = useState<any>([]);
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const [userOption, setUserOption] = useState<any>([]);
   const toast = useExecuteToast();
+
+  console.log(user);
 
   const {
     control,
@@ -125,12 +127,14 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     getDivision();
     getUser();
 
-    reset({
-      division: "2",
-      department: "1",
-      section: "1",
-      assignee: "1",
-    });
+    if (user.roles[0].name !== "Admin") {
+      reset({
+        division: user.section.department.division_id,
+        department: user.section.department_id,
+        section: user.section_id,
+        // assignee: "1",
+      });
+    }
   }, []);
 
   useEffect(() => {

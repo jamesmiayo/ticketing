@@ -31,7 +31,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       const token = localStorage.getItem("token");
       if (token) {
         const response = await validateToken();
-        console.log("new", response);
         if (response?.isValid) {
           setUser(response?.user);
           setIsAuthenticated(true);

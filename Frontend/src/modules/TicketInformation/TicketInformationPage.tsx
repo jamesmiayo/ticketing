@@ -40,9 +40,9 @@ const TicketInformationPage = () => {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
           p: 3,
           minHeight: "80vh",
+          width: "100%",
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
@@ -51,7 +51,6 @@ const TicketInformationPage = () => {
         <Container
           sx={{
             display: "flex",
-            height: "80vh",
             justifyContent: "center",
           }}
         >
@@ -64,6 +63,7 @@ const TicketInformationPage = () => {
               <Box
                 sx={{
                   display: "flex",
+                  gap: 2,
                 }}
               >
                 <ChatBox ticketDetail={ticket} />
