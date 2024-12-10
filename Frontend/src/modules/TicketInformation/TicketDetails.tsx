@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -22,16 +22,11 @@ import {
   CheckCircle,
   ChangeCircle,
 } from "@mui/icons-material";
+import { IoTicket } from "react-icons/io5";
 import TicketStatus from "../Ticketing/TicketStatus";
 import TicketAssignee from "../Ticketing/TicketAssignee";
 import TicketPriority from "../Ticketing/TicketPriority";
 import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
-// import { useForm } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import { changeTicketStatus, changeTicketStatusFormtype } from "../../schema/Ticket/changeTicketStatus";
-import { ticketApi } from "../../api/services/ticket";
-import { useExecuteToast } from "../../context/ToastContext";
-import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -53,7 +48,6 @@ interface TicketDetailsProps {
     };
     ticket_priority: string;
     ticket_logs_latest?: {
-      status: string;
       assignee?: {
         name?: string;
       };
@@ -67,7 +61,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   ticketDetail,
   isLoading,
 }) => {
-  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+  const [modal, setModal] = useState<any>();
 
   const tools = [
     {
@@ -83,7 +78,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     {
       label: "Done This Ticket",
       onClick: () => handleAssigneClick("done"),
-      icon: <Person />,
+      icon: <CheckCircle />,
     },
     {
       label: "Change Status",
@@ -92,12 +87,22 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     },
   ];
 
-  const [open, setOpen] = useState(false);
-  const [modal, setModal] = useState<any>();
   function handleAssigneClick(value: any) {
     setModal(value);
     setOpen(true);
   }
+
+  if (isLoading) {
+    return (
+      <Skeleton
+        variant="rectangular"
+        height={605}
+        width="100%"
+        sx={{ borderRadius: 2 }}
+      />
+    );
+  }
+
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)}>
@@ -105,7 +110,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
           <TicketPriority data={ticketDetail} setOpen={setOpen} />
         ) : modal === "done" ? (
           <TicketStatus data={ticketDetail} setOpen={setOpen} />
-        )  : modal === "status" ? (
+        ) : modal === "status" ? (
           <TicketChangeStatus data={ticketDetail} setOpen={setOpen} />
         ) : (
           <TicketAssignee data={ticketDetail} setOpen={setOpen} />
@@ -271,102 +276,41 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
             </Typography>
           </Box>
 
-                {/* <Box mb={3}>
-                <Divider sx={{ my: 3 }} />
-                <Typography variant="subtitle1" gutterBottom>
-                  Attachments
-                </Typography>
-                <Button
-                  variant="outlined"
-                  startIcon={<Attachment />}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => setOpen(!open)}
-                >
-                  Attachments
-                </Button>
-              </Box>
-
-              <Divider sx={{ my: 3 }} />
-
-              <Box display="flex">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Close />}
-                  size="large"
-                  onClick={handleOpenClose}
-                >
-                  Close Ticket
-                </Button>
-              </Box> */}
-              </>
-            )}
-            {ticketDetail?.b_status !== "7" && (
-              <>
-                <Divider sx={{ my: 3 }} />
-                {tools.map((items, index) => (
-                  <Button
-                    key={index}
-                    variant="outlined"
-                    startIcon={items.icon}
-                    onClick={items.onClick}
-                    sx={{
-                      mb: 2,
-                      borderRadius: "8px",
-                      padding: "10px 16px",
-                      textTransform: "none",
-                      borderColor: theme.palette.primary.main,
-                      color: theme.palette.primary.main,
-                      "&:hover": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.common.white,
-                        "& .MuiSvgIcon-root": {
-                          color: theme.palette.common.white,
-                        },
-                      },
-                      transition: "all 0.3s ease",
-                      mr: 2,
-                    }}
-                  >
-                    <Typography
-                      variant="body1"
+          {ticketDetail?.b_status !== "7" && (
+            <Box mt={3}>
+              <Typography variant="h6" gutterBottom>
+                Actions
+              </Typography>
+              <Grid container spacing={2}>
+                {tools.map((item, index) => (
+                  <Grid item xs={12} sm={6} key={index}>
+                    <Button
+                      variant="outlined"
+                      startIcon={item.icon}
+                      onClick={item.onClick}
+                      fullWidth
                       sx={{
-                        fontWeight: 500,
-                        fontSize: "0.9rem",
+                        borderRadius: 2,
+                        textTransform: "none",
+                        p: 1.5,
+                        justifyContent: "flex-start",
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          backgroundColor: "primary.main",
+                          color: "primary.contrastText",
+                        },
                       }}
                     >
-                      {items.label}
-                    </Typography>
-                  </Button>
+                      {item.label}
+                    </Button>
+                  </Grid>
                 ))}
-              </>
-            )}
-
-            {/* <Tooltip title="Assign Ticket">
-            <IconButton
-            // onClick={() => handleAssigneClick(params.row, "assign")}
-            >
-              <FaRegUserCircle />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Change Priority">
-            <IconButton
-            // onClick={() => handleAssigneClick(params.row, "priority")}
-            >
-              <FaRegFlag />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Done This Ticket">
-            <IconButton
-            // onClick={() => handleAssigneClick(params.row, "status")}
-            >
-              <FaCheckCircle />
-            </IconButton>
-          </Tooltip> */}
-            {/* )} */}
-          </CardContent>
-        </Card>
-      </Box>
+              </Grid>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 };
