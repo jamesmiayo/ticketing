@@ -52,7 +52,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
         return [
             'ticket_id' => $this->ticket_id,
             'status' => GlobalConstants::COMPLETED,
-            'emp_id' => null,
+            'emp_id' => $lastAssignee,
             'remarks' => "Ticket Completed",
             'updated_by' => Auth::user()->id,
         ];

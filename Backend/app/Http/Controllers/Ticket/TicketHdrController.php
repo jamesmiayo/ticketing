@@ -115,7 +115,7 @@ class TicketHdrController extends Controller
         if ($ticket->requestor->id === Auth::user()->id || Auth::user('Can Done Ticket')) {
             $ticket->update(['b_status' => GlobalConstants::COMPLETED]);
             TicketSatisfactory::create($request->getTicketSatisfactoryData());
-            // TicketStatus::create($request->getTicketStatus($ticket->ticket_logs_latest->assignee->id));
+            TicketStatus::create($request->getTicketStatus($ticket->ticket_logs_latest->assignee->id));
             return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Thank You For Answering.'], Response::HTTP_OK);
         } else {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'You do not have permission to done this ticket as it is not assigned to you..'], Response::HTTP_FORBIDDEN);
