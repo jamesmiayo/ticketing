@@ -5,15 +5,15 @@ import { Pie } from "react-chartjs-2";
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function TicketPriority({ ticketPriority, isLoading , ticketUnassigned }: any) {
+export default function TicketPriority({ ticketPriority, isLoading }: any) {
   // Ticket priority data
   const data = {
-    labels: ["Low", "Medium", "High", "Critical","Not Assign Yet"],
+    labels: ["Low", "Medium", "High", "Critical","Not Yet Priority"],
     datasets: [
       {
         data: ticketPriority,
-        backgroundColor: ["#4caf50", "#ff9800",  "red", "darkred",   "blue"],
-        hoverBackgroundColor: ["#3e8e41","#e68a00",  "red",  "#a10000",  "blue"],
+        backgroundColor: ["#66BB6A", "#FF9800",  "#E53935", "#C62E2E",   "#608BC1"],
+        hoverBackgroundColor: ["#66BB6A", "#FF9800",  "#E53935", "#C62E2E",   "#608BC1"],
       },
     ],
   };
@@ -28,18 +28,6 @@ export default function TicketPriority({ ticketPriority, isLoading , ticketUnass
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 400,
-        width: "100%",
-        mb: 4,
-        mx: "auto",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "auto",
-      }}
-    >
       <Paper
         elevation={4}
         sx={{
@@ -82,7 +70,7 @@ export default function TicketPriority({ ticketPriority, isLoading , ticketUnass
             <Pie data={data} options={options} />
           )}
         </Box>
-        <Box sx={{                  borderRadius: 2,
+        {/* <Box sx={{                  borderRadius: 2,
                backgroundColor: "rgba(76, 175, 80, 0.1)" , paddingX: 6 , paddingY: 1.5 }}>
           <Typography
             variant="caption"
@@ -96,8 +84,7 @@ export default function TicketPriority({ ticketPriority, isLoading , ticketUnass
           >
             Total Unassigned Ticket: {ticketUnassigned}
           </Typography>
-        </Box>
+        </Box> */}
       </Paper>
-    </Box>
   );
 }

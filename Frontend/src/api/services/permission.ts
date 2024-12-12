@@ -25,7 +25,7 @@ export const Permission = {
         },
       })
 
-      return response.data.data
+      return response.data
     } catch (error) {
       console.error('Error fetching data:', error)
       throw error

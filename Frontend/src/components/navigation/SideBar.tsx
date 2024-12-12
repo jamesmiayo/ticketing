@@ -15,6 +15,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import { IoSettingsSharp } from "react-icons/io5";
+import { Tooltip } from "@mui/material";
 // import { FaUser } from "react-icons/fa";
 
 const Sidebar = ({ children }: any) => {
@@ -143,47 +144,57 @@ const Sidebar = ({ children }: any) => {
               {navItems
                 .filter((item) => item.show)
                 .map((item, index) => (
-                  <ListItem disablePadding key={index} sx={{ marginTop: 1 }}>
-                    <ListItemButton
-                      onClick={() => handleNavigation(item.path, item.title)}
-                      sx={{
-                        margin: 0,
-                        transition:
-                          "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
-                        borderLeft:
-                          item.title === activeNavItem
-                            ? "10px solid white"
-                            : "10px solid transparent",
-                        color: "white",
-                        "&:hover": {
-                          borderLeft: "10px solid white",
-                          color: "white",
-                        },
-                        display: "flex",
-                        justifyContent: sidebarOpen
-                          ? "space-between"
-                          : "center",
-                        alignItems: "center",
-                        padding: sidebarOpen ? "10px 16px" : "10px",
-                      }}
-                    >
-                      {item.icon && (
-                        <ListItemIcon
+                  <>
+                    <Tooltip title={item.title} placement="right" arrow sx={{ fontSize: '100px' }}>
+                      <ListItem
+                        disablePadding
+                        key={index}
+                        sx={{ marginTop: 1 }}
+                      >
+                        <ListItemButton
+                          onClick={() =>
+                            handleNavigation(item.path, item.title)
+                          }
                           sx={{
+                            margin: 0,
+                            transition:
+                              "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
+                            borderLeft:
+                              item.title === activeNavItem
+                                ? "10px solid white"
+                                : "10px solid transparent",
                             color: "white",
-                            minWidth: "auto",
-                            marginRight: sidebarOpen ? "8px" : "0",
+                            "&:hover": {
+                              borderLeft: "10px solid white",
+                              color: "white",
+                            },
                             display: "flex",
-                            justifyContent: "center",
+                            justifyContent: sidebarOpen
+                              ? "space-between"
+                              : "center",
                             alignItems: "center",
+                            padding: sidebarOpen ? "10px 16px" : "10px",
                           }}
                         >
-                          {item.icon}
-                        </ListItemIcon>
-                      )}
-                      {sidebarOpen && <ListItemText primary={item.title} />}
-                    </ListItemButton>
-                  </ListItem>
+                          {item.icon && (
+                            <ListItemIcon
+                              sx={{
+                                color: "white",
+                                minWidth: "auto",
+                                marginRight: sidebarOpen ? "8px" : "0",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.icon}
+                            </ListItemIcon>
+                          )}
+                          {sidebarOpen && <ListItemText primary={item.title} />}
+                        </ListItemButton>
+                      </ListItem>
+                    </Tooltip>
+                  </>
                 ))}
             </List>
 

@@ -6,10 +6,7 @@ import {
 } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
-import {
-  FaCheckCircle,
-  FaEye,
-} from "react-icons/fa";
+import { FaCheckCircle, FaEye } from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useState } from "react";
 import TicketStatus from "./TicketStatus";
@@ -35,7 +32,6 @@ any) {
   };
 
   function handleAssigneClick(params: any) {
-    console.log(params)
     setData(params);
     setOpen(true);
   }
@@ -43,20 +39,33 @@ any) {
   function handlePriorityColor(priority: string): React.CSSProperties {
     switch (priority) {
       case "Critical":
-        return { backgroundColor: "darkred" };
+        return { backgroundColor: "#C62E2E" };
       case "High":
-        return { backgroundColor: "red" };
+        return { backgroundColor: "#E53935" };
       case "Medium":
-        return { backgroundColor: "#ff9800" };
+        return { backgroundColor: "#FF9800" };
       case "Low":
-        return { backgroundColor: "#4caf50" };
+        return { backgroundColor: "#66BB6A" };
       default:
-        return { backgroundColor: "#2196f3" };
+        return { backgroundColor: "#608BC1" };
     }
   }
 
   const columns = [
-    { field: "ticket_id", headerName: "Ticket ID", width: 100 },
+    { field: "ticket_id", headerName: "Ticket ID", width: 120 },
+    { field: "branch", headerName: "Branch", width: 150 ,
+      renderCell: (params: any) =>
+        params.row?.requestor?.branch?.branch_description ||
+        "No Branch",
+    },
+    {
+      field: "division",
+      headerName: "Division",
+      width: 110,
+      renderCell: (params: any) =>
+        params.row.sub_category?.category?.division?.division_description ||
+        "No Division",
+    },
     {
       field: "Assignee",
       headerName: "Assignee To",
@@ -74,9 +83,13 @@ any) {
       field: "status",
       headerName: "Status",
       width: 110,
-      renderCell: (params: any) => params.row.ticket_logs_latest?.ticket_status,
+      renderCell: (params: any) => (
+        <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          {params.row.ticket_logs_latest?.ticket_status}
+        </span>
+      ),
     },
-    { field: "title", headerName: "Title", width: 200 },
+    { field: "title", headerName: "Title", width: 300 },
     {
       field: "ticket_priority",
       headerName: "Priority",
@@ -88,6 +101,8 @@ any) {
             borderRadius: "4px",
             padding: "4px 8px",
             textAlign: "center",
+            textTransform: "uppercase",
+            fontWeight: 500,
             color: "white",
           }}
         >
@@ -102,13 +117,6 @@ any) {
       renderCell: (params: any) =>
         params.row.sub_category?.category?.category_description ||
         "No Assignee",
-    },
-    {
-      field: "sub_category",
-      headerName: "Category",
-      width: 180,
-      renderCell: (params: any) =>
-        params.row.sub_category?.subcategory_description || "No Assignee",
     },
     { field: "created_at", headerName: "Date Time", width: 180 },
     ...(isOptions
@@ -125,15 +133,16 @@ any) {
                     <FaEye />
                   </IconButton>
                 </Tooltip>
-                {params.row.ticket_logs_latest?.status == "7" && params.row.b_status != "7" && (
-                <Tooltip title="Done This Ticket">
-                  <IconButton
-                    onClick={() => handleAssigneClick(params.row)}
-                  >
-                    <FaCheckCircle />
-                  </IconButton>
-                </Tooltip>
-                )}
+                {params.row.ticket_logs_latest?.status == "7" &&
+                  params.row.b_status != "7" && (
+                    <Tooltip title="Done This Ticket">
+                      <IconButton
+                        onClick={() => handleAssigneClick(params.row)}
+                      >
+                        <FaCheckCircle />
+                      </IconButton>
+                    </Tooltip>
+                  )}
               </>
             ),
           },

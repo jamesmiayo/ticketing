@@ -13,7 +13,7 @@ class DepartmentSeeder extends Seeder
     {
         Branch::create([
             'branch_id' => 'D0012',
-            'branch_description' => 'Head Office Branch'
+            'branch_description' => 'Head Office'
         ]);
 
         $data = [

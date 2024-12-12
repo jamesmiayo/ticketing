@@ -74,7 +74,7 @@ const TableComponents = ({
           >
             <Grid container spacing={2}>
               {customInputs.map((inputProps, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
                   {inputProps.type === "text" ? (
                     <InputComponent {...inputProps} />
                   ) : inputProps.type === "select" ? (
@@ -117,6 +117,7 @@ const TableComponents = ({
           columns={columns}
           hideFooter
           loading={isLoading}
+          disableColumnMenu 
           sx={{
             boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
             bgcolor: "white",

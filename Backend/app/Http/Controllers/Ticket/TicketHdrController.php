@@ -137,4 +137,15 @@ class TicketHdrController extends Controller
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'You do not have permission to done this ticket as it is not assigned to you..'], Response::HTTP_FORBIDDEN);
         }
     }
+
+    public function updateTicketRemarks(Request $request , string $ticket)
+    {
+        $ticket = TicketHdr::where('id', $ticket)->first();
+        $ticket->update([
+            'remarks' => $request->remarks,
+            'updated_by' => Auth::user()->id
+        ]);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Successfully Update The Ticket Remarks.'], Response::HTTP_OK);
+
+    }
 }

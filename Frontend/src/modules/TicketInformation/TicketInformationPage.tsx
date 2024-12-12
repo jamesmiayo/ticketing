@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TicketLog from "./TicketLog";
 import TicketAnalysis from "./TicketAnalysis";
+import TicketRemarks from "./TicketRemarks";
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -34,7 +35,6 @@ const TicketInformationPage = () => {
   useEffect(() => {
     fetchTicketInformation();
   }, [ticketId]);
-
   return (
     <Box sx={{ display: "flex" }}>
       <Box
@@ -71,8 +71,10 @@ const TicketInformationPage = () => {
               </Box>
             )}
             {activeSection === "Analysis" && <TicketAnalysis data={ticket} />}
-            {activeSection === "Costs" && (
-              <Typography variant="h6">Costs Section</Typography>
+            {activeSection === "Action Taken" && (
+               <>
+               <TicketRemarks data={ticket} refetch={fetchTicketInformation}/>
+             </>
             )}
             {activeSection === "Logs" && (
               <>

@@ -10,7 +10,8 @@ class GlobalConstants
     const ON_HOLD  = 4;
     const CANCELLED  = 5;
     const IN_REVIEW = 6;
-    const COMPLETED  = 7;
+    const VALIDATION = 7;
+    const COMPLETED  = 8;
 
     public static function getStatusesType()
     {
@@ -21,6 +22,7 @@ class GlobalConstants
             self::ON_HOLD => 'On Hold',
             self::CANCELLED => 'Cancelled',
             self::IN_REVIEW => 'In Review',
+            self::VALIDATION => 'For Validation',
             self::COMPLETED => 'Completed',
         ];
     }

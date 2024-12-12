@@ -10,7 +10,6 @@ import {
   Paper,
   Tooltip,
   Typography,
-  Skeleton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -164,7 +163,7 @@ export default function ChatBox({ ticketDetail }: any) {
     if (!isMouseMoving) {
       intervalRef.current = setInterval(() => {
         fetchMessage();
-      }, 10000); 
+      }, 10000);
     }
 
     return () => {
@@ -208,33 +207,34 @@ export default function ChatBox({ ticketDetail }: any) {
         </Box>
         <ScrollableContainer p={2}>
           {!userLoaded || loading ? (
-            <List>
-              {Array.from(new Array(5)).map((_, index) => (
-                <ListItem
-                  key={index}
-                  sx={{
-                    justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
-                  }}
-                >
-                  <Skeleton
-                    variant="circular"
-                    width={40}
-                    height={40}
-                    sx={{
-                      mr: index % 2 === 0 ? 2 : 0,
-                      ml: index % 2 !== 0 ? 2 : 0,
-                    }}
-                  />
-                  <Skeleton
-                    variant="rectangular"
-                    height={40}
-                    width="60%"
-                    sx={{ borderRadius: 2 }}
-                  />
-                </ListItem>
-              ))}
-            </List>
+            <></>
           ) : (
+            // <List>
+            //   {Array.from(new Array(5)).map((_, index) => (
+            //     <ListItem
+            //       key={index}
+            //       sx={{
+            //         justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
+            //       }}
+            //     >
+            //       <Skeleton
+            //         variant="circular"
+            //         width={40}
+            //         height={40}
+            //         sx={{
+            //           mr: index % 2 === 0 ? 2 : 0,
+            //           ml: index % 2 !== 0 ? 2 : 0,
+            //         }}
+            //       />
+            //       <Skeleton
+            //         variant="rectangular"
+            //         height={40}
+            //         width="60%"
+            //         sx={{ borderRadius: 2 }}
+            //       />
+            //     </ListItem>
+            //   ))}
+            // </List>
             <List>
               {messages.map((message: any) => (
                 <Box key={message.id}>

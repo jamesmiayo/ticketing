@@ -14,7 +14,6 @@ import {
   Paper,
 } from "@mui/material";
 import {
-  AccessTime,
   LocationOn,
   Person,
   Work,
@@ -22,11 +21,13 @@ import {
   CheckCircle,
   ChangeCircle,
 } from "@mui/icons-material";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import { IoTicket } from "react-icons/io5";
-import TicketStatus from "../Ticketing/TicketStatus";
 import TicketAssignee from "../Ticketing/TicketAssignee";
 import TicketPriority from "../Ticketing/TicketPriority";
 import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
+import { ticketApi } from "../../api/services/ticket";
+import { useExecuteToast } from "../../context/ToastContext";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -35,6 +36,7 @@ interface TicketDetailsProps {
     id: any;
     ticket_id?: string;
     requestor?: {
+      phone_number?: string;
       name?: string;
       branch?: {
         branch_description?: string;
@@ -63,6 +65,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState<any>();
+  const toast = useExecuteToast();
 
   const tools = [
     {
@@ -77,7 +80,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     },
     {
       label: "Done This Ticket",
-      onClick: () => handleAssigneClick("done"),
+      onClick: () => handleTicketForValidation(),
       icon: <CheckCircle />,
     },
     {
@@ -92,6 +95,18 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     setOpen(true);
   }
 
+  const handleTicketForValidation = async () => {
+    try {
+      const response = await ticketApi.changeStatusTicket(ticketDetail.id, {
+        status: 7,
+      });
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   if (isLoading) {
     return (
       <Skeleton
@@ -102,14 +117,12 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
       />
     );
   }
-
+  console.log(ticketDetail);
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)}>
         {modal === "priority" ? (
           <TicketPriority data={ticketDetail} setOpen={setOpen} />
-        ) : modal === "done" ? (
-          <TicketStatus data={ticketDetail} setOpen={setOpen} />
         ) : modal === "status" ? (
           <TicketChangeStatus data={ticketDetail} setOpen={setOpen} />
         ) : (
@@ -129,6 +142,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
             <IoTicket size={24} />
             Ticket Details
           </Typography>
+
           <Typography variant="subtitle1">
             {ticketDetail?.ticket_id || "N/A"}
           </Typography>
@@ -141,6 +155,16 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
             <Typography variant="h6" gutterBottom>
               {ticketDetail?.title}
             </Typography>
+            <Chip
+              label={ticketDetail?.ticket_priority || "N/A"}
+              color="primary"
+              size="small"
+              sx={{
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                marginRight: 1,
+              }}
+            />
             <Chip
               label={ticketDetail?.ticket_logs_latest?.ticket_status}
               color="primary"
@@ -200,14 +224,14 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
             <Grid item xs={12} md={6}>
               <Box display="flex" alignItems="center" mb={2}>
                 <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>
-                  <AccessTime />
+                  <LocalPhoneIcon />
                 </Avatar>
                 <Box>
                   <Typography variant="subtitle2" color="textSecondary">
-                    Priority
+                    Viber Number
                   </Typography>
                   <Typography variant="body1">
-                    {ticketDetail?.ticket_priority || "N/A"}
+                    {ticketDetail?.requestor?.phone_number || "N/A"}
                   </Typography>
                 </Box>
               </Box>

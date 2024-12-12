@@ -17,21 +17,23 @@ const TicketList: React.FC<TicketListProps> = ({
   isLoading,
 }) => {
   const colors = [
-    "#4CAF50",
-    "#2196F3",
-    "#FFC107",
-    "#F44336",
-    "#9C27B0",
-    "#3F51B5",
+    "#1E88E5",
+    "#FFB300",
+    "#F96E2A",
+    "#9E9E9E",
+    "#C62E2E",
+    "#D32F2F",
     "#009688",
-    "#FF5722",
+    "#4CAF50",
+    "#9B7EBD",
+    "#F3C623"
   ];
 
   return (
     <Grid container spacing={3}>
       {isLoading
-        ? [...Array(8)].map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+        ? [...Array(10)].map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
               <StatCard
                 title="Loading..."
                 value={<CircularProgress size={20} />}
@@ -40,7 +42,7 @@ const TicketList: React.FC<TicketListProps> = ({
             </Grid>
           ))
         : ticketList.map((status, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
               <StatCard
                 title={status.label}
                 value={status.value}

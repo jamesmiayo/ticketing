@@ -12,6 +12,7 @@ import {
 import SelectItem from "../../components/common/SelectItem";
 import { User } from "../../api/services/user";
 import { useAuth } from "../../context/AuthContext";
+import InputComponent from "../../components/common/InputComponent";
 
 export default function UpdateUserBranchSection({ onClose }: any) {
   const [branch, setBranch] = useState<any>([]);
@@ -22,6 +23,7 @@ export default function UpdateUserBranchSection({ onClose }: any) {
 
   const toast = useExecuteToast();
   const {
+    register,
     handleSubmit,
     control,
     formState: { errors },
@@ -157,6 +159,25 @@ export default function UpdateUserBranchSection({ onClose }: any) {
               errors={errors}
               name="section_id"
               fullWidth
+            />
+          </Grid> 
+
+          <Grid item xs={12}>
+            <InputComponent
+              label="Phone Number"
+              control={control}
+              errors={errors}
+              name="phone_number"
+              register={register}
+              fullWidth
+              onInput={(e:any) => {
+                const inputValue = e.target.value.replace(/[^0-9]/g, ""); 
+                if (inputValue.length <= 11) {
+                  e.target.value = inputValue; 
+                } else {
+                  e.target.value = inputValue.slice(0, 11);
+                }
+              }}
             />
           </Grid>
 

@@ -8,6 +8,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ConfirmationNumber, Assignment } from "@mui/icons-material";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { useContext } from "react";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -41,9 +44,12 @@ export default function TicketSideBar({
   activeSection,
   setActiveSection,
 }: TicketSideBarProps) {
+  const { permission } = useContext(PermissionContext);
+
   const items = [
-    { label: "Ticket", icon: <ConfirmationNumber /> },
-    { label: "Logs", icon: <Assignment /> },
+    { label: "Ticket", icon: <ConfirmationNumber /> , show: true},
+    { label: "Logs", icon: <Assignment /> , show: true},
+    { label: "Action Taken", icon: <HelpOutlineIcon /> , show: permission?.includes("Can View Ticket Remarks") },
   ];
 
   return (
@@ -52,7 +58,9 @@ export default function TicketSideBar({
         Navigation
       </Typography>
       <Box>
-        {items.map((item, index) => (
+        {items  
+        .filter((item) => item.show)
+        .map((item, index) => (
           <StyledListItemButton
             key={index}
             onClick={() => setActiveSection(item.label)}

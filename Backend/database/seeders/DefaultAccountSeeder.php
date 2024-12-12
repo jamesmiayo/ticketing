@@ -30,7 +30,8 @@ class DefaultAccountSeeder extends Seeder
                 'name' => 'User Marketing',
                 'email' => 'user.marketing@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 1
+                'section_id' => 1,
+                'branch_id' => 1
             ]);
 
             $supervisor->assignRole('Admin');
@@ -41,7 +42,8 @@ class DefaultAccountSeeder extends Seeder
                 'name' => 'User Investigator',
                 'email' => 'user.investigator@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 2
+                'section_id' => 2,
+                'branch_id' => 1
             ]);
 
             $manager->assignRole('manager');
@@ -52,7 +54,8 @@ class DefaultAccountSeeder extends Seeder
                 'name' => 'User Credit',
                 'email' => 'user.credit@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 3
+                'section_id' => 3,
+                'branch_id' => 1
             ]);
 
             $tech->assignRole('tech');

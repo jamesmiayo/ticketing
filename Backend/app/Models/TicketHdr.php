@@ -20,12 +20,14 @@ class TicketHdr extends Model
         'title',
         'body',
         'priority',
-        'b_status'
+        'b_status',
+        'remarks',
+        'updated_by'
     ];
 
-    protected $with = ['ticket_logs_latest','requestor:id,branch_id,section_id,name', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description', 'requestor.branch:id,branch_description'];
+    protected $with = ['updatedBy','ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description' , 'sub_category.category.division'];
 
-    protected $appends = ['ticket_status', 'time_finished' , 'ticket_priority'];
+    protected $appends = ['ticket_status', 'time_finished', 'ticket_priority'];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
@@ -55,6 +57,11 @@ class TicketHdr extends Model
     public function requestor()
     {
         return $this->belongsTo(User::class, 'emp_id');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function ticket_statuses()
@@ -124,6 +131,13 @@ class TicketHdr extends Model
             $query->status($searchParams['status']);
         }
 
+        if (array_key_exists('requested_by', $searchParams) && $searchParams['requested_by'] !== null) {
+            $query->requested($searchParams['requested_by']);
+        }
+
+        if (array_key_exists('assigned_by', $searchParams) && $searchParams['assigned_by'] !== null) {
+            $query->assignee($searchParams['assigned_by']);
+        }
         return $query;
     }
 
@@ -138,6 +152,20 @@ class TicketHdr extends Model
             'ticket_messages.user:id,name'
         ]);
         return $query;
+    }
+
+    public function scopeAssignee($query, $assignee)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee', function ($query) use ($assignee) {
+            $query->where('id', $assignee);
+        });
+    }
+
+    public function scopeRequested($query, $requested)
+    {
+        return $query->whereHas('requestor', function ($query) use ($requested) {
+            $query->where('id', $requested);
+        });
     }
 
     public function scopeTicketId($query, $ticket_id)

@@ -22,12 +22,14 @@ import { useQuery } from "../TicketInformation/TicketInformationPage";
 import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
 import { Division } from "../../api/services/division";
+import { User } from "../../api/services/user";
 
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
   const [division, setDivision] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -130,6 +132,19 @@ const TicketPage: React.FC = () => {
     setSubCategories(data);
   }
 
+  const getUser = async () => {
+   try{
+     const response = await User.getUser(null);
+     const data = response.map((row: any) => {
+      return {
+        value: row.id,
+        label: row.name,
+      };
+    });
+     setUsers(data);
+   }catch(err){}
+  }
+
   const ticketSearchFilter = [
     {
       name: "ticket_id",
@@ -183,6 +198,24 @@ const TicketPage: React.FC = () => {
       type: "select",
     },
     {
+      name: "requested_by",
+      label: "Requested By",
+      register: register,
+      control: control,
+      errors: errors,
+      options: users,
+      type: "select",
+    },
+    {
+      name: "assigned_by",
+      label: "Assigned By",
+      register: register,
+      control: control,
+      errors: errors,
+      options: users,
+      type: "select",
+    },
+    {
       name: "start_date",
       label: "Start Date",
       register: register,
@@ -207,6 +240,7 @@ const TicketPage: React.FC = () => {
   useEffect(() => {
     getDivisionList();
     getCategoryList();
+    getUser();
     fetchData(null, page);
   }, [page]);
 

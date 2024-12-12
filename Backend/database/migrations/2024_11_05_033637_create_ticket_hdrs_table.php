@@ -16,12 +16,15 @@ return new class extends Migration
             $table->string('ticket_id');
             $table->unsignedBigInteger('emp_id');
             $table->foreign('emp_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('subcategory_id');
             $table->foreign('subcategory_id')->references('id')->on('sub_categories')->onDelete('cascade');
             $table->string('title');
             $table->string('priority')->nullable();
             $table->longText('body');
             $table->string('b_status')->default('1');
+            $table->longText('remarks')->nullable();
             $table->timestamps();
         });
     }

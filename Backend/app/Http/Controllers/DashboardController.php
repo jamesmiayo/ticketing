@@ -136,10 +136,14 @@ class DashboardController extends Controller
         $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
-
         $formattedCounts[] = [
             'label' => 'Total Tickets',
             'value' => $totalTickets,
+        ];
+
+        $formattedCounts[] = [
+            'label' => 'Total Unassigned Tickets',
+            'value' => $nullEmpCount,
         ];
 
         return [

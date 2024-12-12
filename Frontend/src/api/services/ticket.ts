@@ -63,6 +63,8 @@ export const ticketApi = {
           start_date: data?.start_date,
           status: data?.status,
           end_date: data?.end_date,
+          requested_by: data?.requested_by,
+          assigned_by: data?.assigned_by,
         },
       });
       return response.data.data;
@@ -178,6 +180,19 @@ export const ticketApi = {
           ticket_id,
           priority: data.priority,
         },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+  updateRemarks: async function (ticket_id: any, data: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/update-remarks/${ticket_id}`,
+        method: "PUT",
+        data: data,
       });
       return response.data;
     } catch (error) {

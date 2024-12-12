@@ -28,7 +28,8 @@ class User extends Authenticatable
         'username',
         'branch_id',
         'section_id',
-        'profile_picture'
+        'profile_picture',
+        'phone_number'
     ];
 
     /**

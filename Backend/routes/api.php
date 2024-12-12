@@ -52,9 +52,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('upload', [TicketDocumentController::class, 'store']);
         Route::get('documents', [TicketDocumentController::class, 'getByAuthenticatedUser']);
         Route::put('change-status/{ticket_id}', [TicketHdrController::class, 'changeTicketStatus']);
+        Route::put('update-remarks/{ticket_id}', [TicketHdrController::class, 'updateTicketRemarks']);
     });
 
     Route::prefix('user')->group(function () {
+        Route::post('phone-number' , [UserController::class, 'updatePhoneNumber']);
         Route::post('branch-section' , [UserController::class, 'updateUserBranchSection']);
         Route::get('profile', [UserController::class, 'showProfile']);
         Route::get('ticket', UserTicketController::class);

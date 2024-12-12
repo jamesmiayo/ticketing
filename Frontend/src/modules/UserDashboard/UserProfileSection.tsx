@@ -19,7 +19,14 @@ import {
 import { CameraAlt, Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { User } from "../../api/services/user";
-import { toast } from "react-toastify";
+import InputComponent from "../../components/common/InputComponent";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  phoneNumberUser,
+  phoneNumberUserFormType,
+} from "../../schema/User/UpdatePhoneNumber";
+import { useExecuteToast } from "../../context/ToastContext";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
@@ -41,7 +48,15 @@ export default function UserProfile() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [data, setData] = useState<any>([]);
-
+  const toast = useExecuteToast();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm<phoneNumberUserFormType>({
+    resolver: yupResolver(phoneNumberUser),
+  });
   const dashboardFetchData = async () => {
     try {
       setLoading(true);
@@ -57,6 +72,12 @@ export default function UserProfile() {
   useEffect(() => {
     dashboardFetchData();
   }, []);
+
+  useEffect(() => {
+    reset({
+      phone_number: data?.phone_number,
+    });
+  }, [data]);
 
   const handleOpenDialog = () => setOpen(true);
   const handleCloseDialog = () => {
@@ -81,7 +102,9 @@ export default function UserProfile() {
 
     try {
       const response = await User.uploadProfile(formData);
-      toast.success(response.message);
+      toast.executeToast(response.message, "top-center", true, {
+        type: "success",
+      });
 
       setData((prev: any) => ({
         ...prev,
@@ -91,12 +114,22 @@ export default function UserProfile() {
       handleCloseDialog();
     } catch (error: any) {
       console.error("Error uploading profile picture:", error);
-      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
-  console.log(data);
+
+  const onSubmit = async (formData: any) => {
+    try {
+      const response = await User.updateUserPhoneNumber(formData);
+      console.log(response);
+      toast.executeToast(response.message, "top-center", true, {
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error updating phone number:", error);
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -174,6 +207,43 @@ export default function UserProfile() {
                 >
                   {data?.email}
                 </Link>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <Box sx={{ display: "flex", gap: 2, width: "600px" }}>
+                    <InputComponent
+                      name="phone_number"
+                      label="Phone Number"
+                      register={register}
+                      errors={errors}
+                      fullWidth
+                      onInput={(e: any) => {
+                        const inputValue = e.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                        if (inputValue.length <= 11) {
+                          e.target.value = inputValue;
+                        } else {
+                          e.target.value = inputValue.slice(0, 11);
+                        }
+                      }}
+                    />
+
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      disabled={loading}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Update
+                    </Button>
+                  </Box>
+                </form>
               </>
             )}
           </Box>

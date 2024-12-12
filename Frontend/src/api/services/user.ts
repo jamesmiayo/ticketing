@@ -96,6 +96,21 @@ export const User = {
     }
   },
 
+  updateUserPhoneNumber: async function (data: any) {
+    try {
+      const response = await apiClient.request({
+        url: "/user/phone-number",
+        method: "POST",
+        data: data
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
+
   updateUserBranchSection: async function (data: any) {
     try {
       const response = await apiClient.request({
