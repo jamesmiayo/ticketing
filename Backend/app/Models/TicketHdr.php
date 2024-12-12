@@ -138,6 +138,11 @@ class TicketHdr extends Model
         if (array_key_exists('assigned_by', $searchParams) && $searchParams['assigned_by'] !== null) {
             $query->assignee($searchParams['assigned_by']);
         }
+
+        if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
+            $query->branchId($searchParams['branch_id']);
+        }
+
         return $query;
     }
 
@@ -167,7 +172,12 @@ class TicketHdr extends Model
             $query->where('id', $requested);
         });
     }
-
+    public function scopeBranchId($query, $branch_id)
+    {
+        return $query->whereHas('requestor.section.department.division', function ($query) use ($branch_id) {
+            $query->where('id', $branch_id);
+        });
+    }
     public function scopeTicketId($query, $ticket_id)
     {
         return $query->where('ticket_id', 'LIKE', '%' . $ticket_id . '%');
