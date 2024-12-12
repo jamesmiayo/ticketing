@@ -16,6 +16,8 @@ import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Tooltip } from "@mui/material";
+import { FaRegQuestionCircle } from "react-icons/fa";
+
 // import { FaUser } from "react-icons/fa";
 
 const Sidebar = ({ children }: any) => {
@@ -37,6 +39,12 @@ const Sidebar = ({ children }: any) => {
       title: "Ticket",
       path: "/ticket?page=1",
       icon: <BsTicketDetailed />,
+      show: true,
+    },
+    {
+      title: "FAQ",
+      path: "/faq",
+      icon: <FaRegQuestionCircle />,
       show: true,
     },
     {
@@ -97,7 +105,7 @@ const Sidebar = ({ children }: any) => {
       >
         <Box
           sx={{
-            backgroundColor: "#010001",
+            backgroundColor: "#103754",
             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             height: "100vh",
             display: "flex",

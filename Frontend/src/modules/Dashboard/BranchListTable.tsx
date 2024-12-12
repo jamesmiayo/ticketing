@@ -40,29 +40,45 @@ export default function BranchListTable({ data, isLoading }: any) {
   }
   return (
     <>
-     <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-  <DialogTitle>Total Ticket in {dataTicket.branch_name}</DialogTitle>
-  <Box sx={{  backgroundColor: "rgba(76, 175, 80, 0.1)" , borderRadius: 2, padding: 2 , margin: 2}}>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <DialogTitle>Total Ticket in {dataTicket.branch_name}</DialogTitle>
+          {/* <Box sx={{  backgroundColor: "rgba(76, 175, 80, 0.1)" , borderRadius: 2, padding: 2 , margin: 2}}>
     <Typography sx={{ fontSize: '15px' ,  fontWeight: "600", }}>Unassigned Ticket: {dataTicket?.status_counts?.unassigned_ticket} </Typography>
-  </Box>
-</Box>
+  </Box> */}
+        </Box>
 
-    <DialogContent>
-        <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, minmax(150px, 1fr))',
-            gap: '16px',
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto'
-        }}>
-            {dataTicket?.status_counts?.formatted_counts && dataTicket?.status_counts?.formatted_counts.map(({ label, value } : any, index : number) => (
-                <TicketCard key={index} title={label} count={value}  color={cardColors[index]}/>
-            ))}
-        </div>
-    </DialogContent>
-</Dialog>
+        <DialogContent>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "16px",
+              width: "100%",
+              maxWidth: "1200px",
+              margin: "0 auto",
+            }}
+          >
+            {dataTicket?.status_counts?.formatted_counts &&
+              dataTicket?.status_counts?.formatted_counts.map(
+                ({ label, value }: any, index: number) => (
+                  <TicketCard
+                    key={index}
+                    title={label}
+                    count={value}
+                    color={cardColors[index]}
+                  />
+                )
+              )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Paper
         elevation={4}

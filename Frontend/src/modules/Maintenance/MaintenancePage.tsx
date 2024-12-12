@@ -33,7 +33,7 @@ export default function MaintenancePage() {
         sx={{
           width: '100%',
           maxWidth: '1000px',
-          backgroundColor: '#010001',
+          backgroundColor: '#103754',
           borderRadius: 1,
           display: 'flex',
           justifyContent: 'center',

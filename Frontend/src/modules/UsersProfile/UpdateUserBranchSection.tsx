@@ -164,7 +164,7 @@ export default function UpdateUserBranchSection({ onClose }: any) {
 
           <Grid item xs={12}>
             <InputComponent
-              label="Phone Number"
+              label="Viber Number"
               control={control}
               errors={errors}
               name="phone_number"

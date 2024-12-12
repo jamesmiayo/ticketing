@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -17,8 +18,10 @@ import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import TicketTable from "../Ticketing/TicketTable";
 import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { permission } = useContext(PermissionContext);
   const [loading, setLoading] = useState(true);
@@ -39,6 +42,9 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const handleNavigateTicket = () => {
+    navigate("/ticket");
   };
 
   useEffect(() => {
@@ -129,10 +135,26 @@ const Dashboard: React.FC = () => {
               "Can View Branch Table List",
               "Can View Ticket Table List",
             ].some((perm) => !permission?.includes(perm)) && (
-              <TicketTable
-                tickets={totalTicket?.latest_ticket}
-                isLoading={loading}
-              />
+              <>
+                <Box sx={{ width: "100%" }}>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "end", padding: 2 }}
+                  >
+                    <Button
+                      onClick={handleNavigateTicket}
+                      variant="outlined"
+                      size="small"
+                      sx={{ textTransform: "none" }}
+                    >
+                      See More
+                    </Button>
+                  </Box>
+                  <TicketTable
+                    tickets={totalTicket?.latest_ticket}
+                    isLoading={loading}
+                  />
+                </Box>
+              </>
             )}
           </Box>
         </Box>

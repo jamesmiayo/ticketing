@@ -7,5 +7,6 @@ export const PathConstants = {
     USER_DASHBOARD: "/profile",
     MAINTENANCE: "/maintenance",
     USERTICKET: "/user-ticket",
+    FAQ: "/faq",
 }
   
