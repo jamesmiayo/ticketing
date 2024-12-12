@@ -13,6 +13,7 @@ import SelectItem from "../../components/common/SelectItem";
 import { User } from "../../api/services/user";
 import { useAuth } from "../../context/AuthContext";
 import InputComponent from "../../components/common/InputComponent";
+import ComboBoxComponent from "../../components/common/ComboBoxComponent";
 
 export default function UpdateUserBranchSection({ onClose }: any) {
   const [branch, setBranch] = useState<any>([]);
@@ -117,13 +118,11 @@ export default function UpdateUserBranchSection({ onClose }: any) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <SelectItem
+            <ComboBoxComponent
               label="Branch"
               control={control}
               options={branch}
               name="branch_id"
-              errors={errors}
-              fullWidth
             />
           </Grid>
 

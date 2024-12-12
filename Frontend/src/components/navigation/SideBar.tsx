@@ -6,10 +6,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton"; // Import IconButton
+import IconButton from "@mui/material/IconButton"; 
 import { MdDashboard } from "react-icons/md";
 import { BsTicketDetailed } from "react-icons/bs";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material"; // Import icons for toggle
+import { ChevronLeft, ChevronRight } from "@mui/icons-material"; 
 import { useAuth } from "../../context/AuthContext";
 import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
@@ -17,6 +17,7 @@ import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import { IoSettingsSharp } from "react-icons/io5";
 import { Tooltip } from "@mui/material";
 import { FaRegQuestionCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 // import { FaUser } from "react-icons/fa";
 
@@ -50,7 +51,7 @@ const Sidebar = ({ children }: any) => {
     {
       title: "User Ticket",
       path: "/user-ticket",
-      icon: <BsTicketDetailed />,
+      icon: <FaUserCircle  />,
       show: permission?.includes("Can View User Ticket"),
     },
     // { title: "Profile", path: "/profile", icon: <FaUser />, show: true },

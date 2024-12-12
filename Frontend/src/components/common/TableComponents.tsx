@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
+import ComboBoxComponent from "./ComboBoxComponent";
 
 interface DataGridProps {
   columns: any;
@@ -81,6 +82,8 @@ const TableComponents = ({
                     <SelectItem {...inputProps} />
                   ) : inputProps.type === "date" ? (
                     <InputDateComponent {...inputProps} />
+                  ) : inputProps.type === "combobox" ? (
+                    <ComboBoxComponent {...inputProps} />
                   ) : null}
                 </Grid>
               ))}
@@ -117,7 +120,7 @@ const TableComponents = ({
           columns={columns}
           hideFooter
           loading={isLoading}
-          disableColumnMenu 
+          disableColumnMenu
           sx={{
             boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
             bgcolor: "white",

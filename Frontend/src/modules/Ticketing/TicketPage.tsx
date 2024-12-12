@@ -23,11 +23,13 @@ import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
 import { Division } from "../../api/services/division";
 import { User } from "../../api/services/user";
-
+import { Branch } from "../../api/services/branch";
+import { IoAddCircleSharp } from "react-icons/io5";
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
   const [division, setDivision] = useState<any[]>([]);
+  const [branch, setBranch] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,6 +109,22 @@ const TicketPage: React.FC = () => {
         };
       });
       setDivision(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
+
+  const getBranchList = async () => {
+    try {
+      const response = await Branch.getBranch();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.branch_description,
+        };
+      });
+      setBranch(data);
     } catch (error) {
       console.error("Error fetching category list:", error);
       throw error;
@@ -204,7 +222,7 @@ const TicketPage: React.FC = () => {
       control: control,
       errors: errors,
       options: users,
-      type: "select",
+      type: "combobox",
     },
     {
       name: "assigned_by",
@@ -213,7 +231,16 @@ const TicketPage: React.FC = () => {
       control: control,
       errors: errors,
       options: users,
-      type: "select",
+      type: "combobox",
+    },
+    {
+      name: "branch_id",
+      label: "Branch",
+      register: register,
+      control: control,
+      errors: errors,
+      options: branch,
+      type: "combobox",
     },
     {
       name: "start_date",
@@ -237,9 +264,11 @@ const TicketPage: React.FC = () => {
     reset();
     fetchData(null, page);
   };
+
   useEffect(() => {
     getDivisionList();
     getCategoryList();
+    getBranchList();
     getUser();
     fetchData(null, page);
   }, [page]);
@@ -258,7 +287,7 @@ const TicketPage: React.FC = () => {
           Ticket List
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" color="success" onClick={handleOpen}>
+          <Button variant="contained" color="success" onClick={handleOpen} startIcon={<IoAddCircleSharp/>}>
             Create Ticket
           </Button>
         </Box>
