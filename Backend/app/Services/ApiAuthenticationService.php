@@ -26,8 +26,11 @@ class ApiAuthenticationService
 
         return new JsonResponse([
             'status' => Response::HTTP_OK,
+            'message' => 'Login successful.',
             'user' => $user,
-            'access_token' => $token
+            'permissions' => $user->roles && count($user->roles) > 0 ? $user->getAllPermissions()->pluck('name') : null,
+            'role' => $user->roles->pluck('name'),
+            'access_token' => $token,
         ], Response::HTTP_OK);
     }
 

@@ -55,7 +55,7 @@ class TicketHdr extends Model
 
     public function ticket_attachment()
     {
-        return $this->hasMany(TicketAttachment::class, 'ticket_id');
+        return $this->hasMany(TicketAttachment::class);
     }
 
     public function requestor()
