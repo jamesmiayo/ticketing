@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticket_documents', function (Blueprint $table) {
+        Schema::create('ticket_attachments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('ticket_tdl_id');
-            $table->foreign('ticket_tdl_id')->references('id')->on('ticket_dtls')->onDelete('cascade');
-            $table->string('attachments')->nullable();
+            $table->string('ticket_attachment_id');
+            $table->unsignedBigInteger('ticket_hdr_id');
+            $table->foreign('ticket_hdr_id')->references('id')->on('ticket_hdrs')->onDelete('cascade');
+            $table->string('attachments');
             $table->string('type');
             $table->timestamps();
         });
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ticket_documents');
+        Schema::dropIfExists('ticket_attachments');
     }
 };

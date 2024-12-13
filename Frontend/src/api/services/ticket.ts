@@ -65,6 +65,7 @@ export const ticketApi = {
           end_date: data?.end_date,
           requested_by: data?.requested_by,
           assigned_by: data?.assigned_by,
+          branch_id: data?.branch_id,
         },
       });
       return response.data.data;
