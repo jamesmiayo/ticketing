@@ -8,6 +8,8 @@ import { useLocation } from "react-router-dom";
 import TicketLog from "./TicketLog";
 import TicketAnalysis from "./TicketAnalysis";
 import TicketRemarks from "./TicketRemarks";
+import TicketDocuments from "./TicketDocuments";
+import TicketImages from "./TicketImages";
 
 export function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -67,18 +69,32 @@ const TicketInformationPage = () => {
                 }}
               >
                 <ChatBox ticketDetail={ticket} />
-                <TicketDetails ticketDetail={ticket} isLoading={isLoading} />
+                <TicketDetails
+                  ticketDetail={ticket}
+                  isLoading={isLoading}
+                  refetch={fetchTicketInformation}
+                />
               </Box>
             )}
             {activeSection === "Analysis" && <TicketAnalysis data={ticket} />}
             {activeSection === "Action Taken" && (
-               <>
-               <TicketRemarks data={ticket} refetch={fetchTicketInformation}/>
-             </>
+              <>
+                <TicketRemarks data={ticket} refetch={fetchTicketInformation} />
+              </>
             )}
             {activeSection === "Logs" && (
               <>
                 <TicketLog data={ticket} />
+              </>
+            )}
+            {activeSection === "Documents" && (
+              <>
+                <TicketDocuments />
+              </>
+            )}
+            {activeSection === "Images" && (
+              <>
+                <TicketImages />
               </>
             )}
             {activeSection === "All" && "All"}

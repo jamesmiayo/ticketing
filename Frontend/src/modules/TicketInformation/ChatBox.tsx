@@ -237,7 +237,7 @@ export default function ChatBox({ ticketDetail }: any) {
             // </List>
             <List>
               {messages.map((message: any) => (
-                <Box key={message.id}>
+                <Box key={message.id} sx={{ mb: 3 }}>
                   <Typography
                     variant="caption"
                     color="text.secondary"
@@ -292,42 +292,101 @@ export default function ChatBox({ ticketDetail }: any) {
                             },
                           }}
                         />
-                        {message.documents.length > 0 && (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: 1,
-                              mt: 1,
-                            }}
-                          >
-                            {message.documents.map(
-                              (document: any, index: number) => (
-                                <a
-                                  key={index}
-                                  href={document.file_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  style={{ textDecoration: "none" }}
-                                >
-                                  <img
-                                    src={document.file_url}
-                                    alt={`Document ${index}`}
-                                    style={{
-                                      maxWidth: "100px",
-                                      maxHeight: "100px",
-                                      borderRadius: "8px",
-                                      objectFit: "cover",
-                                    }}
-                                  />
-                                </a>
-                              )
-                            )}
-                          </Box>
-                        )}
                       </Box>
                     </MessageBubble>
                   </ListItem>
+                  {message.documents.length > 0 && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                        mt: 1,
+                        mr: 3,
+                        alignItems:
+                          message.user?.id === user?.id
+                            ? "flex-end"
+                            : "flex-start",
+                      }}
+                    >
+                      {message.documents.map((document: any, index: number) => {
+                        const fileExtension = document.file_url
+                          .split(".")
+                          .pop()
+                          ?.toLowerCase();
+                        const isImage = ["jpeg", "png", "jpg"].includes(
+                          fileExtension || ""
+                        );
+
+                        return (
+                          <a
+                            key={index}
+                            href={document.file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              textDecoration: "none",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {isImage ? (
+                              <img
+                                src={document.file_url}
+                                alt={`Document ${index}`}
+                                style={{
+                                  maxWidth: "200px",
+                                  maxHeight: "200px",
+                                  borderRadius: "8px",
+                                  objectFit: "cover",
+                                  marginBottom: "4px",
+                                }}
+                              />
+                            ) : (
+                              <>
+                                <Box
+                                  sx={{
+                                    bgcolor: "secondary.main",
+                                    color: "white",
+                                    fontSize: "12px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    borderRadius: "8px",
+                                    padding: "12px",
+                                    width: "60px",
+                                    height: "60px",
+                                    transition: "all 0.3s ease",
+                                    "&:hover": {
+                                      bgcolor: "secondary.dark",
+                                      transform: "scale(1.1)",
+                                    },
+                                  }}
+                                >
+                                  <Attachment fontSize="small" />
+                                </Box>
+                                <Typography
+                                  variant="caption"
+                                  align="center"
+                                  sx={{
+                                    maxWidth: "100px",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    mt: 0.5,
+                                  }}
+                                >
+                                  Document
+                                </Typography>
+                              </>
+                            )}
+                          </a>
+                        );
+                      })}
+                    </Box>
+                  )}
                 </Box>
               ))}
               <div ref={messagesEndRef} />

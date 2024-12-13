@@ -70,7 +70,7 @@ class DefaultAccountSeeder extends Seeder
                 'section_id' => 1
             ]);
 
-            $supervisor->assignRole('Supervisor');
+            $supervisor->assignRole('Admin');
 
             $manager = User::create([
                 'emp_id' => mt_rand(1000, 9999),

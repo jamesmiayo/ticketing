@@ -8,9 +8,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ConfirmationNumber, Assignment } from "@mui/icons-material";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useContext } from "react";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
+import { IoDocuments } from "react-icons/io5";
+import { FaImages } from "react-icons/fa";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -47,9 +49,15 @@ export default function TicketSideBar({
   const { permission } = useContext(PermissionContext);
 
   const items = [
-    { label: "Ticket", icon: <ConfirmationNumber /> , show: true},
-    { label: "Logs", icon: <Assignment /> , show: true},
-    { label: "Action Taken", icon: <HelpOutlineIcon /> , show: permission?.includes("Can View Ticket Remarks") },
+    { label: "Ticket", icon: <ConfirmationNumber />, show: true },
+    { label: "Logs", icon: <Assignment />, show: true },
+    {
+      label: "Action Taken",
+      icon: <HelpOutlineIcon />,
+      show: permission?.includes("Can View Ticket Remarks"),
+    },
+    { label: "Documents", icon: <IoDocuments />, show: true },
+    { label: "Images", icon: <FaImages />, show: true },
   ];
 
   return (
@@ -58,42 +66,42 @@ export default function TicketSideBar({
         Navigation
       </Typography>
       <Box>
-        {items  
-        .filter((item) => item.show)
-        .map((item, index) => (
-          <StyledListItemButton
-            key={index}
-            onClick={() => setActiveSection(item.label)}
-            selected={activeSection === item.label}
-            sx={{
-              backgroundColor:
-                activeSection === item.label
-                  ? (theme) => theme.palette.primary.light
-                  : "transparent",
-            }}
-          >
-            <ListItemIcon
+        {items
+          .filter((item) => item.show)
+          .map((item, index) => (
+            <StyledListItemButton
+              key={index}
+              onClick={() => setActiveSection(item.label)}
+              selected={activeSection === item.label}
               sx={{
-                color:
+                backgroundColor:
                   activeSection === item.label
-                    ? "primary.main"
-                    : "text.secondary",
+                    ? (theme) => theme.palette.primary.light
+                    : "transparent",
               }}
             >
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText
-              primary={item.label}
-              primaryTypographyProps={{
-                color:
-                  activeSection === item.label
-                    ? "primary.main"
-                    : "text.primary",
-                fontWeight: activeSection === item.label ? 600 : 400,
-              }}
-            />
-          </StyledListItemButton>
-        ))}
+              <ListItemIcon
+                sx={{
+                  color:
+                    activeSection === item.label
+                      ? "primary.main"
+                      : "text.secondary",
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{
+                  color:
+                    activeSection === item.label
+                      ? "primary.main"
+                      : "text.primary",
+                  fontWeight: activeSection === item.label ? 600 : 400,
+                }}
+              />
+            </StyledListItemButton>
+          ))}
       </Box>
     </StyledPaper>
   );
