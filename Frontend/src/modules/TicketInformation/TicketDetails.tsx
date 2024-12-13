@@ -151,7 +151,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
           overflow: "hidden",
           height: "100%",
           maxHeight: "90vh",
-          width: "650px",
+          // width: "650px",
           margin: "0 auto",
           overflowY: "auto",
         }}

@@ -159,7 +159,7 @@ const NavBar: React.FC = () => {
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
-                              maxWidth: "400px"
+                              maxWidth: "350px"
                             }}
                           >
                             {row?.ticket_hdr?.title}
