@@ -194,7 +194,7 @@ export default function ChatBox({ ticketDetail }: any) {
           height: "87vh",
           display: "flex",
           flexDirection: "column",
-          minWidth: "500px",
+          // minWidth: "500px",
         }}
       >
         <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>

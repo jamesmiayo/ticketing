@@ -14,6 +14,7 @@ interface AuthContextType {
   ) => Promise<{ message: string }>;
   logoutUser: () => void;
   setUser: any;
+  notification: any | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +23,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const [user, setUser] = useState<any | null>(null);
+  const [notification, setNotification] = useState<any | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const { setPermission } = usePermission();
@@ -32,6 +34,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       if (token) {
         const response = await validateToken();
         if (response?.isValid) {
+          setNotification(response?.notifications)
           setUser(response?.user);
           setIsAuthenticated(true);
         } else {
@@ -83,7 +86,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
   return (
     <AuthContext.Provider
-      value={{user, isAuthenticated, loading, loginUser, logoutUser , setUser }}
+      value={{user, isAuthenticated, loading, loginUser, logoutUser , setUser , notification }}
     >
       {children}
     </AuthContext.Provider>

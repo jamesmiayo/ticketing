@@ -10,6 +10,7 @@ use App\Http\Requests\Ticket\StoreTicketSatisfactoryRequest;
 use App\Http\Requests\Ticket\StoreTicketStatusRequest;
 use App\Models\TicketDtl;
 use App\Models\TicketHdr;
+use App\Models\TicketNotification;
 use App\Models\TicketSatisfactory;
 use App\Models\TicketStatus;
 use App\Services\TicketHdrRoleDataService;
@@ -72,9 +73,17 @@ class TicketHdrController extends Controller
     public function show(string $ticket_id): JsonResponse
     {
         $ticket = TicketHdr::getSpecificTicket()->where('ticket_id', $ticket_id)->first();
-
         if (!$ticket) {
             return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);
+        }
+        $ticketNotification = TicketNotification::where('to_user', Auth::id())
+            ->where('ticket_id', $ticket->id)
+            ->first();
+
+        if ($ticketNotification) {
+          $ticketNotification->update([
+                'is_read' => true,
+            ]);
         }
 
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $ticket], Response::HTTP_OK);
@@ -84,9 +93,9 @@ class TicketHdrController extends Controller
     {
 
         $ticket = TicketHdr::where('id', $request->ticket_id)->first();
-
         if (collect([$ticket->ticket_logs_latest->assignee?->id, $ticket->requestor->id])->contains(Auth::id()) || Auth::user()->can('Can Change Assignee')) {
             TicketStatus::create($request->getTicketStatus());
+            TicketNotification::create($request->getTicketNotifications());
             return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Ticket Successfully Assign'], Response::HTTP_OK);
         } else {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'Unauthorized to Change Assign'], Response::HTTP_FORBIDDEN);
@@ -138,7 +147,7 @@ class TicketHdrController extends Controller
         }
     }
 
-    public function updateTicketRemarks(Request $request , string $ticket)
+    public function updateTicketRemarks(Request $request, string $ticket)
     {
         $ticket = TicketHdr::where('id', $ticket)->first();
         $ticket->update([
@@ -146,6 +155,5 @@ class TicketHdrController extends Controller
             'updated_by' => Auth::user()->id
         ]);
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Successfully Update The Ticket Remarks.'], Response::HTTP_OK);
-
     }
 }

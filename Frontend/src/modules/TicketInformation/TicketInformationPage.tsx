@@ -50,10 +50,12 @@ const TicketInformationPage = () => {
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
           Ticket Information
         </Typography>
-        <Container
+        <Box
           sx={{
             display: "flex",
             justifyContent: "center",
+             width:"100%",
+             padding:"20px"
           }}
         >
           <TicketSideBar
@@ -99,7 +101,7 @@ const TicketInformationPage = () => {
             )}
             {activeSection === "All" && "All"}
           </Box>
-        </Container>
+        </Box>
       </Box>
     </Box>
   );

@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\LoginRequest;
+use App\Models\TicketNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Services\LdapAuthenticationService;
 use App\Services\ApiAuthenticationService;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Storage;
+
 
 class AuthController extends Controller
 {
@@ -37,14 +40,21 @@ class AuthController extends Controller
         $token = request()->bearerToken();
         $personalAccessToken = PersonalAccessToken::findToken($token);
         $user = User::find($personalAccessToken?->tokenable_id);
-
         if ($personalAccessToken && !empty($user)) {
-            $user->load(['section.department', 'section.department.division']);
+            $user->with(['ticket_notification' , 'section.department', 'section.department.division']);
 
             return new JsonResponse([
                 'isValid' => true,
                 'roles' => $user->roles->pluck('name')->first(),
                 'user' => $user,
+                'notifications' => [
+                    'data' => TicketNotification::where('to_user', Auth::user()->id)
+                    ->orderBy('is_read', 'asc')
+                    ->orderBy('created_at', 'desc')
+                    ->take(10)->get(),
+                    'total_unread_ticket' => TicketNotification::where('to_user', Auth::user()->id)
+                    ->where('is_read', false)->count()
+                ]
             ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
