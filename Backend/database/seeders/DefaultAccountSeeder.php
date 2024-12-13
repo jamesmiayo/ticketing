@@ -92,7 +92,7 @@ class DefaultAccountSeeder extends Seeder
                 'section_id' => 3
             ]);
 
-            $tech->assignRole('tech');
+            $tech->assignRole('Supervisor');
         }
     }
 }

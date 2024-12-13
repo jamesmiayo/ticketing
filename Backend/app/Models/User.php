@@ -83,6 +83,11 @@ class User extends Authenticatable
         return $this->belongsTo(Section::class);
     }
 
+    public function ticket_notification()
+    {
+        return $this->hasMany(TicketNotification::class);
+    }
+
     public function tickethdr()
     {
         return $this->hasMany(TicketHdr::class, 'emp_id');

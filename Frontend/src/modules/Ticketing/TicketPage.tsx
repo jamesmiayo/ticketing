@@ -266,11 +266,11 @@ const TicketPage: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchData(null, page);
     getDivisionList();
     getCategoryList();
     getBranchList();
     getUser();
-    fetchData(null, page);
   }, [page]);
 
   return (
