@@ -25,7 +25,7 @@ class TicketHdr extends Model
         'updated_by'
     ];
 
-    protected $with = ['updatedBy','ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description' , 'sub_category.category.division'];
+    protected $with = ['ticket_attachment','updatedBy','ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description' , 'sub_category.category.division'];
 
     protected $appends = ['ticket_status', 'time_finished', 'ticket_priority'];
 
@@ -53,6 +53,10 @@ class TicketHdr extends Model
         return GlobalConstants::getPriorityType($this->priority);
     }
 
+    public function ticket_attachment()
+    {
+        return $this->hasMany(TicketAttachment::class, 'ticket_id');
+    }
 
     public function requestor()
     {
