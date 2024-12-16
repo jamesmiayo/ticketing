@@ -8,7 +8,6 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
   Badge,
   Chip,
-  Divider,
   Paper,
   Stack,
   Tooltip,

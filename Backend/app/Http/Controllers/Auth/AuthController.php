@@ -19,14 +19,14 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        // return (new LdapAuthenticationService($request))->authenticate();
-        if (env('AUTHENTICATION') == 'LDAP') {
-            return (new LdapAuthenticationService($request))->authenticate();
-        } elseif (env('AUTHENTICATION') == 'API') {
-            return (new ApiAuthenticationService($request))->authenticate();
-        } else {
-            return  new JsonResponse(['status' => Response::HTTP_BAD_REQUEST, 'message' => 'Check env for authentication'], Response::HTTP_BAD_REQUEST);
-        }
+        return (new LdapAuthenticationService($request))->authenticate();
+        // if (env('AUTHENTICATION') == 'LDAP') {
+        //     return (new LdapAuthenticationService($request))->authenticate();
+        // } elseif (env('AUTHENTICATION') == 'API') {
+        //     return (new ApiAuthenticationService($request))->authenticate();
+        // } else {
+        //     return  new JsonResponse(['status' => Response::HTTP_BAD_REQUEST, 'message' => 'Check env for authentication'], Response::HTTP_BAD_REQUEST);
+        // }
     }
 
     public function logout(): JsonResponse

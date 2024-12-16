@@ -20,7 +20,7 @@ class DefaultAccountSeeder extends Seeder
             Role::create(['name' => $roleName]);
         }
 
-        if (env('AUTHENTICATION') === 'LDAP'){
+        // if (env('AUTHENTICATION') === 'LDAP'){
 
             $users = ['user.marketing', 'user.investigator', 'user.credit' , 'user.specialist'];
 
@@ -59,40 +59,40 @@ class DefaultAccountSeeder extends Seeder
             ]);
 
             $tech->assignRole('tech');
-        }else{
+        // }else{
 
-            $supervisor = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'supervisor',
-                'name' => 'supervisor',
-                'email' => 'supervisor@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 1
-            ]);
+        //     $supervisor = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'supervisor',
+        //         'name' => 'supervisor',
+        //         'email' => 'supervisor@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 1
+        //     ]);
 
-            $supervisor->assignRole('Admin');
+        //     $supervisor->assignRole('Admin');
 
-            $manager = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'manager',
-                'name' => 'manager',
-                'email' => 'manager@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 2
-            ]);
+        //     $manager = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'manager',
+        //         'name' => 'manager',
+        //         'email' => 'manager@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 2
+        //     ]);
 
-            $manager->assignRole('Manager');
+        //     $manager->assignRole('Manager');
 
-            $tech = User::create([
-                'emp_id' => mt_rand(1000, 9999),
-                'username' => 'tech',
-                'name' => 'tech',
-                'email' => 'tech@gmail.com',
-                'password' => Hash::make('password'),
-                'section_id' => 3
-            ]);
+        //     $tech = User::create([
+        //         'emp_id' => mt_rand(1000, 9999),
+        //         'username' => 'tech',
+        //         'name' => 'tech',
+        //         'email' => 'tech@gmail.com',
+        //         'password' => Hash::make('password'),
+        //         'section_id' => 3
+        //     ]);
 
-            $tech->assignRole('Supervisor');
-        }
+        //     $tech->assignRole('Supervisor');
+        // }
     }
 }

@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box , Typography } from "@mui/material";
 import ChatBox from "./ChatBox";
 import TicketDetails from "./TicketDetails";
 import TicketSideBar from "../Ticketing/TicketSideBar";
