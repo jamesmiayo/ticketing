@@ -28,7 +28,7 @@ class StoreTicketRequest extends FormRequest
             'body' => 'required',
             'b_status' => 'required',
             'division_id' => 'required',
-            'files' => 'required|array',
+            'files' => 'array',
             'files.*' => 'max:2048'
         ];
     }

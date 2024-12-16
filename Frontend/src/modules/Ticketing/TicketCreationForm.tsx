@@ -71,7 +71,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
     try {
       setLoading(true);
       const formData = new FormData();
-      data.files.forEach((file: any) => {
+      data?.files?.forEach((file: any) => {
         formData.append("files", file);
       });
       const response = await ticketApi.createTicket(data, formData);

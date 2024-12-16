@@ -50,11 +50,13 @@ class TicketHdrController extends Controller
     {
 
         $data = TicketHdr::create($request->getTicketHdr());
-        $attachments = $request->getAttachments($data->id , $request->file('files'));
-        foreach ($attachments as $attachment) {
-            TicketAttachment::create($attachment);
-        }
         TicketStatus::create($request->getTicketStatus($data->id));
+        if (!empty($request->file)) {
+            $attachments = $request->getAttachments($data->id, $request->file('files'));
+            foreach ($attachments as $attachment) {
+                TicketAttachment::create($attachment);
+            }
+        }
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Ticket Created Successfully'], Response::HTTP_OK);
     }
 

@@ -116,7 +116,6 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
     setUserOption(data);
   };
 
-  //
   const divisionCode = watch("division");
   const departmentCode = watch("department");
   const sectionCode = watch("section");
@@ -131,7 +130,6 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
         division: user.section.department.division_id,
         department: user.section.department_id,
         section: user.section_id,
-        // assignee: "1",
       });
     }
   }, []);
