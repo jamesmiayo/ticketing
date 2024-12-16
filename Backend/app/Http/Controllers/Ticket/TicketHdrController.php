@@ -50,8 +50,7 @@ class TicketHdrController extends Controller
     {
         $data = TicketHdr::create($request->getTicketHdr());
         TicketStatus::create($request->getTicketStatus($data->id));
-
-        if (!empty($request->files)) {
+        if (count($request->files) !== 0) {
             $attachments = $request->getAttachments($data->id, $request->file('files'));
             foreach ($attachments as $attachment) {
                 TicketAttachment::create($attachment);
