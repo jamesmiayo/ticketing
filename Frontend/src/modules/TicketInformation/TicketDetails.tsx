@@ -12,6 +12,10 @@ import {
   Avatar,
   Paper,
   useTheme,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Badge,
 } from "@mui/material";
 import {
   Person,
@@ -25,15 +29,19 @@ import {
   Assignment,
   Domain,
   AccountTree,
+  Attachment,
 } from "@mui/icons-material";
 import TicketAssignee from "../Ticketing/TicketAssignee";
 import TicketPriority from "../Ticketing/TicketPriority";
 import TicketChangeStatus from "../Ticketing/TicketChangeStatus";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
+import { FaArrowAltCircleUp } from "react-icons/fa";
+import { FaFile } from "react-icons/fa";
 
 interface TicketDetailsProps {
   ticketDetail: {
+    ticket_files: any;
     title: any;
     b_status: string;
     id: any;
@@ -179,6 +187,114 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
               {ticketDetail?.ticket_id || "N/A"}
             </Typography>
           </Box>
+        </Box>
+        <Box>
+          {ticketDetail?.ticket_files.length > 0 && (
+            <Accordion slotProps={{ heading: { component: "h4" } }}>
+              <AccordionSummary
+                expandIcon={<FaArrowAltCircleUp />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+              >
+                <Badge
+                  badgeContent={ticketDetail?.ticket_files.length}
+                  sx={{ paddingRight: 2 }}
+                  color="primary"
+                >
+                  <FaFile color="blue" style={{ marginRight: "4px" }} /> File
+                  Attached
+                </Badge>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 2,
+                    marginLeft: 2,
+                  }}
+                >
+                  {ticketDetail?.ticket_files.map(
+                    (document: any, index: number) => {
+                      const fileExtension = document.file_url
+                        .split(".")
+                        .pop()
+                        ?.toLowerCase();
+                      const isImage = ["jpeg", "png", "jpg"].includes(
+                        fileExtension || ""
+                      );
+
+                      return (
+                        <a
+                          key={index}
+                          href={document.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            textDecoration: "none",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            maxWidth: "120px", // Set consistent max width
+                            margin: "4px", // Add spacing between items
+                          }}
+                        >
+                          {isImage ? (
+                            <img
+                              src={document.file_url}
+                              alt={`Document ${index}`}
+                              style={{
+                                width: "120px",
+                                height: "120px",
+                                borderRadius: "8px",
+                                objectFit: "cover",
+                                marginBottom: "4px",
+                              }}
+                            />
+                          ) : (
+                            <>
+                              <Box
+                                sx={{
+                                  bgcolor: "secondary.main",
+                                  color: "white",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  borderRadius: "8px",
+                                  width: "60px",
+                                  height: "60px",
+                                  transition: "all 0.3s ease",
+                                  "&:hover": {
+                                    bgcolor: "secondary.dark",
+                                    transform: "scale(1.1)",
+                                  },
+                                }}
+                              >
+                                <Attachment fontSize="small" />
+                              </Box>
+                              <Typography
+                                variant="caption"
+                                align="center"
+                                sx={{
+                                  maxWidth: "100px",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  marginTop: "4px",
+                                }}
+                              >
+                                Document
+                              </Typography>
+                            </>
+                          )}
+                        </a>
+                      );
+                    }
+                  )}
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          )}
         </Box>
         <CardContent>
           <Paper

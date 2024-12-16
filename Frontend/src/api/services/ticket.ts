@@ -6,6 +6,7 @@ interface TicketData {
   subcategory_id: string;
   status: string;
   division_id: string;
+  files:any;
 }
 
 interface Category {
@@ -86,23 +87,21 @@ export const ticketApi = {
     }
   },
 
-  createTicket: async function ({
-    title,
-    concern,
-    subcategory_id,
-    status,
-    division_id
-  }: TicketData) {
+  createTicket: async function (data: TicketData, FormData: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/ticket-hdr",
         method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         data: {
-          division_id: division_id,
-          title,
-          body: concern,
-          subcategory_id,
-          b_status: status,
+          division_id: data.division_id,
+          title: data.title,
+          body: data.concern,
+          subcategory_id: data.subcategory_id,
+          b_status: data.status,
+          files: FormData.getAll('files')
         },
       });
       return response.data;

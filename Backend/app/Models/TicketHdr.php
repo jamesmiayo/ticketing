@@ -25,7 +25,7 @@ class TicketHdr extends Model
         'updated_by'
     ];
 
-    protected $with = ['ticket_attachment','updatedBy','ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description' , 'sub_category.category.division'];
+    protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
 
     protected $appends = ['ticket_status', 'time_finished', 'ticket_priority'];
 
@@ -55,7 +55,7 @@ class TicketHdr extends Model
 
     public function ticket_attachment()
     {
-        return $this->hasMany(TicketAttachment::class , 'ticket_id');
+        return $this->hasMany(TicketAttachment::class, 'ticket_id');
     }
 
     public function requestor()
@@ -80,13 +80,33 @@ class TicketHdr extends Model
 
     public function ticket_messages()
     {
-        return $this->hasMany(TicketDtl::class, 'ticket_id');
+        return $this->hasMany(TicketDtl::class, 'ticket_id')->with('documents');
+    }
+
+    public function ticket_images()
+    {
+        return $this->ticket_messages()->whereHas('documents', function ($query) {
+            $query->where('type', 1);
+        });
+    }
+
+    public function ticket_documents()
+    {
+        return $this->ticket_messages()->whereHas('documents', function ($query) {
+            $query->where('type', 2);
+        });
+    }
+
+    public function ticket_files()
+    {
+        return $this->hasMany(TicketAttachment::class , 'ticket_id');
     }
 
     public function ticket_satisfactory()
     {
         return $this->hasOne(TicketSatisfactory::class, 'ticket_id');
     }
+
 
     public function ticket_logs_latest()
     {

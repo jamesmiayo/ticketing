@@ -8,6 +8,7 @@ use App\Http\Requests\Ticket\ChangeTicketStatusRequest;
 use App\Http\Requests\Ticket\StoreTicketRequest;
 use App\Http\Requests\Ticket\StoreTicketSatisfactoryRequest;
 use App\Http\Requests\Ticket\StoreTicketStatusRequest;
+use App\Models\TicketAttachment;
 use App\Models\TicketDtl;
 use App\Models\TicketHdr;
 use App\Models\TicketNotification;
@@ -47,7 +48,12 @@ class TicketHdrController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
+
         $data = TicketHdr::create($request->getTicketHdr());
+        $attachments = $request->getAttachments($data->id , $request->file('files'));
+        foreach ($attachments as $attachment) {
+            TicketAttachment::create($attachment);
+        }
         TicketStatus::create($request->getTicketStatus($data->id));
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Ticket Created Successfully'], Response::HTTP_OK);
     }
@@ -76,12 +82,13 @@ class TicketHdrController extends Controller
         if (!$ticket) {
             return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);
         }
-        $ticketNotification = TicketNotification::where('to_user', Auth::id())
+        $ticketNotifications = TicketNotification::where('to_user', Auth::id())
             ->where('ticket_id', $ticket->id)
-            ->first();
+            ->where('is_read', false)
+            ->get();
 
-        if ($ticketNotification) {
-          $ticketNotification->update([
+        foreach ($ticketNotifications as $ticketNotification) {
+            $ticketNotification->update([
                 'is_read' => true,
             ]);
         }

@@ -91,12 +91,12 @@ const TicketInformationPage = () => {
             )}
             {activeSection === "Documents" && (
               <>
-                <TicketDocuments />
+                <TicketDocuments data={ticket?.ticket_documents}/>
               </>
             )}
             {activeSection === "Images" && (
               <>
-                <TicketImages />
+                <TicketImages data={ticket?.ticket_images}/>
               </>
             )}
             {activeSection === "All" && "All"}

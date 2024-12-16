@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Card,
@@ -10,62 +9,17 @@ import {
 } from "@mui/material";
 import { Description, AccessTime } from "@mui/icons-material";
 
-interface Document {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  imageUrl: string;
-}
+// interface Document {
+//   id: string;
+//   title: string;
+//   date: string;
+//   time: string;
+//   imageUrl: string;
+// }
 
-const documents: Document[] = [
-  {
-    id: "1",
-    title: "Project Proposal",
-    date: "2023-06-15",
-    time: "09:30 AM",
-    imageUrl: "https://source.unsplash.com/random/800x600?document",
-  },
-  {
-    id: "2",
-    title: "Meeting Minutes",
-    date: "2023-06-14",
-    time: "02:45 PM",
-    imageUrl: "https://source.unsplash.com/random/800x600?meeting",
-  },
-  {
-    id: "3",
-    title: "Budget Report",
-    date: "2023-06-13",
-    time: "11:15 AM",
-    imageUrl: "url",
-  },
-  {
-    id: "4",
-    title: "Client Contract",
-    date: "2023-06-12",
-    time: "04:00 PM",
-    imageUrl: "url",
-  },
-  {
-    id: "5",
-    title: "Product Design",
-    date: "2023-06-11",
-    time: "10:00 AM",
-    imageUrl: "url",
-  },
-  {
-    id: "6",
-    title: "Marketing Plan",
-    date: "2023-06-10",
-    time: "03:30 PM",
-    imageUrl: "url",
-  },
-];
-
-const TicketImages: React.FC = () => {
+const TicketImages = ({ data }:any) => {
   return (
-    <Card sx={{ margin: "auto" }}>
+    <Card sx={{ margin: "auto"}}>
       <Box
         sx={{ bgcolor: "primary.main", color: "primary.contrastText", p: 2 }}
       >
@@ -83,10 +37,10 @@ const TicketImages: React.FC = () => {
           Ticket Images
         </Typography>
       </Box>
-      <CardContent>
+      <CardContent sx={{ minHeight: '700px'}}>
         <Grid container spacing={2}>
-          {documents.map((doc) => (
-            <Grid item xs={6} sm={4} key={doc.id}>
+          {data?.flatMap((ticket:any) => ticket.documents).map((row:any) => (
+            <Grid item xs={6} sm={4} key={row.id}>
               <Card
                 sx={{
                   height: "100%",
@@ -95,19 +49,19 @@ const TicketImages: React.FC = () => {
                 }}
               >
                 <CardActionArea
-                  onClick={() => window.open(doc.imageUrl, "_blank")}
+                  onClick={() => window.open(row.file_url, "_blank")}
                   sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
                 >
                   <CardMedia
                     component="img"
-                    height="140"
-                    image={doc.imageUrl}
-                    alt={doc.title}
+                    height="200"
+                    image={row.file_url}
+                    alt={row.title}
                     sx={{ objectFit: "cover" }}
                   />
                   <Box sx={{ p: 1, flexGrow: 1 }}>
                     <Typography variant="subtitle1" component="div" noWrap>
-                      {doc.title}
+                      {row.title}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -121,7 +75,7 @@ const TicketImages: React.FC = () => {
                       }}
                     >
                       <AccessTime fontSize="small" />
-                      {`${doc.date} ${doc.time}`}
+                      {row.created_at}
                     </Typography>
                   </Box>
                 </CardActionArea>

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Card,
@@ -13,41 +12,14 @@ import {
 } from "@mui/material";
 import { Description, AccessTime } from "@mui/icons-material";
 
-interface Document {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-}
+// interface Document {
+//   id: string;
+//   title: string;
+//   date: string;
+//   time: string;
+// }
 
-const documents: Document[] = [
-  {
-    id: "1",
-    title: "Project Proposal",
-    date: "2023-06-15",
-    time: "09:30 AM",
-  },
-  {
-    id: "2",
-    title: "Meeting Minutes",
-    date: "2023-06-14",
-    time: "02:45 PM",
-  },
-  {
-    id: "3",
-    title: "Budget Report",
-    date: "2023-06-13",
-    time: "11:15 AM",
-  },
-  {
-    id: "4",
-    title: "Client Contract",
-    date: "2023-06-12",
-    time: "04:00 PM",
-  },
-];
-
-const TicketDocuments: React.FC = () => {
+const TicketDocuments = ({data} :any) => {
   const theme = useTheme();
 
   return (
@@ -63,7 +35,7 @@ const TicketDocuments: React.FC = () => {
         sx={{
           bgcolor: theme.palette.primary.main,
           color: theme.palette.primary.contrastText,
-          p: 3,
+          p: 2,
           textAlign: "center",
         }}
       >
@@ -81,12 +53,14 @@ const TicketDocuments: React.FC = () => {
           Ticket Documents
         </Typography>
       </Box>
-      <CardContent>
+      <CardContent sx={{ minHeight: '700px'}}>
         <List>
-          {documents.map((doc) => (
+        {data?.flatMap((ticket:any) => ticket.documents).map((row:any) => (
             <ListItem
-              key={doc.id}
+              onClick={() => window.open(row.file_url, "_blank")}
+              key={row.id}
               sx={{
+                cursor: "pointer",
                 mb: 2,
                 bgcolor: theme.palette.background.paper,
                 borderRadius: 2,
@@ -117,7 +91,7 @@ const TicketDocuments: React.FC = () => {
                       color: theme.palette.text.primary,
                     }}
                   >
-                    {doc.title}
+                    Document File
                   </Typography>
                 }
                 secondary={
@@ -131,7 +105,7 @@ const TicketDocuments: React.FC = () => {
                     }}
                   >
                     <AccessTime fontSize="small" sx={{ mr: 0.5 }} />
-                    {`${doc.date} at ${doc.time}`}
+                    {`${row.created_at}`}
                   </Typography>
                 }
               />

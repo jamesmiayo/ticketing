@@ -24,7 +24,7 @@ class UploadTicketDocumentRequest extends FormRequest
         return [
             'ticket_id' => 'required',
             'message' => 'required|string',
-            'attachments.*' => 'required|file|max:2048',
+            'attachments.*' => 'required|max:2048',
         ];
     }
 }
