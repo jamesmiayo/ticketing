@@ -48,10 +48,10 @@ class TicketHdrController extends Controller
      */
     public function store(StoreTicketRequest $request)
     {
-
         $data = TicketHdr::create($request->getTicketHdr());
         TicketStatus::create($request->getTicketStatus($data->id));
-        if (!empty($request->file)) {
+
+        if (!empty($request->files)) {
             $attachments = $request->getAttachments($data->id, $request->file('files'));
             foreach ($attachments as $attachment) {
                 TicketAttachment::create($attachment);
