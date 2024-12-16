@@ -127,9 +127,9 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
 
     if (user.roles[0].name !== "Admin") {
       reset({
-        division: user.section.department.division_id,
-        department: user.section.department_id,
-        section: user.section_id,
+        division: user?.section?.department?.division_id,
+        department: user?.section?.department_id,
+        section: user?.section_id,
       });
     }
   }, []);
