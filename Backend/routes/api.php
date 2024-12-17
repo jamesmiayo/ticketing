@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Announcement\AnnouncementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -30,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class , 'index']);
     Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::resource('announcement', AnnouncementController::class);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
         Route::resource('permission', PermissionController::class);

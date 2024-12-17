@@ -45,6 +45,8 @@ class RolePermissionSeeder extends Seeder
             'Can Create SLA',
             'Can Update SLA',
             'Can View SLA Reports',
+            'Can Update Announcement',
+            'Can Create Announcement'
         ];
 
         foreach ($permissions as $permission) {
