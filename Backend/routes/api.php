@@ -32,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::resource('announcement', AnnouncementController::class);
+    Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
         Route::resource('permission', PermissionController::class);

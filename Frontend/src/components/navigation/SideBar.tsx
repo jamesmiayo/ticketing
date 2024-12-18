@@ -18,6 +18,7 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { Tooltip } from "@mui/material";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
+import { MdAnnouncement } from "react-icons/md";
 
 // import { FaUser } from "react-icons/fa";
 
@@ -46,6 +47,12 @@ const Sidebar = ({ children }: any) => {
       title: "FAQ",
       path: "/faq",
       icon: <FaRegQuestionCircle />,
+      show: true,
+    },
+    {
+      title: "Announcement",
+      path: "/announcement",
+      icon: <MdAnnouncement />,
       show: true,
     },
     {

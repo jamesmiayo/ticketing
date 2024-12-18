@@ -30,7 +30,7 @@ class TicketHdr extends Model
     protected $appends = ['ticket_status', 'time_finished', 'ticket_priority'];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s A',
     ];
 
     public function getTimeFinishedAttribute()

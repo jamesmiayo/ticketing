@@ -63,6 +63,7 @@ class User extends Authenticatable
                 : asset('storage/default_profile.jpg')
         );
     }
+
     public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);

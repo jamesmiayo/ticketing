@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Announcement\StoreAnnouncementRequest;
 use App\Http\Requests\Announcement\UpdateAnnouncementRequest;
 use App\Models\Announcement;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -16,7 +17,7 @@ class AnnouncementController extends Controller
      */
     public function index(): JsonResponse
     {
-        $data = Announcement::with('updated_by', 'created_by')->latest()->get();
+        $data = Announcement::with('updatedBy', 'createdBy')->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
@@ -26,17 +27,18 @@ class AnnouncementController extends Controller
     public function store(StoreAnnouncementRequest $request)
     {
         $data = Announcement::create($request->getAnnouncementData());
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Created Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Announcement Created Successfully'], Response::HTTP_OK);
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAnnouncementRequest $request, Announcement $announcement)
+    public function updateAnnouncement(UpdateAnnouncementRequest $request, string $id)
     {
+        $announcement = Announcement::where('id' , $id)->first();
         $announcement->update($request->getAnnouncementData());
-        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Announcement Update Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -45,6 +47,6 @@ class AnnouncementController extends Controller
     public function destroy(Announcement $announcement)
     {
         $announcement->delete();
-        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Announcement Deleted Successfully'], Response::HTTP_OK);
     }
 }
