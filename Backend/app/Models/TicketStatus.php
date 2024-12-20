@@ -20,7 +20,7 @@ class TicketStatus extends Model
         'department_id',
         'section_id'
     ];
-    protected $with = ['assignee:id,name,section_id', 'updated_by:id,name'];
+    protected $with = ['assignee:id,name,section_id'];
 
     protected $appends = ['ticket_status', 'time_difference'];
 
@@ -30,7 +30,7 @@ class TicketStatus extends Model
 
     public function getTimeDifferenceAttribute()
     {
-        $currentTimestamp = $this->updated_at;
+        $currentTimestamp = $this->created_at;
 
         $previousRecord = self::where('ticket_id', $this->ticket_id)
             ->where('id', '<', $this->id)
@@ -41,9 +41,10 @@ class TicketStatus extends Model
             return 'N/A';
         }
 
-        $diff = $previousRecord->updated_at->diff($currentTimestamp);
+        $diff = $previousRecord->created_at->diffInSeconds($currentTimestamp);
+        $diffInMinutes = round($diff / 60, 2);
 
-        return sprintf('%02d:%02d:%02d', $diff->h, $diff->i, $diff->s);
+        return $diffInMinutes;
     }
 
     public function getTicketStatusAttribute()

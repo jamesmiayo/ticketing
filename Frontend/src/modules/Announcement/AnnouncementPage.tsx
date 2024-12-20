@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Announcement } from "../../api/services/announcement";
-import { Box, Button, Dialog, Paper, Tooltip, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, Paper, Tooltip, Typography } from "@mui/material";
 import { IoAddCircleSharp } from "react-icons/io5";
 import AnnouncementForm from "./AnnouncementForm";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
@@ -172,13 +172,16 @@ export default function AnnouncementPage() {
                 </Paper>
               ))
             ) : (
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                textAlign="center"
+                <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                No announcements to display.
-              </Typography>
+                <CircularProgress />
+              </Box>
+              
             )}
           </Box>
         </Box>

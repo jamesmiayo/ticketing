@@ -11,6 +11,7 @@ import { PermissionContext } from "../../helpers/Providers/PermissionProvider.ts
 import FaqPage from "../../modules/FAQ/FaqPage.tsx";
 import AnnouncementPage from "../../modules/Announcement/AnnouncementPage.tsx";
 import SlaReportPage from "../../modules/SLA_Report/SlaReportPage.tsx";
+import AHTPage from "../../modules/AHT/AHTPage.tsx";
 
 export const usePrivateRoutes = () => {
   const { permission } = useContext(PermissionContext);
@@ -72,6 +73,15 @@ export const usePrivateRoutes = () => {
             path: PathConstants.ANNOUNCEMENT,
             component: AnnouncementPage,
             show: true,
+        },
+        {
+            id: uuidv4,
+            name: "Average Handle Time",
+            description: "Average Handle Time",
+            path: PathConstants.AHT,
+            component: AHTPage,
+            show: permission?.includes("Can View Ticket AHT"),
+            requiredPermissions: ["Can View Ticket AHT"],
         },
         {
             id: uuidv4,

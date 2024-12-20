@@ -10,4 +10,5 @@ export const PathConstants = {
   FAQ: "/faq",
   SLAREPORT: "/sla/report",
   ANNOUNCEMENT: "/announcement",
+  AHT: "/average-handle-time",
 };
