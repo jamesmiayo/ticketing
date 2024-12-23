@@ -1,6 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  Box,
   Button,
   CircularProgress,
   DialogContent,
@@ -39,8 +38,6 @@ export default function AnnouncementForm({ setOpen, refetch , defaultValue }: an
 
     if (file) {
       data.append("file", file);
-    }else{
-        data.append("file", null);
     }
     try {
       setLoading(true);

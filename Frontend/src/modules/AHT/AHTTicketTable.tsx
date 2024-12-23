@@ -2,7 +2,6 @@ import { Dialog, IconButton, Tooltip } from "@mui/material";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
-import UserTicketTableRow from "../UserTicket/UserTicketTableRow";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
 import AHTModal from "./AHTModal";
@@ -37,6 +36,18 @@ export default function AHTTicketTable({ data, isLoading }: any) {
       width: 140,
       renderCell: (params: any) =>
         params?.row?.ticket_logs_latest?.assignee?.name,
+    },
+    {
+      field: "idle_time",
+      headerName: "Total Idle Time",
+      width: 140,
+      renderCell: (params: any) => params?.row?.idle_time,
+    },
+    {
+      field: "lead_time",
+      headerName: "Lead Time",
+      width: 140,
+      renderCell: (params: any) => params?.row?.lead_time,
     },
     {
       field: "total_duration",

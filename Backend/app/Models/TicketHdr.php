@@ -29,10 +29,10 @@ class TicketHdr extends Model
 
     protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
 
-    protected $appends = ['ticket_status', 'time_finished', 'ticket_priority' , 'total_duration'];
+    protected $appends = ['ticket_status', 'lead_time', 'idle_time', 'time_finished', 'ticket_priority', 'total_duration'];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s A',
+        // 'created_at' => 'datetime:Y-m-d H:i:s A',
         'total_duration' => 'float',
     ];
 
@@ -145,6 +145,30 @@ class TicketHdr extends Model
 
         return null;
     }
+
+    public function getIdleTimeAttribute()
+    {
+        $inProgressLog = $this->ticket_logs_in_inprogress()->first();
+        if (!empty($inProgressLog)) {
+            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($inProgressLog?->created_at));
+            $diffInMinutes = round($diffInSeconds / 60, 2);
+            return abs($diffInMinutes);
+        }
+        return null;
+    }
+
+    public function getLeadTimeAttribute()
+    {
+        $doneLog = $this->ticket_logs_done()->first();
+        if (!empty($doneLog)) {
+            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($doneLog?->created_at));
+            $diffInMinutes = round($diffInSeconds / 60, 2);
+            return abs($diffInMinutes);
+        }
+
+        return null;
+    }
+
 
     public function ticket_logs_latest()
     {

@@ -34,7 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::resource('announcement', AnnouncementController::class);
     Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
-    Route::get('average-handle-time', AHTController::class);
+    Route::get('average-handle-time', [AHTController::class , 'averageHandlingTimeTicket']);
+    Route::get('average-handle-time/user', [AHTController::class , 'averageHandlingTimeUser']);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
         Route::resource('permission', PermissionController::class);

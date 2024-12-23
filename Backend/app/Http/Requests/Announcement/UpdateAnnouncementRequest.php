@@ -26,7 +26,7 @@ class UpdateAnnouncementRequest extends FormRequest
         return [
             'title' => 'required',
             'description' => 'required',
-            'attachments' => 'file|max:2048|mimes:pdf,csv,xlsx,docx,jpg,jpeg,png,gif,bmp,svg',
+            'attachments' => 'nullable|max:2048|mimes:pdf,csv,xlsx,docx,jpg,jpeg,png,gif,bmp,svg',
         ];
     }
 

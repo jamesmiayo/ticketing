@@ -25,7 +25,7 @@ class StoreAnnouncementRequest extends FormRequest
         return [
             'title' => 'required',
             'description' => 'required',
-            'attachments' => 'file|max:2048|mimes:pdf,csv,xlsx,docx,jpg,jpeg,png,gif,bmp,svg',
+            'attachments' => 'nullable|file|max:2048|mimes:pdf,csv,xlsx,docx,jpg,jpeg,png,gif,bmp,svg',
         ];
     }
 

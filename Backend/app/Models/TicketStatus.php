@@ -25,7 +25,7 @@ class TicketStatus extends Model
     protected $appends = ['ticket_status', 'time_difference'];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d h:i A',
+        // 'created_at' => 'datetime:Y-m-d h:i A',
     ];
 
     public function getTimeDifferenceAttribute()

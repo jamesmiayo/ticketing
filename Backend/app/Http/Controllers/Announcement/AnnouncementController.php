@@ -9,6 +9,8 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AnnouncementController extends Controller
 {
@@ -18,6 +20,10 @@ class AnnouncementController extends Controller
     public function index(): JsonResponse
     {
         $data = Announcement::with('updatedBy', 'createdBy')->latest()->get();
+        $user = User::find(Auth::user()->id);
+        $user->update([
+            'b_announcement' => true
+        ]);
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
@@ -27,6 +33,7 @@ class AnnouncementController extends Controller
     public function store(StoreAnnouncementRequest $request)
     {
         $data = Announcement::create($request->getAnnouncementData());
+        User::query()->update(['b_announcement' => false]);
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Announcement Created Successfully'], Response::HTTP_OK);
     }
 

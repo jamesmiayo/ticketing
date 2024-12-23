@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('profile_picture')->nullable();
             $table->string('phone_number')->nullable();
-            $table->boolean('b_announcement')->nullable();
+            $table->boolean('b_announcement')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
