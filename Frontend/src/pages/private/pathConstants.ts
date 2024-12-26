@@ -8,5 +8,5 @@ export const PathConstants = {
   MAINTENANCE: "/maintenance",
   USERTICKET: "/user-ticket",
   FAQ: "/faq",
-  slaReport: "/sla/report",
+  SLAREPORT: "/sla/report",
 };

@@ -36,15 +36,16 @@ const SlaReportPage = () => {
     }
   };
 
+  console.log(slaReport);
+
   useEffect(() => {
     slaReportFetchData();
   }, []);
 
   const slaFailCount = slaReport.sla_fail_count || 0;
   const slaPassCount = slaReport.sla_pass_count || 0;
+  const passRate = slaReport.pass_rate || 0;
   const tickets = Object.values(slaReport.sla_report || {});
-  const totalCount = slaFailCount + slaPassCount;
-  const passRate = totalCount ? (slaPassCount / totalCount) * 100 : 0;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

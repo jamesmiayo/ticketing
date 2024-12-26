@@ -25,12 +25,9 @@ class FAQDtlController extends Controller
      */
     public function store(StoreFaqDtlRequest $request)
     {
-        $faqHeader = FaqDtl::create($request->getFAQData());
+        $data = FaqDtl::create($request->getFAQData());
 
-        return response()->json([
-            'message' => 'FAQ Header created successfully.',
-            'data' => $faqHeader,
-        ], 201);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -38,13 +35,14 @@ class FAQDtlController extends Controller
      */
     public function show($id)
     {
-        $faqHeader = FaqDtl::find($id);
+        $data = FaqDtl::find($id);
 
-        if (!$faqHeader) {
-            return response()->json(['message' => 'FAQ Header not found.'], 404);
+        if (!$data) {
+            return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'FAQ DTL Not Found'], Response::HTTP_NOT_FOUND);
+
         }
 
-        return response()->json($faqHeader, 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -55,15 +53,12 @@ class FAQDtlController extends Controller
         $faqHeader = FaqDtl::find($id);
 
         if (!$faqHeader) {
-            return response()->json(['message' => 'FAQ Header not found.'], 404);
+            return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'FAQ DTL Not Found'], Response::HTTP_NOT_FOUND);
         }
 
         $faqHeader->update($request->getFAQData());
 
-        return response()->json([
-            'message' => 'FAQ Header updated successfully.',
-            'data' => $faqHeader,
-        ], 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -74,11 +69,11 @@ class FAQDtlController extends Controller
         $faqHeader = FaqDtl::find($id);
 
         if (!$faqHeader) {
-            return response()->json(['message' => 'FAQ Header not found.'], 404);
+            return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'FAQ DTL Not Found'], Response::HTTP_NOT_FOUND);
         }
 
         $faqHeader->delete();
 
-        return response()->json(['message' => 'FAQ Header deleted successfully.'], 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
 }

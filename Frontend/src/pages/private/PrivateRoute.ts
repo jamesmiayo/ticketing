@@ -54,7 +54,6 @@ export const usePrivateRoutes = () => {
       path: PathConstants.MAINTENANCE,
       component: Maintenance,
       show: permission?.includes("Can View Maintenance"),
-      requiredPermissions: ["Can View Maintenance"],
     },
     {
       id: uuidv4,
@@ -71,15 +70,14 @@ export const usePrivateRoutes = () => {
       path: PathConstants.USERTICKET,
       component: UserTicketPage,
       show: permission?.includes("Can View User Ticket"),
-      requiredPermissions: ["Can View User Ticket"],
     },
     {
       id: uuidv4,
       name: "SLA Report",
       description: "SLA Report",
-      path: PathConstants.slaReport,
+      path: PathConstants.SLAREPORT,
       component: SlaReportPage,
-      show: true,
+      show: permission?.includes("Can View SLA Reports"),
     },
   ];
 

@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\TicketHdr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Constants\GlobalConstants;
 
 class SLAController extends Controller
 {
@@ -28,12 +29,9 @@ class SLAController extends Controller
      */
     public function store(StoreSLARequest $request)
     {
-        $faqHeader = SLA::create($request->getFAQData());
+        $data = SLA::create($request->getFAQData());
 
-        return response()->json([
-            'message' => 'SLA created successfully.',
-            'data' => $faqHeader,
-        ], 201);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -41,13 +39,13 @@ class SLAController extends Controller
      */
     public function show($id)
     {
-        $faqHeader = SLA::find($id);
+        $data = SLA::find($id);
 
-        if (!$faqHeader) {
-            return response()->json(['message' => 'SLA not found.'], 404);
+        if (!$data) {
+            return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'SLA Not Found'], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json($faqHeader, 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -55,18 +53,15 @@ class SLAController extends Controller
      */
     public function update(UpdateSLARequest $request, $id)
     {
-        $faqHeader = SLA::find($id);
+        $data = SLA::find($id);
 
-        if (!$faqHeader) {
-            return response()->json(['message' => 'SLA not found.'], 404);
+        if (!$data) {
+            return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'SLA Not Found'], Response::HTTP_NOT_FOUND);
         }
 
-        $faqHeader->update($request->getFAQData());
+        $data->update($request->getFAQData());
 
-        return response()->json([
-            'message' => 'SLA updated successfully.',
-            'data' => $faqHeader,
-        ], 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -74,35 +69,28 @@ class SLAController extends Controller
      */
     public function destroy($id)
     {
-        $faqHeader = SLA::find($id);
+        $data = SLA::find($id);
 
-        if (!$faqHeader) {
+        if (!$data) {
             return response()->json(['message' => 'SLA not found.'], 404);
         }
 
-        $faqHeader->delete();
+        $data->delete();
 
-        return response()->json(['message' => 'SLA deleted successfully.'], 200);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
-
-    public function SLAReport() 
+    public function SLAReport()
     {
         $tickets = TicketHdr::getSpecificTicket()->latest()->get();
     
-        $latestInProgressTickets = $tickets->filter(function ($ticket) {
-            $authUserId = Auth::id();
-    
-            return collect($ticket['ticket_statuses'])->contains(function ($status) use ($authUserId) {
-                return $status['ticket_status'] === 'In Progress' && $status['emp_id'] === $authUserId;
+        $timeDifferences = $tickets->filter(function ($ticket) {
+            return collect($ticket['ticket_statuses'])->contains(function ($status) {
+                return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
             });
-        });
-    
-        $timeDifferences = $latestInProgressTickets->mapWithKeys(function ($ticket) {
-            $authUserId = Auth::id();
-    
+        })->mapWithKeys(function ($ticket) {
             $firstStatus = collect($ticket['ticket_statuses'])
-                ->filter(function ($status) use ($authUserId) {
-                    return $status['ticket_status'] === 'In Progress' && $status['emp_id'] === $authUserId;
+                ->filter(function ($status) {
+                    return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
                 })
                 ->sortBy('created_at')
                 ->first();
@@ -111,6 +99,7 @@ class SLAController extends Controller
     
             $timeDifference = null;
             $slaPassed = null;
+    
             if ($firstStatus && $firstResponse) {
                 $startTime = \Carbon\Carbon::parse($firstStatus['created_at']);
                 $responseTime = \Carbon\Carbon::parse($firstResponse['created_at']);
@@ -126,7 +115,6 @@ class SLAController extends Controller
                 $slaPassed = $responseTime->lessThanOrEqualTo($startTime->add($slaResponseTime));
             }
     
-            // Merge the ticket data with SLA-related fields
             return [
                 $ticket['id'] => array_merge($ticket->toArray(), [
                     'first_created_in_progress' => $firstStatus['created_at'] ?? null,
@@ -139,6 +127,8 @@ class SLAController extends Controller
     
         $slaPassCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true)->count();
         $slaFailCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false)->count();
+        $totalCount = $slaPassCount + $slaFailCount;
+        $passRate = $totalCount ? ($slaPassCount / $totalCount) * 100 : 0;
     
         return new JsonResponse([
             'status' => Response::HTTP_OK,
@@ -146,12 +136,11 @@ class SLAController extends Controller
                 'sla_report' => $timeDifferences,
                 'sla_pass_count' => $slaPassCount,
                 'sla_fail_count' => $slaFailCount,
+                'total_count' => $totalCount,
+                'pass_rate' => $passRate,
             ],
         ], Response::HTTP_OK);
     }
-    
-    
-    
     
     
     

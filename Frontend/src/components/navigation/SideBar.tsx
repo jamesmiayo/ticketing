@@ -65,7 +65,7 @@ const Sidebar = ({ children }: any) => {
       title: "SLA Report",
       path: "/Sla/report",
       icon: <MdAccessTimeFilled />,
-      show: true,
+      show: permission?.includes("Can View SLA Reports"),
     },
   ];
 

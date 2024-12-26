@@ -39,7 +39,12 @@ class RolePermissionSeeder extends Seeder
             'Can Change Department Assignee',
             'Can Change Section Assignee',
             'Can Modify Ticket',
-            'Can View Ticket Remarks'
+            'Can View Ticket Remarks',
+            'Can Create FAQs',
+            'Can Update FAQs',
+            'Can Create SLA',
+            'Can Update SLA',
+            'Can View SLA Reports',
         ];
 
         foreach ($permissions as $permission) {
