@@ -12,8 +12,8 @@ class UpdateFaqDtlRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-        // return $this->user()->can('Can Update FAQs');
+        // return true;
+        return $this->user()->can('Can Update FAQs');
     }
 
     /**

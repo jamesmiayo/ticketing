@@ -12,8 +12,8 @@ class StoreFaqHdrRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
-        // return $this->user()->can('Can Create FAQs');
+        // return true;
+        return $this->user()->can('Can Create FAQs');
     }
 
     /**
