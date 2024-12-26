@@ -12,6 +12,9 @@ use App\Http\Controllers\Maintenance\DivisionController;
 use App\Http\Controllers\Maintenance\PermissionController;
 use App\Http\Controllers\Maintenance\UserController;
 use App\Http\Controllers\Maintenance\SubCategoryController;
+use App\Http\Controllers\Maintenance\FAQHdrController;
+use App\Http\Controllers\Maintenance\FAQDtlController;
+use App\Http\Controllers\Maintenance\SLAController;
 use App\Http\Controllers\Ticket\TicketDtlController;
 use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
@@ -38,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('sub-category', SubCategoryController::class);
         Route::resource('role', RoleController::class);
         Route::post('role-permission', [PermissionController::class, 'assignRolePermission']);
+        Route::resource('FAQ-HDR', FAQHdrController::class);
+        Route::resource('FAQ-DTL', FAQDtlController::class);
+        Route::resource('SLA', SLAController::class);
     });
 
     //tickets routes
@@ -53,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('documents', [TicketDocumentController::class, 'getByAuthenticatedUser']);
         Route::put('change-status/{ticket_id}', [TicketHdrController::class, 'changeTicketStatus']);
         Route::put('update-remarks/{ticket_id}', [TicketHdrController::class, 'updateTicketRemarks']);
+        Route::get('SLA-REPORT', [SLAController::class, 'SLAReport']);
     });
 
     Route::prefix('user')->group(function () {

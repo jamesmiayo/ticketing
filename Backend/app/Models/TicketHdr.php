@@ -178,7 +178,8 @@ class TicketHdr extends Model
                 $query->orderBy('id', 'desc');
             },
             'ticket_messages',
-            'ticket_messages.user:id,name'
+            'ticket_messages.user:id,name',
+             'sla'
         ]);
         return $query;
     }
@@ -245,4 +246,10 @@ class TicketHdr extends Model
     {
         return $query->whereDate('created_at', '<=', Carbon::parse($end_date)->endOfDay());
     }
+
+    public function sla()
+    {
+        return $this->belongsTo(SLA::class, 'priority', 'SLA_ID');
+    }
+
 }

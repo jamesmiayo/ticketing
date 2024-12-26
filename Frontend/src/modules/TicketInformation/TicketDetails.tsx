@@ -67,6 +67,9 @@ interface TicketDetailsProps {
       };
       ticket_status: string;
     };
+    sla: {
+      priority_label: string;
+    };
   };
   isLoading: boolean;
   refetch: () => any;
@@ -134,13 +137,15 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
     );
   }
 
-  console.log("name", ticketDetail?.ticket_logs_latest?.assignee?.name);
-
   return (
     <>
       <Dialog open={open} onClose={() => setOpen(false)}>
         {modal === "priority" ? (
-          <TicketPriority data={ticketDetail} setOpen={setOpen} />
+          <TicketPriority
+            data={ticketDetail}
+            setOpen={setOpen}
+            refetch={refetch}
+          />
         ) : modal === "status" ? (
           <TicketChangeStatus data={ticketDetail} setOpen={setOpen} />
         ) : (
@@ -313,7 +318,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
             <Box display="flex" gap={1} mt={2} flexWrap="wrap">
               <Chip
                 icon={<Flag />}
-                label={ticketDetail?.ticket_priority || "N/A"}
+                label={ticketDetail?.sla?.priority_label || "N/A"}
                 color="primary"
                 size="small"
                 sx={{
@@ -533,28 +538,54 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
               </Box>
             )}
           {ticketDetail?.ticket_logs_latest?.assignee?.name === undefined && (
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="outlined"
-                startIcon={<Person />}
-                onClick={() => handleAssigneClick("assignee")}
-                fullWidth
-                sx={{
-                  borderRadius: 2,
-                  textTransform: "none",
-                  p: 1.5,
-                  justifyContent: "flex-start",
-                  borderColor: "primary.main",
-                  color: "primary.main",
-                  "&:hover": {
-                    backgroundColor: "primary.main",
-                    color: "primary.contrastText",
-                  },
-                }}
-              >
-                Assign Ticket
-              </Button>
-            </Box>
+            <>
+              <Box sx={{ mt: 2 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Person />}
+                  onClick={() => handleAssigneClick("priority")}
+                  fullWidth
+                  sx={{
+                    borderRadius: 2,
+                    textTransform: "none",
+                    p: 1.5,
+                    justifyContent: "flex-start",
+                    borderColor: "primary.main",
+                    color: "primary.main",
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                      color: "primary.contrastText",
+                    },
+                  }}
+                >
+                  Change Priority
+                </Button>
+              </Box>
+              {ticketDetail?.sla !== null && (
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Person />}
+                    onClick={() => handleAssigneClick("assignee")}
+                    fullWidth
+                    sx={{
+                      borderRadius: 2,
+                      textTransform: "none",
+                      p: 1.5,
+                      justifyContent: "flex-start",
+                      borderColor: "primary.main",
+                      color: "primary.main",
+                      "&:hover": {
+                        backgroundColor: "primary.main",
+                        color: "primary.contrastText",
+                      },
+                    }}
+                  >
+                    Assign Ticket
+                  </Button>
+                </Box>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

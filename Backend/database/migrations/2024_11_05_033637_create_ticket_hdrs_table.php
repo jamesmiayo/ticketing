@@ -25,6 +25,7 @@ return new class extends Migration
             $table->longText('body');
             $table->string('b_status')->default('1');
             $table->longText('remarks')->nullable();
+            $table->boolean('is_passed')->nullable();
             $table->timestamps();
         });
     }

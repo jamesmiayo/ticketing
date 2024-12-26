@@ -105,7 +105,7 @@ const TicketPage: React.FC = () => {
         return {
           value: row.id,
           label: row.division_description,
-          category: row.category
+          category: row.category,
         };
       });
       setDivision(data);
@@ -130,12 +130,16 @@ const TicketPage: React.FC = () => {
       throw error;
     }
   };
-  
-  function handleCategoryList(e:any){
+
+  function handleCategoryList(e: any) {
     const data = division
       .find((category: any) => category.value == e)
       ?.category.map((row: any) => {
-        return { value: row.id, label: row.category_description , sub_category: row.sub_category };
+        return {
+          value: row.id,
+          label: row.category_description,
+          sub_category: row.sub_category,
+        };
       });
     setCategories(data);
     setSubCategories([]);
@@ -151,17 +155,17 @@ const TicketPage: React.FC = () => {
   }
 
   const getUser = async () => {
-   try{
-     const response = await User.getUser(null);
-     const data = response.map((row: any) => {
-      return {
-        value: row.id,
-        label: row.name,
-      };
-    });
-     setUsers(data);
-   }catch(err){}
-  }
+    try {
+      const response = await User.getUser(null);
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.name,
+        };
+      });
+      setUsers(data);
+    } catch (err) {}
+  };
 
   const ticketSearchFilter = [
     {
@@ -287,7 +291,12 @@ const TicketPage: React.FC = () => {
           Ticket List
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-          <Button variant="contained" color="success" onClick={handleOpen} startIcon={<IoAddCircleSharp/>}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOpen}
+            startIcon={<IoAddCircleSharp />}
+          >
             Create Ticket
           </Button>
         </Box>
@@ -311,7 +320,7 @@ const TicketPage: React.FC = () => {
             <>
               <DialogTitle>Create New Ticket</DialogTitle>
               <DialogContent>
-              <TicketCreationForm
+                <TicketCreationForm
                   onCreate={() => setOpen(false)}
                   refetch={() => fetchData(null, page)}
                   division={division}
@@ -324,9 +333,11 @@ const TicketPage: React.FC = () => {
             </>
           ) : (
             <>
-              <DialogTitle>You Need To Update Your Profile Before Creating Ticket.</DialogTitle>
+              <DialogTitle>
+                You Need To Update Your Profile Before Creating Ticket.
+              </DialogTitle>
               <DialogContent>
-              <UpdateUserBranchSection onClose={handleClose}/>
+                <UpdateUserBranchSection onClose={handleClose} />
               </DialogContent>
             </>
           )}
