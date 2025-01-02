@@ -14,10 +14,10 @@ use Carbon\Carbon;
 
 class AHTController extends Controller
 {
-    public function averageHandlingTimeTicket(Request $request): JsonResponse
+    public function averageHandlingTimeTicket(): JsonResponse
     {
-        $tickets = TicketHdr::with('ticket_logs')->whereHas('ticket_logs_latest', function($query){
-            $query->where('status' , GlobalConstants::VALIDATION);
+        $tickets = TicketHdr::whereHas('ticket_logs', function ($query) {
+            $query->where('status', GlobalConstants::VALIDATION);
         })->get();
 
         return new JsonResponse([
