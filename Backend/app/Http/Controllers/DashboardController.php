@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\SLA;
 use App\Services\TicketHdrRoleDataService;
 
 class DashboardController extends Controller
@@ -91,20 +92,26 @@ class DashboardController extends Controller
 
     public function getTicketPerPriority(): array
     {
-        $priorities = GlobalConstants::getPrioritiesType();
-
+        $priorities = SLA::pluck('priority_label', 'SLA_ID')->toArray();
+    
         $ticketCounts = [];
-
-        foreach ($priorities as $key => $label) {
-            $ticketCounts[] = $this->ticketData()->get()->where('priority', $key)->count();
+    
+        foreach ($priorities as $id => $label) {
+            $count = $this->ticketData()
+                ->where('priority', $id) 
+                ->count();
+            $ticketCounts[$label] = $count; 
         }
-
-        $nullPriorityCount = $this->ticketData()->get()->whereNull('priority')->count();
-
-        $ticketCounts[] = $nullPriorityCount;
-
+    
+        $nullPriorityCount = $this->ticketData()
+            ->whereNull('priority')
+            ->count();
+    
+        $ticketCounts['Not Yet Priority'] = $nullPriorityCount;
+    
         return $ticketCounts;
     }
+    
 
     public function getTicketCountsByStatus($branch = null)
     {
