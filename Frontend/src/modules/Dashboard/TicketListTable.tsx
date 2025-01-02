@@ -18,7 +18,7 @@ export default function TicketListTable({ data, isLoading }: any) {
       field: "ticket_logs_latest",
       headerName: "Status",
       width: 180,
-      valueGetter: (params: any) => params.ticket_status,
+      valueGetter: (params: any) => params?.ticket_status,
     },
   ];
 
