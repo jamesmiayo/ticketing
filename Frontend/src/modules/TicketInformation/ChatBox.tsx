@@ -40,7 +40,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const MessageBubble = styled(Paper)(
   ({ theme, isUser }: { theme: any; isUser: boolean }) => ({
     padding: theme.spacing(1.5),
-    maxWidth: "30%",
+    maxWidth: "70%",
     backgroundColor: isUser
       ? theme.palette.primary.light
       : theme.palette.grey[100],
@@ -49,8 +49,12 @@ const MessageBubble = styled(Paper)(
     marginLeft: isUser ? "auto" : 0,
     marginRight: isUser ? 0 : "auto",
     display: "flex",
-    flexDirection: isUser ? "row-reverse" : "row",
+    flexDirection: "column",
     gap: theme.spacing(1),
+    wordWrap: "break-word",
+    overflowWrap: "break-word",
+    whiteSpace: "normal",
+    lineHeight: 1.5,
   })
 );
 
@@ -156,7 +160,7 @@ export default function ChatBox({ ticketDetail }: any) {
           height: "87vh",
           display: "flex",
           flexDirection: "column",
-          // minWidth: "500px",
+          minWidth: "600px",
         }}
       >
         <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
@@ -223,18 +227,28 @@ export default function ChatBox({ ticketDetail }: any) {
                       isUser={message.user?.id === user?.id}
                       theme={undefined}
                     >
-                      <ListItemAvatar sx={{ minWidth: 0 }}>
+                      <ListItemAvatar
+                        sx={{
+                          minWidth: "100%",
+                          display: "flex",
+                          justifyContent:
+                            message.user?.id === user?.id
+                              ? "flex-end"
+                              : "flex-start",
+                        }}
+                      >
                         <Tooltip title={message.user.name}>
                           <Avatar
                             src={message.user.profile_picture}
                             sx={{
                               width: 40,
                               height: 40,
-                              bgcolor: !message.user.profile_picture
-                                ? message.user?.id === user?.id
-                                  ? "primary.main"
-                                  : "secondary.main"
-                                : "transparent",
+
+                              // bgcolor: !message.user.profile_picture
+                              //   ? message.user?.id === user?.id
+                              //     ? "primary.main"
+                              //     : "secondary.main"
+                              //   : "transparent",
                             }}
                           >
                             {!message.user.profile_picture &&

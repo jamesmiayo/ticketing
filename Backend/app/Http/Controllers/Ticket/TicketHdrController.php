@@ -40,6 +40,7 @@ class TicketHdrController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $this->ticketHdr->ticketData($request->all())->latest();
+        
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data->paginate(10)], Response::HTTP_OK);
     }
 
@@ -93,6 +94,7 @@ class TicketHdrController extends Controller
                 'is_read' => true,
             ]);
         }
+        
 
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $ticket], Response::HTTP_OK);
     }

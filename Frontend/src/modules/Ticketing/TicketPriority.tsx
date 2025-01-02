@@ -9,13 +9,15 @@ import {
 import SelectItem from "../../components/common/SelectItem";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { priorityList } from "../../constants/constants";
 import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
 import { updatePrioritySchema } from "../../schema/Ticket/updatePriority";
+import { useEffect, useState } from "react";
+import { SLA } from "../../api/services/SLA";
 
 export default function TicketPriority({ data, setOpen, refetch }: any) {
   const toast = useExecuteToast();
+  const [dataList, setDataList] = useState([]);
 
   const {
     reset,
@@ -26,6 +28,23 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
     resolver: yupResolver(updatePrioritySchema),
   });
 
+  const getDataList = async () => {
+    try {
+      const response = await SLA.getSLA();
+      const dataOption = response.map((row: any) => {
+        return { value: row.SLA_ID, label: row.priority_label };
+      });
+      setDataList(dataOption);
+    } catch (error) {
+      console.error("Error fetching SLA:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    getDataList();
+  }, []);
+
   const onSubmit = async (formData: any) => {
     setOpen(false);
     try {
@@ -35,7 +54,7 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
       });
       refetch();
       reset();
-    } catch (error:any) {
+    } catch (error: any) {
       toast.executeToast(error?.response?.data?.message, "top-center", true, {
         type: "error",
       });
@@ -59,7 +78,7 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
               <SelectItem
                 label="Priority"
                 control={control}
-                options={priorityList}
+                options={dataList}
                 errors={errors}
                 name="priority"
                 fullWidth

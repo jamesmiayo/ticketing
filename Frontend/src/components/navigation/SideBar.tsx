@@ -6,10 +6,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton"; 
-import { MdDashboard } from "react-icons/md";
+import IconButton from "@mui/material/IconButton";
+import { MdAccessTimeFilled, MdDashboard } from "react-icons/md";
 import { BsTicketDetailed } from "react-icons/bs";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material"; 
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
@@ -51,7 +51,7 @@ const Sidebar = ({ children }: any) => {
     {
       title: "User Ticket",
       path: "/user-ticket",
-      icon: <FaUserCircle  />,
+      icon: <FaUserCircle />,
       show: permission?.includes("Can View User Ticket"),
     },
     // { title: "Profile", path: "/profile", icon: <FaUser />, show: true },
@@ -60,6 +60,12 @@ const Sidebar = ({ children }: any) => {
       path: "/maintenance",
       icon: <IoSettingsSharp />,
       show: permission?.includes("Can View Maintenance"),
+    },
+    {
+      title: "SLA Report",
+      path: "/Sla/report",
+      icon: <MdAccessTimeFilled />,
+      show: permission?.includes("Can View SLA Reports"),
     },
   ];
 
@@ -154,7 +160,12 @@ const Sidebar = ({ children }: any) => {
                 .filter((item) => item.show)
                 .map((item, index) => (
                   <>
-                    <Tooltip title={item.title} placement="right" arrow sx={{ fontSize: '100px' }}>
+                    <Tooltip
+                      title={item.title}
+                      placement="right"
+                      arrow
+                      sx={{ fontSize: "100px" }}
+                    >
                       <ListItem
                         disablePadding
                         key={index}

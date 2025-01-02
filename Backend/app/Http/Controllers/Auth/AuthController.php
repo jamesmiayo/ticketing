@@ -41,7 +41,7 @@ class AuthController extends Controller
         $personalAccessToken = PersonalAccessToken::findToken($token);
         $user = User::find($personalAccessToken?->tokenable_id);
         if ($personalAccessToken && !empty($user)) {
-            $user->with(['ticket_notification' , 'section.department', 'section.department.division']);
+            $user->load([ 'section.department', 'section.department.division']);
 
             return new JsonResponse([
                 'isValid' => true,

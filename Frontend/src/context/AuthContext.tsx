@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       if (token) {
         const response = await validateToken();
         if (response?.isValid) {
-          setNotification(response?.notifications)
+          setNotification(response?.notifications);
           setUser(response?.user);
           setIsAuthenticated(true);
         } else {
@@ -48,6 +48,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
     initializeAuthState();
   }, []);
+  console.log("auth user", user);
 
   const loginUser = async (username: string, password: string) => {
     try {
@@ -86,7 +87,15 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
   return (
     <AuthContext.Provider
-      value={{user, isAuthenticated, loading, loginUser, logoutUser , setUser , notification }}
+      value={{
+        user,
+        isAuthenticated,
+        loading,
+        loginUser,
+        logoutUser,
+        setUser,
+        notification,
+      }}
     >
       {children}
     </AuthContext.Provider>
