@@ -18,7 +18,8 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { Tooltip } from "@mui/material";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-
+import { MdAnnouncement } from "react-icons/md";
+import { IoBarChart } from "react-icons/io5";
 // import { FaUser } from "react-icons/fa";
 
 const Sidebar = ({ children }: any) => {
@@ -47,6 +48,18 @@ const Sidebar = ({ children }: any) => {
       path: "/faq",
       icon: <FaRegQuestionCircle />,
       show: true,
+    },
+    {
+      title: "Announcement",
+      path: "/announcement",
+      icon: <MdAnnouncement />,
+      show: true,
+    },
+    {
+      title: "AHT",
+      path: "/average-handle-time",
+      icon: <IoBarChart />,
+      show: permission?.includes("Can View Ticket AHT"),
     },
     {
       title: "User Ticket",

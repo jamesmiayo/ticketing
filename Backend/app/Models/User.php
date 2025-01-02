@@ -29,7 +29,8 @@ class User extends Authenticatable
         'branch_id',
         'section_id',
         'profile_picture',
-        'phone_number'
+        'phone_number',
+        'b_announcement'
     ];
 
     /**
@@ -63,6 +64,7 @@ class User extends Authenticatable
                 : asset('storage/default_profile.jpg')
         );
     }
+
     public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);
@@ -89,6 +91,11 @@ class User extends Authenticatable
     }
 
     public function tickethdr()
+    {
+        return $this->hasMany(TicketHdr::class, 'emp_id');
+    }
+
+    public function ticketAssigneed()
     {
         return $this->hasMany(TicketHdr::class, 'emp_id');
     }

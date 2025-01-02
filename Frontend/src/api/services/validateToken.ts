@@ -4,6 +4,7 @@ interface ValidateToken {
   isValid: boolean;
   user: any;
   notifications: any;
+  announcement:any;
 }
 
 export const validateToken = async (): Promise<ValidateToken> => {
@@ -16,6 +17,6 @@ export const validateToken = async (): Promise<ValidateToken> => {
   } catch (error) {
     console.error("Token validation failed:", error);
 
-    return { isValid: false, user: null , notifications: null };
+    return { isValid: false, user: null , notifications: null, announcement:null};
   }
 };

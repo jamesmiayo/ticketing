@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\LoginRequest;
+use App\Models\Announcement;
 use App\Models\TicketNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -54,7 +55,8 @@ class AuthController extends Controller
                     ->take(10)->get(),
                     'total_unread_ticket' => TicketNotification::where('to_user', Auth::user()->id)
                     ->where('is_read', false)->count()
-                ]
+                ],
+                'announcement' => Announcement::with('createdBy')->latest()->first()
             ], Response::HTTP_OK);
         } else {
             return new JsonResponse([

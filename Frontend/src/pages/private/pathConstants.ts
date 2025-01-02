@@ -9,4 +9,6 @@ export const PathConstants = {
   USERTICKET: "/user-ticket",
   FAQ: "/faq",
   SLAREPORT: "/sla/report",
+  ANNOUNCEMENT: "/announcement",
+  AHT: "/average-handle-time",
 };
