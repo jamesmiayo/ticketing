@@ -14,20 +14,25 @@ import {
   Card,
   CardContent,
   LinearProgress,
-  IconButton,
+  ButtonGroup,
+  Button,
+  TextField,
 } from "@mui/material";
-import { CheckCircle, Cancel, AccessTime, Refresh } from "@mui/icons-material";
+import { CheckCircle, Cancel, AccessTime } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { SLA } from "../../api/services/SLA";
 
 const SlaReportPage = () => {
   const [slaReport, setSlaReport] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [isPassed, setisPassed] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const slaReportFetchData = async () => {
     try {
       setLoading(true);
-      const result = await SLA.getSLAReport();
+      const result = await SLA.getSLAReport(isPassed, startDate, endDate);
       setSlaReport(result);
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -36,11 +41,15 @@ const SlaReportPage = () => {
     }
   };
 
-  console.log(slaReport);
-
   useEffect(() => {
     slaReportFetchData();
-  }, []);
+  }, [isPassed, startDate, endDate]);
+
+  const handleDateChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setter(event.target.value);
+    };
 
   const slaFailCount = slaReport.sla_fail_count || 0;
   const slaPassCount = slaReport.sla_pass_count || 0;
@@ -63,10 +72,38 @@ const SlaReportPage = () => {
         >
           SLA Report
         </Typography>
-        <IconButton onClick={slaReportFetchData} color="primary">
-          <Refresh />
-        </IconButton>
       </Box>
+      <Box mb={3}>
+        <ButtonGroup variant="contained" color="primary" sx={{ mb: 2 }}>
+          <Button onClick={() => setisPassed("")} disabled={isPassed === ""}>
+            All
+          </Button>
+          <Button onClick={() => setisPassed("1")} disabled={isPassed === "1"}>
+            Passed
+          </Button>
+          <Button onClick={() => setisPassed("0")} disabled={isPassed === "0"}>
+            Failed
+          </Button>
+        </ButtonGroup>
+
+        <Box display="flex" gap={2} alignItems="center">
+          <TextField
+            label="Start Date"
+            type="date"
+            value={startDate}
+            onChange={handleDateChange(setStartDate)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="End Date"
+            type="date"
+            value={endDate}
+            onChange={handleDateChange(setEndDate)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
+      </Box>
+
       <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
           <Card

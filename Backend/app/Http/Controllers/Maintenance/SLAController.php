@@ -79,14 +79,47 @@ class SLAController extends Controller
 
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
-    public function SLAReport()
+    public function SLAReport(Request $request)
     {
+        $isPassed = $request->query('isPassed'); // "1" for passed, "0" for failed
+        $startDate = $request->query('start_date'); // Optional start date
+        $endDate = $request->query('end_date'); // Optional end date
+    
         $tickets = TicketHdr::getSpecificTicket()->latest()->get();
     
-        $timeDifferences = $tickets->filter(function ($ticket) {
-            return collect($ticket['ticket_statuses'])->contains(function ($status) {
+        $timeDifferences = $tickets->filter(function ($ticket) use ($startDate, $endDate) {
+            $hasInProgress = collect($ticket['ticket_statuses'])->contains(function ($status) {
                 return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
             });
+    
+            if (!$hasInProgress) {
+                return false;
+            }
+    
+            if ($startDate || $endDate) {
+                $firstCreatedInProgress = collect($ticket['ticket_statuses'])
+                    ->filter(function ($status) {
+                        return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
+                    })
+                    ->sortBy('created_at')
+                    ->first()['created_at'] ?? null;
+    
+                if (!$firstCreatedInProgress) {
+                    return false;
+                }
+    
+                $firstCreatedInProgressDate = \Carbon\Carbon::parse($firstCreatedInProgress);
+    
+                if ($startDate && $firstCreatedInProgressDate->lt(\Carbon\Carbon::parse($startDate))) {
+                    return false;
+                }
+    
+                if ($endDate && $firstCreatedInProgressDate->gt(\Carbon\Carbon::parse($endDate))) {
+                    return false;
+                }
+            }
+    
+            return true;
         })->mapWithKeys(function ($ticket) {
             $firstStatus = collect($ticket['ticket_statuses'])
                 ->filter(function ($status) {
@@ -129,6 +162,12 @@ class SLAController extends Controller
         $slaFailCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false)->count();
         $totalCount = $slaPassCount + $slaFailCount;
         $passRate = $totalCount ? ($slaPassCount / $totalCount) * 100 : 0;
+    
+        if ($isPassed === "1") {
+            $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true);
+        } elseif ($isPassed === "0") {
+            $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false);
+        }
     
         return new JsonResponse([
             'status' => Response::HTTP_OK,
