@@ -41,10 +41,16 @@ class TicketHdr extends Model
         $latestTicketLog = $this->ticket_logs_latest;
 
         if ($latestTicketLog && $this->ticket_status === 'Completed') {
-            return $this->created_at->diffIn($latestTicketLog->created_at)->format('%h:%i:%s');
+            $diffInSeconds = $this->created_at->diffInSeconds($latestTicketLog->created_at);
+            $hours = floor($diffInSeconds / 3600);
+            $minutes = floor(($diffInSeconds % 3600) / 60);
+            $seconds = $diffInSeconds % 60;
+
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
         }
         return 'No related logs';
     }
+
 
     public function getTicketStatusAttribute()
     {
@@ -236,7 +242,7 @@ class TicketHdr extends Model
             },
             'ticket_messages',
             'ticket_messages.user:id,name',
-             'sla'
+            'sla'
         ]);
         return $query;
     }
@@ -308,5 +314,4 @@ class TicketHdr extends Model
     {
         return $this->belongsTo(SLA::class, 'priority', 'SLA_ID');
     }
-
 }
