@@ -16,7 +16,7 @@ class AHTController extends Controller
 {
     public function averageHandlingTimeTicket(): JsonResponse
     {
-        $tickets = TicketHdr::whereHas('ticket_logs', function ($query) {
+        $tickets = TicketHdr::with('ticket_logs')->whereHas('ticket_logs', function ($query) {
             $query->where('status', GlobalConstants::VALIDATION);
         })->get();
 
