@@ -3,13 +3,13 @@ import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import TableComponents from "../../components/common/TableComponents";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import AHTModal from "./AHTModal";
 
 export default function AHTTicketTable({ data, isLoading }: any) {
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const columns = [
     {

@@ -1,8 +1,7 @@
 import { Box, DialogContent, DialogTitle, Typography } from "@mui/material";
-import React from "react";
 import TableComponents from "../../components/common/TableComponents";
 
-export default function AHTModal({ data, setOpen }: any) {
+export default function AHTModal({ data }: any) {
   const columns = [
     {
       field: "facilitator",

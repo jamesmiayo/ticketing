@@ -1,14 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { User } from "../../api/services/user";
 import { useSearchParams } from "react-router-dom";
-import AHTUserPage from "./AHTTicketPage";
-import AHTUserTable from "./AHTTicketTable";
 import AHTTicketTable from "./AHTTicketTable";
 import { AHT } from "../../api/services/aht";
 
 export default function AHTPage() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams(); 
 

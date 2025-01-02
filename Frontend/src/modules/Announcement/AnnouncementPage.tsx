@@ -1,11 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { Announcement } from "../../api/services/announcement";
-import { Box, Button, CircularProgress, Dialog, Paper, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { IoAddCircleSharp } from "react-icons/io5";
 import AnnouncementForm from "./AnnouncementForm";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 import { AccessTime } from "@mui/icons-material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { FaFileAlt } from "react-icons/fa";
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -14,11 +21,16 @@ export default function AnnouncementPage() {
   const [open, setOpen] = useState(false);
   const [defaultValue, setDefaultValue] = useState([]);
   const { permission } = useContext(PermissionContext);
+  const [loading, setLoading] = useState(false);
   const fetchData = async () => {
+    setLoading(true);
     try {
       const response = await Announcement.getAnnouncement();
       setData(response);
-    } catch (err) {}
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -85,94 +97,8 @@ export default function AnnouncementPage() {
           }}
         >
           <Box sx={{ padding: 3 }}>
-            {data && data.length > 0 ? (
-              data.map((row: any, index: number) => (
-                <Paper
-                  key={index}
-                  elevation={2}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    p: 2,
-                    mb: 2,
-                    borderRadius: 2,
-                  }}
-                >
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      {row?.title || "No Title"}
-                    </Typography>
-                    {permission?.includes("Can Update Announcement") && (
-                      <Tooltip title="Edit Announcement">
-                        <FaPencilAlt
-                          onClick={() => handleAnnouncement(row)}
-                          style={{ cursor: "pointer" }}
-                        />
-                      </Tooltip>
-                    )}
-                  </Box>
-                  <Typography variant="body1">
-                    {row?.description || "No Description"}
-                  </Typography>
-
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      Created By:
-                      {row?.created_by?.name || "Unknown"}
-                    </Typography>
-                    {row?.updated_by !== null && (
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        Updated By:
-                        {row?.updated_by?.name || "Unknown"}
-                      </Typography>
-                    )}
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <AccessTime fontSize="small" sx={{ mr: 0.5 }} />
-                      {row?.created_at}
-                    </Typography>
-                    {row?.attachments !== null && (
-                      <Typography
-                        onClick={() => handleFileClick(row?.attachments)}
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <FaFileAlt fontSize="small" />
-                        File Attached
-                      </Typography>
-                    )}
-                  </Box>
-                </Paper>
-              ))
-            ) : (
-                <Box
+            {loading ? (
+              <Box
                 sx={{
                   display: "flex",
                   justifyContent: "center",
@@ -181,7 +107,105 @@ export default function AnnouncementPage() {
               >
                 <CircularProgress />
               </Box>
-              
+            ) : (
+              <>
+                {data.length > 0 ? (
+                  data.map((row: any, index: number) => (
+                    <Paper
+                      key={index}
+                      elevation={2}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        p: 2,
+                        mb: 2,
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography variant="subtitle1" fontWeight="bold">
+                          {row?.title || "No Title"}
+                        </Typography>
+                        {permission?.includes("Can Update Announcement") && (
+                          <Tooltip title="Edit Announcement">
+                            <FaPencilAlt
+                              onClick={() => handleAnnouncement(row)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </Tooltip>
+                        )}
+                      </Box>
+                      <Typography variant="body1">
+                        {row?.description || "No Description"}
+                      </Typography>
+
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          Created By:
+                          {row?.created_by?.name || "Unknown"}
+                        </Typography>
+                        {row?.updated_by !== null && (
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            Updated By:
+                            {row?.updated_by?.name || "Unknown"}
+                          </Typography>
+                        )}
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AccessTime fontSize="small" sx={{ mr: 0.5 }} />
+                          {row?.created_at}
+                        </Typography>
+                        {row?.attachments !== null && (
+                          <Typography
+                            onClick={() => handleFileClick(row?.attachments)}
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <FaFileAlt fontSize="small" />
+                            File Attached
+                          </Typography>
+                        )}
+                      </Box>
+                    </Paper>
+                  ))
+                ) : (
+                  <Typography variant="body1" sx={{ textAlign: "center" }}>
+                    No Announcement Created.
+                  </Typography>
+                )}
+              </>
             )}
           </Box>
         </Box>

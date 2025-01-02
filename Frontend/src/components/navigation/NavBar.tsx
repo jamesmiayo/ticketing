@@ -107,7 +107,7 @@ const NavBar: React.FC = () => {
                   zIndex: 1200,
                 }}
               >
-                {announcement !== null && user.b_announcement === 0 ? (
+                {announcement !== null ?(
                   <Paper
                   elevation={2}
                   component={Link}
