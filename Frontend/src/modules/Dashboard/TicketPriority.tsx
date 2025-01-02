@@ -14,19 +14,15 @@ export default function TicketPriority({ ticketPriority, isLoading }: any) {
     try {
       const response = await SLA.getSLA();
 
-      // Extract labels from the SLA response
       const labels = response.map((row: any) => row.priority_label);
-      labels.push("Not Yet Priority"); // Add "Not Yet Priority" manually
+      labels.push("Not Yet Priority");
 
-      // Match data to the labels
       const data = labels.map((label: string) => {
-        // Use 0 if the label is not found in ticketPriority
         return ticketPriority?.[label] !== undefined
           ? ticketPriority[label]
           : 0;
       });
 
-      // Set chart data
       setChartData({
         labels,
         datasets: [
