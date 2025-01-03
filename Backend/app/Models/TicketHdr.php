@@ -7,9 +7,6 @@ use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-
 class TicketHdr extends Model
 {
     use HasFactory;
@@ -29,10 +26,10 @@ class TicketHdr extends Model
 
     protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
 
-    protected $appends = ['ticket_status', 'lead_time', 'idle_time', 'time_finished', 'ticket_priority', 'total_duration'];
+    protected $appends = ['ticket_status', 'lead_time', 'idle_time', 'time_finished', 'total_duration'];
 
     protected $casts = [
-        // 'created_at' => 'datetime:Y-m-d H:i:s A',
+        'created_at' => 'datetime:Y-m-d H:i:s A',
         'total_duration' => 'float',
     ];
 
@@ -55,11 +52,6 @@ class TicketHdr extends Model
     public function getTicketStatusAttribute()
     {
         return GlobalConstants::getStatusType($this->b_status);
-    }
-
-    public function getTicketPriorityAttribute()
-    {
-        return GlobalConstants::getPriorityType($this->priority);
     }
 
     public function ticket_attachment()
@@ -233,6 +225,30 @@ class TicketHdr extends Model
         return $query;
     }
 
+    public static function getTicketAHT($searchParams)
+    {
+        $query = self::with('ticket_logs' , 'sla')->whereHas('ticket_logs', function ($query) {
+            $query->where('status', GlobalConstants::VALIDATION);
+        });
+
+        if (array_key_exists('ticket_id', $searchParams)) {
+            $query->ticketId($searchParams['ticket_id']);
+        }
+
+        if (array_key_exists('priority', $searchParams) && $searchParams['priority'] !== null) {
+            $query->priority($searchParams['priority']);
+        }
+
+        if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
+            $query->startDate($searchParams['start_date']);
+        }
+
+        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
+            $query->endDate($searchParams['end_date']);
+        }
+
+        return $query;
+    }
     public static function getSpecificTicket()
     {
         $query = self::with([
@@ -273,7 +289,9 @@ class TicketHdr extends Model
 
     public function scopePriority($query, $priority)
     {
-        return $query->where('priority', 'LIKE', '%' . $priority . '%');
+        return $query->whereHas('sla' , function ($query) use ($priority) {
+            $query->where('id', $priority);
+    });
     }
 
     public function scopeStatus($query, $status)

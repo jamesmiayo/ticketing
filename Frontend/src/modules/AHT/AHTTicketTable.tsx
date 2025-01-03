@@ -3,13 +3,18 @@ import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import TableComponents from "../../components/common/TableComponents";
-// import { useNavigate } from "react-router-dom";
 import AHTModal from "./AHTModal";
 
-export default function AHTTicketTable({ data, isLoading }: any) {
+export default function AHTTicketTable({
+  ticketSearchFilter,
+  data,
+  isLoading,
+  onSubmit,
+  handleSubmit,
+  handleReset,
+}: any) {
   const [open, setOpen] = useState(false);
   const [rowData, setRowData] = useState([]);
-  // const navigate = useNavigate();
 
   const columns = [
     {
@@ -22,7 +27,7 @@ export default function AHTTicketTable({ data, isLoading }: any) {
       field: "ticket_priority",
       headerName: "Priority",
       width: 140,
-      renderCell: (params: any) => params?.row?.ticket_priority,
+      renderCell: (params: any) => params?.row?.sla?.priority_label,
     },
     {
       field: "requestor",
@@ -85,7 +90,7 @@ export default function AHTTicketTable({ data, isLoading }: any) {
 
   return (
     <>
-      <Dialog open={open} onClose={() => setOpen(false)}  maxWidth="lg">
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
         <AHTModal data={rowData} setOpen={open} />
       </Dialog>
       <TableComponents
@@ -93,6 +98,9 @@ export default function AHTTicketTable({ data, isLoading }: any) {
         isLoading={isLoading}
         columns={columns}
         height={700}
+        customInputs={ticketSearchFilter}
+        onSubmit={handleSubmit(onSubmit)}
+        onReset={handleReset}
       />
     </>
   );
