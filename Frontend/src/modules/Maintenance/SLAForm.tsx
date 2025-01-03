@@ -45,7 +45,7 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
         SLA_ID: defaultValues.data_id,
         response_time: dayjs(defaultValues.response_time, "HH:mm"),
       });
-      setSelectedColor(defaultValues.color || "#66BB6A");
+      setSelectedColor(defaultValues.priority_color || "#66BB6A");
     }
   }, [defaultValues, reset]);
 
