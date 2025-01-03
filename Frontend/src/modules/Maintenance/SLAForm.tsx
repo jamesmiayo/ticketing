@@ -55,7 +55,7 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
       const formattedData = {
         ...data,
         response_time: data.response_time?.format("HH:mm"),
-        color: selectedColor,
+        priority_color: selectedColor,
       };
       if (defaultValues) {
         const response = await SLA.updateSLA({

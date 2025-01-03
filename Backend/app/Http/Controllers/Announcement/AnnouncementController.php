@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Announcement\StoreAnnouncementRequest;
 use App\Http\Requests\Announcement\UpdateAnnouncementRequest;
 use App\Models\Announcement;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Models\User;

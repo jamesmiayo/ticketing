@@ -27,7 +27,7 @@ any) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
-
+  console.log(tickets)
   const [priorityColorMap, setPriorityColorMap] = useState<any>({});
 
   // Predefined colors for priority levels
@@ -66,11 +66,6 @@ any) {
   function parseTimeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(":").map(Number);
     return hours * 3600 + minutes * 60 + seconds;
-  }
-
-  function handlePriorityColor(priority: string): React.CSSProperties {
-    const backgroundColor = priorityColorMap[priority] || "#608BC1";
-    return { backgroundColor };
   }
 
   const handleViewClick = (params: any) => {
@@ -134,7 +129,7 @@ any) {
       renderCell: (params: any) => (
         <div
           style={{
-            ...handlePriorityColor(params.row.sla?.priority_label),
+            backgroundColor: params.row.sla?.priority_color || 'rgb(96, 139, 193)',
             borderRadius: "4px",
             padding: "4px 8px",
             textAlign: "center",

@@ -10,11 +10,8 @@ use App\Models\TicketNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Services\LdapAuthenticationService;
-use App\Services\ApiAuthenticationService;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
-use Illuminate\Support\Facades\Storage;
-
 
 class AuthController extends Controller
 {
