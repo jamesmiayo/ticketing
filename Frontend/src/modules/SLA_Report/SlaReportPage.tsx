@@ -17,8 +17,15 @@ import {
   ButtonGroup,
   Button,
   TextField,
+  CircularProgress,
+  Divider,
 } from "@mui/material";
-import { CheckCircle, Cancel, AccessTime } from "@mui/icons-material";
+import {
+  CheckCircle,
+  Cancel,
+  AccessTime,
+  FilterList,
+} from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { SLA } from "../../api/services/SLA";
 
@@ -58,6 +65,7 @@ const SlaReportPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {/* Header */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -68,13 +76,22 @@ const SlaReportPage = () => {
           variant="h4"
           fontWeight="bold"
           color="primary"
-          sx={{ textShadow: "0px 2px 4px rgba(0,0,0,0.1)" }}
+          sx={{ textShadow: "0px 4px 8px rgba(0,0,0,0.2)" }}
         >
           SLA Report
         </Typography>
       </Box>
-      <Box mb={3}>
-        <ButtonGroup variant="contained" color="primary" sx={{ mb: 2 }}>
+
+      {/* Filters */}
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        alignItems="center"
+        justifyContent="space-between"
+        mb={4}
+        gap={2}
+      >
+        <ButtonGroup variant="outlined" color="primary">
           <Button onClick={() => setisPassed("")} disabled={isPassed === ""}>
             All
           </Button>
@@ -85,7 +102,6 @@ const SlaReportPage = () => {
             Failed
           </Button>
         </ButtonGroup>
-
         <Box display="flex" gap={2} alignItems="center">
           <TextField
             label="Start Date"
@@ -93,6 +109,7 @@ const SlaReportPage = () => {
             value={startDate}
             onChange={handleDateChange(setStartDate)}
             InputLabelProps={{ shrink: true }}
+            size="small"
           />
           <TextField
             label="End Date"
@@ -100,40 +117,43 @@ const SlaReportPage = () => {
             value={endDate}
             onChange={handleDateChange(setEndDate)}
             InputLabelProps={{ shrink: true }}
+            size="small"
           />
+          <Button
+            variant="contained"
+            startIcon={<FilterList />}
+            onClick={slaReportFetchData}
+          >
+            Apply Filters
+          </Button>
         </Box>
       </Box>
 
       <Grid container spacing={4}>
+        {/* Performance Card */}
         <Grid item xs={12} md={4}>
           <Card
-            elevation={4}
+            elevation={6}
             sx={{
-              background: "linear-gradient(135deg, #e0f7fa, #e3f2fd)",
-              borderRadius: 3,
-              p: 2,
+              background: "linear-gradient(135deg, #e0f7fa, #e8f5e9)",
+              borderRadius: 4,
+              p: 3,
             }}
           >
             <CardContent>
-              <Typography
-                variant="h6"
-                fontWeight="bold"
-                gutterBottom
-                color="text.primary"
-                sx={{ opacity: 0.8 }}
-              >
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Overall Performance
               </Typography>
               <Box display="flex" alignItems="center" mb={2}>
                 <Typography
-                  variant="h3"
+                  variant="h2"
                   fontWeight="bold"
                   color="primary"
-                  sx={{ textShadow: "0px 2px 4px rgba(0,0,0,0.1)" }}
+                  sx={{ textShadow: "0px 2px 4px rgba(0,0,0,0.3)" }}
                 >
                   {passRate.toFixed(1)}%
                 </Typography>
-                <Typography variant="body2" color="text.secondary" ml={1}>
+                <Typography variant="body2" color="text.secondary" ml={2}>
                   Pass Rate
                 </Typography>
               </Box>
@@ -141,29 +161,29 @@ const SlaReportPage = () => {
                 variant="determinate"
                 value={passRate}
                 sx={{
-                  height: 10,
-                  borderRadius: 5,
-                  background: "#e0f2f1",
+                  height: 12,
+                  borderRadius: 6,
+                  background: "#e3f2fd",
                   "& .MuiLinearProgress-bar": { backgroundColor: "#00796b" },
                 }}
               />
               <Box display="flex" justifyContent="space-between" mt={3}>
                 <Typography
-                  variant="body2"
+                  variant="body1"
                   color="success.main"
                   display="flex"
                   alignItems="center"
                 >
-                  <CheckCircle fontSize="small" sx={{ mr: 0.5 }} />
+                  <CheckCircle fontSize="small" sx={{ mr: 1 }} />
                   {slaPassCount} Passed
                 </Typography>
                 <Typography
-                  variant="body2"
+                  variant="body1"
                   color="error.main"
                   display="flex"
                   alignItems="center"
                 >
-                  <Cancel fontSize="small" sx={{ mr: 0.5 }} />
+                  <Cancel fontSize="small" sx={{ mr: 1 }} />
                   {slaFailCount} Failed
                 </Typography>
               </Box>
@@ -171,37 +191,38 @@ const SlaReportPage = () => {
           </Card>
         </Grid>
 
+        {/* Tickets Table */}
         <Grid item xs={12} md={8}>
           <Paper
-            elevation={4}
+            elevation={6}
             sx={{
               p: 3,
-              borderRadius: 3,
-              background: "#fff",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-              maxHeight: "800px",
-              minHeight: "400px",
+              borderRadius: 4,
+              background: "#ffffff",
+              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)",
+              maxHeight: "600px",
               overflowY: "auto",
             }}
           >
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              gutterBottom
-              sx={{ opacity: 0.8 }}
-            >
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
               Recent Tickets
             </Typography>
+            <Divider sx={{ mb: 2 }} />
             {loading ? (
-              <Typography variant="body2" color="text.secondary">
-                Loading...
-              </Typography>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+              >
+                <CircularProgress />
+              </Box>
             ) : tickets.length > 0 ? (
               <TableContainer>
-                <Table size="medium">
+                <Table>
                   <TableHead
                     sx={{
-                      background: "linear-gradient(135deg, #e3f2fd, #e0f7fa)",
+                      background: "linear-gradient(135deg, #f3e5f5, #e0f7fa)",
                     }}
                   >
                     <TableRow>
@@ -223,7 +244,7 @@ const SlaReportPage = () => {
                         hover
                         sx={{
                           "&:hover": {
-                            backgroundColor: "#f1f1f1",
+                            backgroundColor: "#f9f9f9",
                           },
                         }}
                       >
@@ -249,7 +270,7 @@ const SlaReportPage = () => {
                             <AccessTime
                               fontSize="small"
                               color="action"
-                              sx={{ mr: 0.5 }}
+                              sx={{ mr: 1 }}
                             />
                             {ticket.time_difference || "N/A"}
                           </Box>
@@ -263,7 +284,8 @@ const SlaReportPage = () => {
               <Typography
                 variant="body2"
                 color="text.secondary"
-                sx={{ textAlign: "center", py: 2 }}
+                textAlign="center"
+                py={2}
               >
                 No tickets available.
               </Typography>

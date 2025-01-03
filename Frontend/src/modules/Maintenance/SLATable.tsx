@@ -34,14 +34,8 @@ export default function SLATable({
     if (!open) setSelectedRow(null);
   };
 
-  type HandleActiveRowParams = {
-    dataActive: any;
-    isEdit: boolean;
-  };
-
-  const handleActiveRow = ({ dataActive }: HandleActiveRowParams) => {
+  const handleActiveRow = ({ dataActive }: { dataActive: any }) => {
     setSelectedRow(dataActive);
-
     setOpen(true);
   };
 
@@ -65,7 +59,7 @@ export default function SLATable({
     } catch (error) {
       console.error("Error deleting SLA:", error);
       toast.executeToast(
-        "Failed to delete FAQ. Please try again.",
+        "Failed to delete SLA. Please try again.",
         "top-center",
         true,
         { type: "error" }
@@ -88,10 +82,11 @@ export default function SLATable({
         response_time: row.response_time,
         created_at: row.created_at,
         updated_at: row.updated_at,
+        priority_color: row.priority_color || "#FFFFFF", // Default to white if no color provided
       }));
       setDataList(data);
     } catch (error) {
-      console.error("Error fetching category list:", error);
+      console.error("Error fetching SLA list:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -112,6 +107,29 @@ export default function SLATable({
     },
     { field: "label", headerName: "Priority", flex: 1 },
     { field: "response_time", headerName: "Response Time", flex: 1 },
+    {
+      field: "priority_color",
+      headerName: "Color",
+      flex: 1,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params: any) => (
+        <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              backgroundColor: params.row.priority_color,
+              border: "1px solid #ddd",
+            }}
+          />
+        </Box>
+      ),
+    },
     { field: "created_at", headerName: "Created Date", flex: 1 },
     { field: "updated_at", headerName: "Updated Date", flex: 1 },
     {
@@ -125,9 +143,7 @@ export default function SLATable({
           <Tooltip title="Edit" arrow>
             <IconButton
               color="primary"
-              onClick={() =>
-                handleActiveRow({ dataActive: params.row, isEdit: true })
-              }
+              onClick={() => handleActiveRow({ dataActive: params.row })}
             >
               <CiEdit size={30} />
             </IconButton>

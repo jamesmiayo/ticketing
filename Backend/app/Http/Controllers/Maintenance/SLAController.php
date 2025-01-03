@@ -137,7 +137,7 @@ class SLAController extends Controller
                 $startTime = \Carbon\Carbon::parse($firstStatus['created_at']);
                 $responseTime = \Carbon\Carbon::parse($firstResponse['created_at']);
     
-                $timeDifference = $startTime->diffForHumans($responseTime, true);
+                $timeDifference = \Carbon\Carbon::parse($startTime->diffForHumans($responseTime, true));
     
                 $slaResponseTimeString = $ticket['sla']['response_time'] ?? '00:00:00';
                 $slaResponseTimeParts = explode(':', $slaResponseTimeString);
@@ -145,14 +145,14 @@ class SLAController extends Controller
                     ->minutes($slaResponseTimeParts[1])
                     ->seconds($slaResponseTimeParts[2]);
     
-                $slaPassed = $responseTime->lessThanOrEqualTo($startTime->add($slaResponseTime));
+                $slaPassed = $timeDifference->lessThanOrEqualTo($slaResponseTime);
             }
     
             return [
                 $ticket['id'] => array_merge($ticket->toArray(), [
                     'first_created_in_progress' => $firstStatus['created_at'] ?? null,
                     'first_response_message' => $firstResponse['created_at'] ?? null,
-                    'time_difference' => $timeDifference,
+                    'time_difference' => $startTime->diffForHumans($responseTime, true),
                     'sla_passed' => $slaPassed,
                 ])
             ];
