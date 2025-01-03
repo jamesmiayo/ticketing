@@ -17,7 +17,7 @@ import {
   filterTicket,
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
-import { priorityList, statusList } from "../../constants/constants";
+import { statusList } from "../../constants/constants";
 import { useQuery } from "../TicketInformation/TicketInformationPage";
 import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
@@ -25,11 +25,13 @@ import { Division } from "../../api/services/division";
 import { User } from "../../api/services/user";
 import { Branch } from "../../api/services/branch";
 import { IoAddCircleSharp } from "react-icons/io5";
+import { SLA } from "../../api/services/SLA";
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
   const [categories, setCategories] = useState<any[]>([]);
   const [division, setDivision] = useState<any[]>([]);
   const [branch, setBranch] = useState<any[]>([]);
+  const [priority, setPriority] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +94,22 @@ const TicketPage: React.FC = () => {
         };
       });
       setCategories(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
+
+  const getPriorityList = async () => {
+    try {
+      const response = await SLA.getSLA();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.priority_label,
+        };
+      });
+      setPriority(data);
     } catch (error) {
       console.error("Error fetching category list:", error);
       throw error;
@@ -197,7 +215,7 @@ const TicketPage: React.FC = () => {
       register: register,
       control: control,
       errors: errors,
-      options: priorityList,
+      options: priority,
       type: "select",
     },
     {
@@ -270,6 +288,7 @@ const TicketPage: React.FC = () => {
   };
 
   useEffect(() => {
+    getPriorityList();
     fetchData(null, page);
     getDivisionList();
     getCategoryList();

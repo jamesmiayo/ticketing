@@ -92,26 +92,36 @@ class DashboardController extends Controller
 
     public function getTicketPerPriority(): array
     {
-        $priorities = SLA::pluck('priority_label', 'SLA_ID')->toArray();
-    
+        $priorities = SLA::select('priority_label', 'priority_color', 'SLA_ID')->get();
+
         $ticketCounts = [];
-    
-        foreach ($priorities as $id => $label) {
+
+        foreach ($priorities as $priority) {
             $count = $this->ticketData()
-                ->where('priority', $id) 
+                ->where('priority', $priority->SLA_ID)
                 ->count();
-            $ticketCounts[$label] = $count; 
+
+            $ticketCounts[] = [
+                'priority_label' => $priority->priority_label,
+                'priority_color' => $priority->priority_color,
+                'value' => $count,
+            ];
         }
-    
+
         $nullPriorityCount = $this->ticketData()
             ->whereNull('priority')
             ->count();
-    
-        $ticketCounts['Not Yet Priority'] = $nullPriorityCount;
-    
+
+        $ticketCounts[] = [
+            'priority_label' => 'Not Yet Priority',
+            'priority_color' => 'rgb(96, 139, 193)',
+            'value' => $nullPriorityCount,
+        ];
+
         return $ticketCounts;
     }
-    
+
+
 
     public function getTicketCountsByStatus($branch = null)
     {

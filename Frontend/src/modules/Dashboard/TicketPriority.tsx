@@ -2,52 +2,29 @@ import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { SLA } from "../../api/services/SLA";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function TicketPriority({ ticketPriority, isLoading }: any) {
   const [chartData, setChartData] = useState<any>(null);
-
   const getDataList = async () => {
-    try {
-      const response = await SLA.getSLA();
+    const labels = ticketPriority.map((item: any) => item.priority_label);
 
-      const labels = response.map((row: any) => row.priority_label);
-      labels.push("Not Yet Priority");
-
-      const data = labels.map((label: string) => {
-        return ticketPriority?.[label] !== undefined
-          ? ticketPriority[label]
-          : 0;
-      });
-
-      setChartData({
-        labels,
-        datasets: [
-          {
-            data,
-            backgroundColor: [
-              "#66BB6A",
-              "#FF9800",
-              "#E53935",
-              "#C62E2E",
-              "#608BC1",
-            ],
-            hoverBackgroundColor: [
-              "#66BB6A",
-              "#FF9800",
-              "#E53935",
-              "#C62E2E",
-              "#608BC1",
-            ],
-          },
-        ],
-      });
-    } catch (error) {
-      console.error("Error fetching SLA data:", error);
-    }
+    setChartData({
+      labels,
+      datasets: [
+        {
+          data: ticketPriority.map((item: any) => item.value),
+          backgroundColor: ticketPriority.map(
+            (item: any) => item.priority_color
+          ),
+          hoverBackgroundColor: ticketPriority.map(
+            (item: any) => item.priority_color
+          ),
+        },
+      ],
+    });
   };
 
   useEffect(() => {
