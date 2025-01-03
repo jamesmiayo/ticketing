@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); 
             $table->string('SLA_ID')->unique(); 
             $table->string('priority_label')->nullable(); 
+            $table->string('priority_color')->nullable(); 
             $table->time('response_time')->nullable(); 
             $table->timestamps(); 
             $table->unsignedBigInteger('created_by')->nullable();

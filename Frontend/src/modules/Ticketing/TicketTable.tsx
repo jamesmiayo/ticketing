@@ -8,8 +8,9 @@ import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaEye } from "react-icons/fa";
 import { GridRenderCellParams } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TicketStatus from "./TicketStatus";
+import { SLA } from "../../api/services/SLA";
 
 export default function TicketTable({
   tickets,
@@ -27,6 +28,51 @@ any) {
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
 
+  const [priorityColorMap, setPriorityColorMap] = useState<any>({});
+
+  // Predefined colors for priority levels
+  const predefinedColors = [
+    "#C62E2E", // Critical - Dark Red
+    "#E53935", // High - Red
+    "#FF9800", // Medium - Orange
+    "#66BB6A", // Low - Green
+    "#608BC1", // Default - Blue
+  ];
+
+  const getDataList = async () => {
+    try {
+      const response = await SLA.getSLA();
+
+      const sortedPriorities = response.sort((a: any, b: any) => {
+        const timeA = parseTimeToSeconds(a.response_time);
+        const timeB = parseTimeToSeconds(b.response_time);
+        return timeA - timeB; // Ascending order
+      });
+
+      const colorMap = sortedPriorities.reduce(
+        (map: any, row: any, index: number) => {
+          map[row.priority_label] = predefinedColors[index] || "#608BC1";
+          return map;
+        },
+        {}
+      );
+
+      setPriorityColorMap(colorMap);
+    } catch (error) {
+      console.error("Error fetching SLA data:", error);
+    }
+  };
+
+  function parseTimeToSeconds(time: string): number {
+    const [hours, minutes, seconds] = time.split(":").map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  function handlePriorityColor(priority: string): React.CSSProperties {
+    const backgroundColor = priorityColorMap[priority] || "#608BC1";
+    return { backgroundColor };
+  }
+
   const handleViewClick = (params: any) => {
     navigate(`/ticket-information?id=${params.ticket_id}`);
   };
@@ -36,27 +82,18 @@ any) {
     setOpen(true);
   }
 
-  function handlePriorityColor(priority: string): React.CSSProperties {
-    switch (priority) {
-      case "Critical":
-        return { backgroundColor: "#C62E2E" };
-      case "High":
-        return { backgroundColor: "#E53935" };
-      case "Medium":
-        return { backgroundColor: "#FF9800" };
-      case "Low":
-        return { backgroundColor: "#66BB6A" };
-      default:
-        return { backgroundColor: "#608BC1" };
-    }
-  }
+  useEffect(() => {
+    getDataList();
+  }, []);
 
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 120 },
-    { field: "branch", headerName: "Branch", width: 150 ,
+    {
+      field: "branch",
+      headerName: "Branch",
+      width: 150,
       renderCell: (params: any) =>
-        params.row?.requestor?.branch?.branch_description ||
-        "No Branch",
+        params.row?.requestor?.branch?.branch_description || "No Branch",
     },
     {
       field: "division",
@@ -94,10 +131,10 @@ any) {
       field: "ticket_priority",
       headerName: "Priority",
       width: 180,
-      renderCell: (params: GridRenderCellParams) => (
+      renderCell: (params: any) => (
         <div
           style={{
-            ...handlePriorityColor(params.value),
+            ...handlePriorityColor(params.row.sla?.priority_label),
             borderRadius: "4px",
             padding: "4px 8px",
             textAlign: "center",
@@ -106,7 +143,7 @@ any) {
             color: "white",
           }}
         >
-          {params.value || "N/A"}
+          {params.row.sla?.priority_label || "N/A"}
         </div>
       ),
     },

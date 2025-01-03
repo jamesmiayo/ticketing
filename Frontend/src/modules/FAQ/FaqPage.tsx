@@ -83,7 +83,7 @@ export default function FaqPage() {
       }}
     >
       <Typography variant="h4" fontWeight={"bold"} gutterBottom>
-        Frequently asked questions
+        Frequently Asked Questions
       </Typography>
       <Typography
         variant="body1"
