@@ -14,6 +14,7 @@ class SLA extends Model
     protected $fillable = [
         'SLA_ID',
         'priority_label',
+        'priority_color',
         'response_time',
         'created_by',
         'updated_by',
