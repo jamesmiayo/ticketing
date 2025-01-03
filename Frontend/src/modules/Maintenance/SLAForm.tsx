@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Box, Grid, CircularProgress, TextField } from "@mui/material";
+import {
+  Button,
+  Box,
+  Grid,
+  CircularProgress,
+  TextField,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { TimePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -18,6 +26,7 @@ interface Props {
 
 const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
   const [loading, setLoading] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("#66BB6A");
   const toast = useExecuteToast();
 
   const {
@@ -36,6 +45,7 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
         SLA_ID: defaultValues.data_id,
         response_time: dayjs(defaultValues.response_time, "HH:mm"),
       });
+      setSelectedColor(defaultValues.color || "#66BB6A");
     }
   }, [defaultValues, reset]);
 
@@ -45,6 +55,7 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
       const formattedData = {
         ...data,
         response_time: data.response_time?.format("HH:mm"),
+        color: selectedColor,
       };
       if (defaultValues) {
         const response = await SLA.updateSLA({
@@ -64,7 +75,7 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
       onClose();
     } catch (error) {
       toast.executeToast(
-        "Failed to save FAQ header. Please try again.",
+        "Failed to save SLA. Please try again.",
         "top-center",
         true,
         { type: "error" }
@@ -125,6 +136,39 @@ const SLAForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
                   />
                 )}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Stack spacing={1} sx={{ alignItems: "center" }}>
+                <Typography
+                  component="label"
+                  variant="body2"
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  Pick a color to see a live preview
+                  <input
+                    type="color"
+                    value={selectedColor}
+                    onChange={(event) => setSelectedColor(event.target.value)}
+                    style={{ border: "none", cursor: "pointer" }}
+                  />
+                </Typography>
+                <Box
+                  component="div"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: 75,
+                    height: 75,
+                    borderRadius: 2,
+                    backgroundColor: selectedColor,
+                  }}
+                />
+              </Stack>
             </Grid>
             <Grid item xs={12} sx={{ marginTop: 2 }}>
               <Button

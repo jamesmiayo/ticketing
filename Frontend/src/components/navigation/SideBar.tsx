@@ -44,7 +44,7 @@ const Sidebar = ({ children }: any) => {
       show: true,
     },
     {
-      title: "FAQ",
+      title: "FAQs",
       path: "/faq",
       icon: <FaRegQuestionCircle />,
       show: true,

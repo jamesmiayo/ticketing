@@ -63,6 +63,8 @@ class TicketHdrRoleDataService
                     });
                 });
         }
-        return $ticketData;
+    
+        return $ticketData->with(['sla']);
     }
+    
 }

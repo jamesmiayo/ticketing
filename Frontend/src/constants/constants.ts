@@ -25,7 +25,7 @@ export const statusList = [
   },
   {
     value: 7,
-    label: "For Validation",
+    label: "Evaluation",
   },
   {
     value: 8,
