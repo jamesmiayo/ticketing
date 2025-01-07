@@ -16,9 +16,38 @@ class AHTController extends Controller
     {
         $tickets = TicketHdr::getTicketAHT($request->all())->get();
 
+        $processedTickets = $tickets->map(function ($ticket) {
+            return array_merge(
+                $ticket->toArray(),
+                [
+                    'aht_passed' => $ticket->ahtPassed(),
+                    'aht_lead_time' => $ticket->ahtLeadTime(),
+                    'aht_idle_time' => $ticket->ahtIdleTime(),
+                    'aht_total_duration_time' => $ticket->ahtTotalDuration(),
+                ]
+            );
+        });
+        $analytics = $processedTickets->reduce(function ($carry, $ticket) {
+            $carry['Total Tickets']++;
+            $carry['Passed'] += $ticket['aht_passed'];
+            $carry['Failed'] += !$ticket['aht_passed'] ? 1 : 0;
+            $carry['Total Lead Time'] += $ticket['aht_lead_time'];
+            $carry['Total Idle Time'] += $ticket['aht_idle_time'];
+            $carry['Total Duration Time'] += $ticket['aht_total_duration_time'];
+            return $carry;
+        }, [
+            'Total Tickets' => 0,
+            'Passed' => 0,
+            'Failed' => 0,
+            'Total Lead Time' => 0,
+            'Total Idle Time' => 0,
+            'Total Duration Time' => 0,
+        ]);
+
         return new JsonResponse([
             'status' => Response::HTTP_OK,
-            'data' => $tickets,
+            'data' => $processedTickets,
+            'analytics' => $analytics
         ], Response::HTTP_OK);
     }
 

@@ -180,7 +180,7 @@ export default function UserManagementTable() {
         customInputs={userSearchFilter}
         onReset={handleReset}
         onSubmit={handleSubmit(onSubmit)}
-
+        height={550}
       />
     </>
   );

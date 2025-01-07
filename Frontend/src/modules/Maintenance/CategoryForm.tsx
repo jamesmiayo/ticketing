@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, CircularProgress } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputComponent from "../../components/common/InputComponent";
 import { useExecuteToast } from "../../context/ToastContext";
@@ -8,6 +8,9 @@ import { category, categoryFormtype } from "../../schema/Category/category";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
 import { Division } from "../../api/services/division";
 import SelectItem from "../../components/common/SelectItem";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 interface Props {
   refetch: () => void;
@@ -51,23 +54,28 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
         category_id: defaultValues.category_id,
         b_active: defaultValues.active,
         division_id: defaultValues.division_id,
+        resolution_time: dayjs(defaultValues.resolution_time, "HH:mm"),
       });
     }
   }, [defaultValues, reset]);
 
   const onSubmit = async (data: any) => {
+    const formattedData = {
+      ...data,
+      resolution_time: data.resolution_time?.format("HH:mm"),
+    };
     setLoading(true);
     try {
       if (defaultValues) {
         const response = await getCategoryAPI.updateCategory({
           id: defaultValues.id,
-          body: data,
+          body: formattedData,
         });
         toast.executeToast(response.message, "top-center", true, {
           type: "success",
         });
       } else {
-        const response = await getCategoryAPI.newCategory(data);
+        const response = await getCategoryAPI.newCategory(formattedData);
         toast.executeToast(response.message, "top-center", true, {
           type: "success",
         });
@@ -88,6 +96,7 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
   };
 
   return (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Box
       sx={{
         maxWidth: 600,
@@ -128,6 +137,28 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
               fullWidth
             />
           </Grid>
+          <Grid item xs={12}>
+           <Controller
+                name="resolution_time"
+                control={control}
+                render={({ field }) => (
+                  <TimePicker
+                    {...field}
+                    label="Response Time"
+                    ampm={false}
+                    onChange={(newValue) => field.onChange(newValue)}
+                    value={field.value}
+                    slotProps={{
+                      textField: {
+                        error: !!errors.resolution_time,
+                        helperText: errors.resolution_time?.message,
+                        fullWidth: true,
+                      },
+                    }}
+                  />
+                )}
+              />
+          </Grid>
           <Grid item xs={12} sx={{ marginTop: 2 }}>
             <Button
               type="submit"
@@ -153,6 +184,7 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
         </Grid>
       </form>
     </Box>
+    </LocalizationProvider>
   );
 };
 

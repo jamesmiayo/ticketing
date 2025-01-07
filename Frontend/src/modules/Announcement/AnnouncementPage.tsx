@@ -186,8 +186,8 @@ export default function AnnouncementPage() {
                           <Typography
                             onClick={() => handleFileClick(row?.attachments)}
                             variant="body2"
-                            color="text.secondary"
                             sx={{
+                              color: "rgba(31, 80, 154 , 1)",
                               display: "flex",
                               alignItems: "center",
                               cursor: "pointer",

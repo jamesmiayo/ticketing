@@ -56,7 +56,7 @@ const Sidebar = ({ children }: any) => {
       show: true,
     },
     {
-      title: "AHT",
+      title: "AHT Report",
       path: "/average-handle-time",
       icon: <IoBarChart />,
       show: permission?.includes("Can View Ticket AHT"),

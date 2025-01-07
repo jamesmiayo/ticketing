@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['division_id', 'category_id' , 'category_description' , 'b_active'];
+    protected $fillable = ['division_id', 'category_id' , 'resolution_time' , 'category_description' , 'b_active'];
 
     public function ticket_hdr() {
         return $this->belongsTo(TicketHdr::class);
