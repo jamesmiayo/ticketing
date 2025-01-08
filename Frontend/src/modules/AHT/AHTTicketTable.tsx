@@ -28,36 +28,37 @@ export default function AHTTicketTable({
       field: "aht_passed",
       headerName: "SLA Resolution Time",
       width: 180,
-      renderCell: (params: any) => 
+      renderCell: (params: any) => (
         <Chip
-        label={params?.row?.aht_passed === 1 ? 'Passed' : 'Failed'}
-        color={params?.row?.aht_passed === 1 ? 'success' : 'error'}
-        size="small"
-        sx={{
-          fontWeight: 'bold',
-          textTransform: 'uppercase',
-        }}
-        icon={params?.row?.aht_passed === 1 ? <CheckCircle /> : <Cancel />}
-      />
-      ,
+          label={params?.row?.aht_passed === 1 ? "Passed" : "Failed"}
+          color={params?.row?.aht_passed === 1 ? "success" : "error"}
+          size="small"
+          sx={{
+            fontWeight: "bold",
+            textTransform: "uppercase",
+          }}
+          icon={params?.row?.aht_passed === 1 ? <CheckCircle /> : <Cancel />}
+        />
+      ),
     },
     {
       field: "ticket_priority",
       headerName: "Priority",
       width: 140,
-      renderCell: (params: any) => 
+      renderCell: (params: any) => (
         <Tooltip title={params?.row?.sla?.response_time}>
-        <Chip
-      label={params?.row?.sla?.priority_label}
-      size="small"
-      sx={{
-        backgroundColor: params?.row?.sla?.priority_color,
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        cursor: "pointer"
-      }}
-    />
+          <Chip
+            label={params?.row?.sla?.priority_label}
+            size="small"
+            sx={{
+              backgroundColor: params?.row?.sla?.priority_color,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+          />
         </Tooltip>
+      ),
     },
     {
       field: "requestor",

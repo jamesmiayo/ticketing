@@ -214,6 +214,51 @@ class TicketHdr extends Model
 
         return $query;
     }
+
+    public static function getTicketCSAT($searchParams)
+    {
+        $query = self::with([
+            'ticket_satisfactory:ticket_id,satisfactory_1',
+            'ticket_logs:id,ticket_id,status',
+        ])
+            ->whereHas('ticket_logs', function ($query) {
+                $query->where('status', GlobalConstants::VALIDATION)
+                    ->orWhere('status', GlobalConstants::COMPLETED);
+            })
+            ->whereHas('ticket_satisfactory', function ($query) {
+                $query->whereNotNull('satisfactory_1');
+            });
+
+        if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
+            $query->branchId($searchParams['branch_id']);
+        }
+
+        if (array_key_exists('division_id', $searchParams) && $searchParams['division_id'] !== null) {
+            $query->divisionId($searchParams['division_id']);
+        }
+
+        if (array_key_exists('department_id', $searchParams) && $searchParams['department_id'] !== null) {
+            $query->departmentId($searchParams['department_id']);
+        }
+
+        if (array_key_exists('section_id', $searchParams) && $searchParams['section_id'] !== null) {
+            $query->sectionId($searchParams['section_id']);
+        }
+
+        if (array_key_exists('user_id', $searchParams) && $searchParams['user_id'] !== null) {
+            $query->assignee($searchParams['user_id']);
+        }
+
+        if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
+            $query->startDate($searchParams['start_date']);
+        }
+
+        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
+            $query->endDate($searchParams['end_date']);
+        }
+
+        return $query;
+    }
     public static function getSpecificTicket()
     {
         $query = self::with([
@@ -226,6 +271,27 @@ class TicketHdr extends Model
             'sla'
         ]);
         return $query;
+    }
+
+    public function scopeDivisionId($query, $division_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section.department.division', function ($query) use ($division_id) {
+            $query->where('id', $division_id);
+        });
+    }
+
+    public function scopeDepartmentId($query, $department_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section.department', function ($query) use ($department_id) {
+            $query->where('id', $department_id);
+        });
+    }
+
+    public function scopeSectionId($query, $section_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section', function ($query) use ($section_id) {
+            $query->where('id', $section_id);
+        });
     }
 
     public function scopeAssignee($query, $assignee)

@@ -47,7 +47,8 @@ class RolePermissionSeeder extends Seeder
             'Can View SLA Reports',
             'Can Update Announcement',
             'Can Create Announcement',
-            'Can View Ticket AHT'
+            'Can View Ticket AHT',
+            'Can View CSAT Report'
         ];
 
         foreach ($permissions as $permission) {
