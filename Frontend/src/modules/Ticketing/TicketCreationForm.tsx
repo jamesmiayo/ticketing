@@ -166,7 +166,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
                   >
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="*"
                       multiple
                       style={{ display: "none" }}
                       id="file-input"

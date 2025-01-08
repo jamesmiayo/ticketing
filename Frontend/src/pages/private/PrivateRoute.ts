@@ -5,13 +5,13 @@ import TicketInformation from "../../modules/TicketInformation/TicketInformation
 import UserDashboardPage from "../../modules/UserDashboard/UserDashboardPage.tsx";
 import Maintenance from "../../modules/Maintenance/MaintenancePage.tsx";
 import TicketPage from "../../modules/Ticketing/TicketPage.tsx";
-import UserTicketPage from "../../modules/UserTicket/UserTicketPage.tsx";
 import { useContext } from "react";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider.tsx";
 import FaqPage from "../../modules/FAQ/FaqPage.tsx";
 import AnnouncementPage from "../../modules/Announcement/AnnouncementPage.tsx";
 import SlaReportPage from "../../modules/SLA_Report/SlaReportPage.tsx";
 import AHTPage from "../../modules/AHT/AHTPage.tsx";
+import CSATPage from "../../modules/CSAT/CSATPage.tsx";
 
 export const usePrivateRoutes = () => {
   const { permission } = useContext(PermissionContext);
@@ -85,12 +85,12 @@ export const usePrivateRoutes = () => {
         },
         {
             id: uuidv4,
-            name: "User Ticket",
-            description: "User Ticket",
-            path: PathConstants.USERTICKET,
-            component: UserTicketPage,
-            show: permission?.includes("Can View User Ticket"),
-            requiredPermissions: ["Can View User Ticket"],
+            name: "CSAT Report",
+            description: "CSAT Report",
+            path: PathConstants.CSATREPORT,
+            component: CSATPage,
+            show: permission?.includes("Can View CSAT Report"),
+            requiredPermissions: ["Can View CSAT Report"],
         },
         {
             id: uuidv4,

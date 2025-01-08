@@ -119,6 +119,7 @@ export default function CategoryManagementTable({
         label: row.category_description,
         sub_category: row.sub_category,
         division_id: row.division.id,
+        resolution_time: row.resolution_time,
         active: row.b_active,
         category_id: row.category_id,
         created_at: row.created_at,
@@ -146,6 +147,7 @@ export default function CategoryManagementTable({
       align: "center",
     },
     { field: "label", headerName: "Description", flex: 1 },
+    { field: "resolution_time", headerName: "Resolution Time", flex: 1 },
     {
       field: "active",
       headerName: "Active",

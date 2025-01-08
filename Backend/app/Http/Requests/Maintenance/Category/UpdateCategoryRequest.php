@@ -27,6 +27,7 @@ class UpdateCategoryRequest extends FormRequest
             'category_id' => 'required',
             'category_description' => 'required',
             'b_active' => 'required',
+            'resolution_time' => 'required',
         ];
     }
 
@@ -35,6 +36,7 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'division_id' => $this->division_id,
             'category_id' => $this->category_id,
+            'resolution_time' => $this->resolution_time,
             'category_description' => $this->category_description,
             'b_active' => $this->b_active,
         ];

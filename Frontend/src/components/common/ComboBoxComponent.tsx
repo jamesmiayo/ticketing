@@ -4,7 +4,7 @@ import { Controller, Control } from 'react-hook-form';
 interface ComboBoxComponentProps<T> {
     name?: string;
     control?: Control<any>;
-    options?: any;
+    options?: any[];
     label?: string;
     defaultValue?: T | null;
     isMultiple?: boolean;
@@ -13,12 +13,13 @@ interface ComboBoxComponentProps<T> {
     groupBy?: (option: T) => string;
     error?: object;
     sx?: object;
+    onChange?: (value: any) => void; 
 }
 
 const ComboBoxComponent = <T,>({
     name,
     control,
-    options,
+    options = [],
     label = 'Select an option',
     defaultValue = null,
     isMultiple = false,
@@ -27,6 +28,7 @@ const ComboBoxComponent = <T,>({
     groupBy,
     error = {},
     sx = {},
+    onChange, 
 }: ComboBoxComponentProps<T>) => {
     return (
         <FormControl
@@ -45,13 +47,21 @@ const ComboBoxComponent = <T,>({
                         size="small"
                         multiple={isMultiple}
                         freeSolo={isFreeSolo}
-                        options={options || []}
+                        options={options}
                         getOptionLabel={getOptionLabel}
                         groupBy={groupBy}
-                        value={options.find((opt:any) => opt.value === field.value) || null}
-                        onChange={(event, value:any) => {
-                            console.log(event)
-                            field.onChange(value?.value || '') 
+                        value={
+                            isMultiple
+                                ? options.filter((opt) => field.value?.includes(opt.value))
+                                : options.find((opt) => opt.value === field.value) || null
+                        }
+                        onChange={(event:any, value:any) => {
+                            const newValue = isMultiple
+                                ? value.map((v: any) => v.value)
+                                : value?.value || '';
+
+                            field.onChange(newValue); 
+                            if (onChange && event) onChange(newValue);
                         }}
                         sx={{ ...sx }}
                         renderInput={(params) => (
