@@ -84,18 +84,18 @@ class SLAController extends Controller
         $isPassed = $request->query('isPassed'); // "1" for passed, "0" for failed
         $startDate = $request->query('start_date'); // Optional start date
         $endDate = $request->query('end_date'); // Optional end date
-    
+
         $tickets = TicketHdr::getSpecificTicket()->latest()->get();
-    
+
         $timeDifferences = $tickets->filter(function ($ticket) use ($startDate, $endDate) {
             $hasInProgress = collect($ticket['ticket_statuses'])->contains(function ($status) {
                 return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
             });
-    
+
             if (!$hasInProgress) {
                 return false;
             }
-    
+
             if ($startDate || $endDate) {
                 $firstCreatedInProgress = collect($ticket['ticket_statuses'])
                     ->filter(function ($status) {
@@ -103,22 +103,22 @@ class SLAController extends Controller
                     })
                     ->sortBy('created_at')
                     ->first()['created_at'] ?? null;
-    
+
                 if (!$firstCreatedInProgress) {
                     return false;
                 }
-    
+
                 $firstCreatedInProgressDate = \Carbon\Carbon::parse($firstCreatedInProgress);
-    
+
                 if ($startDate && $firstCreatedInProgressDate->lt(\Carbon\Carbon::parse($startDate))) {
                     return false;
                 }
-    
+
                 if ($endDate && $firstCreatedInProgressDate->gt(\Carbon\Carbon::parse($endDate))) {
                     return false;
                 }
             }
-    
+
             return true;
         })->mapWithKeys(function ($ticket) {
             $firstStatus = collect($ticket['ticket_statuses'])
@@ -127,27 +127,27 @@ class SLAController extends Controller
                 })
                 ->sortBy('created_at')
                 ->first();
-    
+
             $firstResponse = collect($ticket['ticket_messages'])->sortBy('created_at')->first();
-    
+
             $timeDifference = null;
             $slaPassed = null;
-    
+
             if ($firstStatus && $firstResponse) {
                 $startTime = \Carbon\Carbon::parse($firstStatus['created_at']);
                 $responseTime = \Carbon\Carbon::parse($firstResponse['created_at']);
-    
+
                 $timeDifference = \Carbon\Carbon::parse($startTime->diffForHumans($responseTime, true));
-    
+
                 $slaResponseTimeString = $ticket['sla']['response_time'] ?? '00:00:00';
                 $slaResponseTimeParts = explode(':', $slaResponseTimeString);
                 $slaResponseTime = \Carbon\CarbonInterval::hours($slaResponseTimeParts[0])
                     ->minutes($slaResponseTimeParts[1])
                     ->seconds($slaResponseTimeParts[2]);
-    
+
                 $slaPassed = $timeDifference->lessThanOrEqualTo($slaResponseTime);
             }
-    
+
             return [
                 $ticket['id'] => array_merge($ticket->toArray(), [
                     'first_created_in_progress' => $firstStatus['created_at'] ?? null,
@@ -157,18 +157,18 @@ class SLAController extends Controller
                 ])
             ];
         });
-    
+
         $slaPassCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true)->count();
         $slaFailCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false)->count();
         $totalCount = $slaPassCount + $slaFailCount;
         $passRate = $totalCount ? ($slaPassCount / $totalCount) * 100 : 0;
-    
+
         if ($isPassed === "1") {
             $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true);
         } elseif ($isPassed === "0") {
             $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false);
         }
-    
+
         return new JsonResponse([
             'status' => Response::HTTP_OK,
             'data' => [
@@ -180,8 +180,8 @@ class SLAController extends Controller
             ],
         ], Response::HTTP_OK);
     }
-    
-    
-    
-    
+
+
+
+
 }

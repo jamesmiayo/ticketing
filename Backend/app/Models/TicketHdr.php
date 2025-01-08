@@ -7,6 +7,7 @@ use Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+
 class TicketHdr extends Model
 {
     use HasFactory;
@@ -24,9 +25,9 @@ class TicketHdr extends Model
         'updated_by'
     ];
 
-    protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
+    protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id,resolution_time', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
 
-    protected $appends = ['ticket_status', 'lead_time', 'idle_time', 'time_finished', 'total_duration'];
+    protected $appends = ['ticket_status', 'time_finished'];
 
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s A',
@@ -57,6 +58,11 @@ class TicketHdr extends Model
     public function ticket_attachment()
     {
         return $this->hasMany(TicketAttachment::class, 'ticket_id');
+    }
+
+    public function sla()
+    {
+        return $this->belongsTo(SLA::class, 'priority', 'SLA_ID');
     }
 
     public function requestor()
@@ -127,47 +133,6 @@ class TicketHdr extends Model
             ->orderBy('created_at', 'desc');
     }
 
-    public function getTotalDurationAttribute()
-    {
-        $inProgressLog = $this->ticket_logs_in_inprogress()->first();
-
-        $doneLog = $this->ticket_logs_done()->first();
-
-        if ($inProgressLog && $doneLog) {
-            $inProgressTime = Carbon::parse($inProgressLog->created_at);
-            $doneTime = Carbon::parse($doneLog->created_at);
-            $diffInSeconds = $doneTime->diffInSeconds($inProgressTime);
-            $diffInMinutes = round($diffInSeconds / 60, 2);
-            return abs($diffInMinutes);
-        }
-
-        return null;
-    }
-
-    public function getIdleTimeAttribute()
-    {
-        $inProgressLog = $this->ticket_logs_in_inprogress()->first();
-        if (!empty($inProgressLog)) {
-            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($inProgressLog?->created_at));
-            $diffInMinutes = round($diffInSeconds / 60, 2);
-            return abs($diffInMinutes);
-        }
-        return null;
-    }
-
-    public function getLeadTimeAttribute()
-    {
-        $doneLog = $this->ticket_logs_done()->first();
-        if (!empty($doneLog)) {
-            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($doneLog?->created_at));
-            $diffInMinutes = round($diffInSeconds / 60, 2);
-            return abs($diffInMinutes);
-        }
-
-        return null;
-    }
-
-
     public function ticket_logs_latest()
     {
         return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name,section_id')->latestOfMany();
@@ -227,7 +192,7 @@ class TicketHdr extends Model
 
     public static function getTicketAHT($searchParams)
     {
-        $query = self::with('ticket_logs' , 'sla')->whereHas('ticket_logs', function ($query) {
+        $query = self::with('ticket_logs', 'sla')->whereHas('ticket_logs', function ($query) {
             $query->where('status', GlobalConstants::VALIDATION);
         });
 
@@ -237,6 +202,51 @@ class TicketHdr extends Model
 
         if (array_key_exists('priority', $searchParams) && $searchParams['priority'] !== null) {
             $query->priority($searchParams['priority']);
+        }
+
+        if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
+            $query->startDate($searchParams['start_date']);
+        }
+
+        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
+            $query->endDate($searchParams['end_date']);
+        }
+
+        return $query;
+    }
+
+    public static function getTicketCSAT($searchParams)
+    {
+        $query = self::with([
+            'ticket_satisfactory:ticket_id,satisfactory_1',
+            'ticket_logs:id,ticket_id,status',
+        ])
+            ->whereHas('ticket_logs', function ($query) {
+                $query->where('status', GlobalConstants::VALIDATION)
+                    ->orWhere('status', GlobalConstants::COMPLETED);
+            })
+            ->whereHas('ticket_satisfactory', function ($query) {
+                $query->whereNotNull('satisfactory_1');
+            });
+
+        if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
+            $query->branchId($searchParams['branch_id']);
+        }
+
+        if (array_key_exists('division_id', $searchParams) && $searchParams['division_id'] !== null) {
+            $query->divisionId($searchParams['division_id']);
+        }
+
+        if (array_key_exists('department_id', $searchParams) && $searchParams['department_id'] !== null) {
+            $query->departmentId($searchParams['department_id']);
+        }
+
+        if (array_key_exists('section_id', $searchParams) && $searchParams['section_id'] !== null) {
+            $query->sectionId($searchParams['section_id']);
+        }
+
+        if (array_key_exists('user_id', $searchParams) && $searchParams['user_id'] !== null) {
+            $query->assignee($searchParams['user_id']);
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
@@ -261,6 +271,27 @@ class TicketHdr extends Model
             'sla'
         ]);
         return $query;
+    }
+
+    public function scopeDivisionId($query, $division_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section.department.division', function ($query) use ($division_id) {
+            $query->where('id', $division_id);
+        });
+    }
+
+    public function scopeDepartmentId($query, $department_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section.department', function ($query) use ($department_id) {
+            $query->where('id', $department_id);
+        });
+    }
+
+    public function scopeSectionId($query, $section_id)
+    {
+        return $query->whereHas('ticket_logs_latest.assignee.section', function ($query) use ($section_id) {
+            $query->where('id', $section_id);
+        });
     }
 
     public function scopeAssignee($query, $assignee)
@@ -289,9 +320,9 @@ class TicketHdr extends Model
 
     public function scopePriority($query, $priority)
     {
-        return $query->whereHas('sla' , function ($query) use ($priority) {
+        return $query->whereHas('sla', function ($query) use ($priority) {
             $query->where('id', $priority);
-    });
+        });
     }
 
     public function scopeStatus($query, $status)
@@ -328,8 +359,55 @@ class TicketHdr extends Model
         return $query->whereDate('created_at', '<=', Carbon::parse($end_date)->endOfDay());
     }
 
-    public function sla()
+    //AHT
+    public function ahtTotalDuration()
     {
-        return $this->belongsTo(SLA::class, 'priority', 'SLA_ID');
+        $inProgressLog = $this->ticket_logs_in_inprogress()->first();
+
+        $doneLog = $this->ticket_logs_done()->first();
+
+        if ($inProgressLog && $doneLog) {
+            $inProgressTime = Carbon::parse($inProgressLog->created_at);
+            $doneTime = Carbon::parse($doneLog->created_at);
+            $diffInSeconds = $doneTime->diffInSeconds($inProgressTime);
+            $diffInMinutes = round($diffInSeconds / 60, 2);
+            return abs($diffInMinutes);
+        }
+
+        return null;
+    }
+
+    public function ahtPassed()
+    {
+        $totalDuration = $this->ahtTotalDuration();
+        $resolutionTime = $this->sub_category?->category?->resolution_time;
+
+        [$hours, $minutes] = explode(':', $resolutionTime);
+
+        $valueConverted = ($hours * 60) + $minutes;
+        return $totalDuration < $valueConverted ? 1 : 0;
+    }
+
+    public function ahtIdleTime()
+    {
+        $inProgressLog = $this->ticket_logs_in_inprogress()->first();
+        if (!empty($inProgressLog)) {
+            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($inProgressLog?->created_at));
+            $diffInMinutes = round($diffInSeconds / 60, 2);
+            return abs($diffInMinutes);
+        }
+        return null;
+    }
+
+    public function ahtLeadTime()
+    {
+        $doneLog = $this->ticket_logs_done()->first();
+        if (!empty($doneLog)) {
+            $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($doneLog?->created_at));
+            $diffInMinutes = round($diffInSeconds / 60, 2);
+            return abs($diffInMinutes);
+        }
+
+        return null;
     }
 }

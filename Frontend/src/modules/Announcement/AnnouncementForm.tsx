@@ -54,8 +54,10 @@ export default function AnnouncementForm({ setOpen, refetch , defaultValue }: an
       reset();
       setFile(null);
       setOpen(false);
-    } catch (error) {
-      console.error("Error creating announcement:", error);
+    } catch (error:any) {
+      toast.executeToast(error?.response?.data?.message, "top-center", true, {
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -104,7 +106,7 @@ export default function AnnouncementForm({ setOpen, refetch , defaultValue }: an
               sx={{ width: "100%" }}
               type="file"
               onChange={handleFileChange}
-              inputProps={{ accept: "application/pdf,image/*" }}
+              inputProps={{ accept: "*" }}
             />
           </Grid>
           <Grid item xs={12}>

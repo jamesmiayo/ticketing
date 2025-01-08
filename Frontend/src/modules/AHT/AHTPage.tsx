@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import AHTTicketTable from "./AHTTicketTable";
@@ -28,7 +28,7 @@ export default function AHTPage() {
     setLoading(true);
     try {
       const response = await AHT.getAHT(params);
-    
+
       setData(response);
     } catch (error) {
       console.error("Error fetching user tickets:", error);
@@ -118,6 +118,51 @@ export default function AHTPage() {
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
           Ticket Handle Time
         </Typography>
+        <Box sx={{ height: "auto", padding: 1, marginBottom: 1 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+              gap: 2,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    variant="rectangular"
+                    sx={{
+                      borderRadius: 1,
+                      height: 65,
+                    }}
+                  />
+                ))
+              : data?.analytics &&
+                Object.entries(data.analytics).map(
+                  ([key, value]: any, index: any) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        backgroundColor: "white",
+                        borderRadius: 1,
+                        boxShadow: 1,
+                        textAlign: "center",
+                        padding: 2,
+                        fontSize: "16px",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      <strong>{key}</strong>
+                      <br />
+                      {value}
+                    </Box>
+                  )
+                )}
+          </Box>
+        </Box>
+
         {userId ? (
           <AHTTicketTable />
         ) : (

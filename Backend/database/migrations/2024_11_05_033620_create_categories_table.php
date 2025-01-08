@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('division_id');
             $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');
             $table->string('category_id');
+            $table->string('resolution_time')->nullable();
             $table->string('category_description');
             $table->boolean('b_active')->default(false);
             $table->timestamps();

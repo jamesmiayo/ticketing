@@ -56,29 +56,28 @@ const Sidebar = ({ children }: any) => {
       show: true,
     },
     {
-      title: "AHT",
+      title: "AHT Report",
       path: "/average-handle-time",
       icon: <IoBarChart />,
       show: permission?.includes("Can View Ticket AHT"),
     },
     {
-      title: "User Ticket",
-      path: "/user-ticket",
+      title: "CSAT Report",
+      path: "/csat-report",
       icon: <FaUserCircle />,
-      show: permission?.includes("Can View User Ticket"),
-    },
-    // { title: "Profile", path: "/profile", icon: <FaUser />, show: true },
-    {
-      title: "Maintenance",
-      path: "/maintenance",
-      icon: <IoSettingsSharp />,
-      show: permission?.includes("Can View Maintenance"),
+      show: permission?.includes("Can View CSAT Report"),
     },
     {
       title: "SLA Report",
       path: "/Sla/report",
       icon: <MdAccessTimeFilled />,
       show: permission?.includes("Can View SLA Reports"),
+    },
+    {
+      title: "Maintenance",
+      path: "/maintenance",
+      icon: <IoSettingsSharp />,
+      show: permission?.includes("Can View Maintenance"),
     },
   ];
 
