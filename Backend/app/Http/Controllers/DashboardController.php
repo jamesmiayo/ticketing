@@ -42,10 +42,10 @@ class DashboardController extends Controller
     public function ticketData($data = [])
     {
         $authUser = Auth::user();
-        $divisionId = $authUser->section->department->division_id;
-        $departmentId = $authUser->section->department_id;
-        $sectionId = $authUser->section_id;
-        $userId = $authUser->id;
+        $divisionId = $authUser?->section?->department?->division_id;
+        $departmentId = $authUser?->section?->department_id;
+        $sectionId = $authUser?->section_id;
+        $userId = $authUser?->id;
 
         $ticketLogsFilter = function ($query) use ($divisionId, $departmentId, $sectionId) {
             $query->whereNull('emp_id')
