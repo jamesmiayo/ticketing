@@ -36,8 +36,8 @@ class CSATController extends Controller
         $totalUnsatisfied = $satisfactoryValues->filter(fn($value) => in_array($value, [1, 2, 3]))->count();
 
         $totalTickets = $data->count();
-        $csatPassed = $totalTickets > 0 && ($totalSatisfied / $totalTickets * 100) > 70 ? 1 : 0;
-        $averageSatisfactory = $totalTickets > 0 ? round(($totalSatisfied / $totalTickets * 100), 2) : 0;
+        $csatPassed = $totalAnswered > 0 && ($totalSatisfied / $totalAnswered * 100) > 70 ? 1 : 0;
+        $averageSatisfactory = $totalAnswered > 0 ? round(($totalSatisfied / $totalAnswered * 100), 2) : 0;
 
         $totalUnresponse = $totalTickets > 0 ? $totalTickets - $totalAnswered : 0;
 
