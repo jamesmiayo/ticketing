@@ -192,6 +192,9 @@ export default function UserProfile() {
                   {data?.name}
                 </Typography>
                 <Typography variant="h6" gutterBottom>
+                  {data?.roles?.[0]?.name}
+                </Typography>
+                <Typography variant="h6" gutterBottom>
                   {data?.section?.department?.division?.division_description}
                 </Typography>
                 <Typography color="textSecondary" gutterBottom>
