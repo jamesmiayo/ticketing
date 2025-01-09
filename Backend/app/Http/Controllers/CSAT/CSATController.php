@@ -13,7 +13,7 @@ class CSATController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $data = TicketHdr::getTicketCSAT($request->all())->get();
+        $data = TicketHdr::getTicketCSAT($request->all())->latest()->get();
 
         $satisfactoryValues = $data->pluck('ticket_satisfactory.satisfactory_1')->filter();
 
@@ -33,7 +33,7 @@ class CSATController extends Controller
         })->count();
 
         $totalSatisfied = $satisfactoryValues->filter(fn($value) => $value == 4 || $value == 5)->count();
-        $totalUnsatisfied = $satisfactoryValues->filter(fn($value) => in_array($value, [1, 2, 3]))->count();
+        $totalUnsatisfied = $satisfactoryValues->filter(fn($value) => $value == 1 || $value == 2)->count();
 
         $totalTickets = $data->count();
         $csatPassed = $totalAnswered > 0 && ($totalSatisfied / $totalAnswered * 100) > 70 ? 1 : 0;
@@ -43,6 +43,7 @@ class CSATController extends Controller
 
         return new JsonResponse([
             'status' => Response::HTTP_OK,
+            'data' => $data,
             'satisfactory' => $satisfactoryCountsArray,
             'total_answered' => $totalAnswered,
             'total_satisfied' => $totalSatisfied,
@@ -51,6 +52,7 @@ class CSATController extends Controller
             'total_satisfactory' => $totalTickets,
             'total_unresponse' => $totalUnresponse,
             'total_unsatisfied' => $totalUnsatisfied,
+            'total_neutral' => $satisfactoryValues->filter(fn($value) => $value == 3)->count()
         ], Response::HTTP_OK);
 
     }

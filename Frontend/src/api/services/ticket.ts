@@ -234,6 +234,7 @@ export const ticketApi = {
           satisfactory_3: data.satisfactory_3,
           satisfactory_4: data.satisfactory_4,
           satisfactory_5: data.satisfactory_5,
+          feedback: data.feedback,
           overall_satisfaction: data.overall_satisfaction,
         },
       });

@@ -10,7 +10,7 @@ class TicketSatisfactory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ticket_id', 'user_id', 'satisfactory_1', 'satisfactory_2', 'satisfactory_3', 'satisfactory_4', 'satisfactory_5' ,'overall_satisfaction'];
+    protected $fillable = ['ticket_id', 'feedback' , 'user_id', 'satisfactory_1', 'satisfactory_2', 'satisfactory_3', 'satisfactory_4', 'satisfactory_5' ,'overall_satisfaction'];
 
     protected $with = ['user:id,name'];
 
@@ -75,7 +75,7 @@ class TicketSatisfactory extends Model
         $percentage = ($average / 5) * 100;
 
         // Return numeric value or default to 0
-        return is_numeric($percentage) ? $percentage : 0;
+        return is_numeric($percentage) ? round($percentage , 2) : 0;
     }
 
 }

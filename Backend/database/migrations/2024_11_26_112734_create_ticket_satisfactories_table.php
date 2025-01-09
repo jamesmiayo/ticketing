@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('satisfactory_4')->nullable();
             $table->string('satisfactory_5')->nullable();
             $table->string('overall_satisfaction')->nullable();
+            $table->string('feedback')->nullable();
             $table->timestamps();
         });
     }

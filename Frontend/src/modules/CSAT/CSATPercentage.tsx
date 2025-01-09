@@ -34,11 +34,11 @@ export default function CSATPercentage({ data, isPassed }: any) {
   return (
     <Box
       sx={{
+        height: "300px",
         backgroundColor: "white",
         padding: 2,
         borderRadius: 2,
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        mb: 2,
       }}
     >
       <Typography
@@ -54,8 +54,6 @@ export default function CSATPercentage({ data, isPassed }: any) {
       </Typography>
       <Box
         sx={{
-          width: "100%",
-          height: 200,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

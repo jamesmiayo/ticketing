@@ -28,6 +28,7 @@ interface DataGridProps {
   maxCount?: string;
   isLoading?: boolean;
   onReset?: () => void;
+  onRowClick?: any;
 }
 
 const TableComponents = ({
@@ -42,6 +43,7 @@ const TableComponents = ({
   maxCount,
   isLoading = false,
   onReset,
+  onRowClick
 }: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -118,6 +120,7 @@ const TableComponents = ({
 
       <div style={{ height: height, width: width }}>
         <DataGrid
+          onRowClick={onRowClick}
           rows={rows}
           columns={columns}
           hideFooter

@@ -22,6 +22,7 @@ import okay from "../../assets/svg/okay.svg";
 import good from "../../assets/svg/good.svg";
 import amazing from "../../assets/svg/amazing.svg";
 import { useEffect, useState } from "react";
+import InputComponent from "../../components/common/InputComponent";
 
 export default function TicketStatus({ data, setOpen, refetch }: any) {
   const toast = useExecuteToast();
@@ -36,6 +37,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
     reset,
     formState: { errors },
     setValue,
+    register
   } = useForm<any>({
     resolver: yupResolver(createTicketSatisfactory),
   });
@@ -173,7 +175,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                 </Box>
               </Container>
             </Container>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ marginBottom: 1 }}>
               {ratingTitles.map((rating, index) => (
                 <Fade
                   in={true}
@@ -247,6 +249,15 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                 </Fade>
               ))}
             </Grid>
+            <InputComponent
+                name="feedback"
+                label="Feedback"
+                register={register}
+                errors={errors}
+                multiline
+                rows={5}
+                fullWidth
+            />
             <Button
               type="submit"
               variant="contained"

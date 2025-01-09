@@ -1,34 +1,35 @@
 import { DialogContent, DialogTitle, Rating, Typography } from "@mui/material";
 
-export default function UserTicketSatisfactory({ data }: any) {
+export default function CSATTicketSatisfactoryData({ data }: any) {
+  console.log(data);
   const satisfactoryFields = [
     {
       name: "satisfactory_1",
       label: "Overall Satisfaction",
-      value: data?.tickets?.ticket_satisfactory?.satisfactory_1 || 0, // Default to 0 if undefined
+      value: data?.ticket_satisfactory?.satisfactory_1 || 0, // Default to 0 if undefined
     },
     {
       name: "satisfactory_2",
       label: "Customer Support",
-      value: data?.tickets?.ticket_satisfactory?.satisfactory_2 || 0,
+      value: data?.ticket_satisfactory?.satisfactory_2 || 0,
     },
     {
       name: "satisfactory_3",
       label: "Ease of Use",
-      value: data?.tickets?.ticket_satisfactory?.satisfactory_3 || 0,
+      value: data?.ticket_satisfactory?.satisfactory_3 || 0,
     },
     {
       name: "satisfactory_4",
       label: "Features",
-      value: data?.tickets?.ticket_satisfactory?.satisfactory_4 || 0,
+      value: data?.ticket_satisfactory?.satisfactory_4 || 0,
     },
     {
       name: "satisfactory_5",
       label: "Value for Money",
-      value: data?.tickets?.ticket_satisfactory?.satisfactory_5 || 0,
+      value: data?.ticket_satisfactory?.satisfactory_5 || 0,
     },
   ];
-  
+
   return (
     <>
       <DialogTitle> {data?.tickets?.title}</DialogTitle>
@@ -39,8 +40,8 @@ export default function UserTicketSatisfactory({ data }: any) {
           justifyContent: "center",
         }}
       >
-        <div style={{ padding: 5 }}>
-          {satisfactoryFields.map((rating, index) => (
+        <div style={{ padding: 2 }}>
+          {satisfactoryFields?.map((rating, index) => (
             <div key={index} style={{ marginBottom: 25 }}>
               <Typography
                 component="legend"
@@ -49,6 +50,9 @@ export default function UserTicketSatisfactory({ data }: any) {
                 {rating.label}
               </Typography>
               <Rating
+                sx={{
+                  color: "rgba(31, 80, 154 , 1)",
+                }}
                 name={rating.name}
                 value={rating.value}
                 readOnly
@@ -56,6 +60,13 @@ export default function UserTicketSatisfactory({ data }: any) {
               />
             </div>
           ))}
+           <Typography
+          variant="subtitle2"
+          component="span"
+          sx={{ fontWeight: 400, color: "#757575" }}
+        >
+          Feedback: {data?.ticket_satisfactory?.feedback || "N/A"}
+        </Typography>
         </div>
       </DialogContent>
       <DialogTitle
@@ -63,7 +74,7 @@ export default function UserTicketSatisfactory({ data }: any) {
       >
         Percentage:{" "}
         <span style={{ color: "#4caf50" }}>
-          {data?.tickets?.ticket_satisfactory?.average_satisfactory}%
+          {data?.ticket_satisfactory?.average_satisfactory}%
         </span>
         <br />
         <Typography
@@ -71,8 +82,7 @@ export default function UserTicketSatisfactory({ data }: any) {
           component="span"
           sx={{ fontWeight: 400, color: "#757575" }}
         >
-          Submitted By:{" "}
-          {data?.tickets?.ticket_satisfactory?.user?.name || "N/A"}
+          Submitted By: {data?.ticket_satisfactory?.user?.name || "N/A"}
         </Typography>
       </DialogTitle>
     </>

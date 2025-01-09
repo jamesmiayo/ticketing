@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CSAT } from "../../api/services/csat";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Dialog, Grid, Typography } from "@mui/material";
 import ComboBoxComponent from "../../components/common/ComboBoxComponent";
 import CSATBarGraph from "./CSATBarGraph";
 import CSATPercentage from "./CSATPercentage";
@@ -14,6 +14,10 @@ import { Division } from "../../api/services/division";
 import { csatFormtype, csatType } from "../../schema/Csat/csat";
 import InputDateComponent from "../../components/common/InputDateComponent";
 import { User } from "../../api/services/user";
+import { BsEmojiNeutral } from "react-icons/bs";
+import TableComponents from "../../components/common/TableComponents";
+import { FaStar } from "react-icons/fa";
+import CSATTicketSatisfactoryData from "./CSATTicketSatisfactoryData";
 
 export default function CSATPage() {
   const [csat, setCsat] = useState<any>([]);
@@ -24,8 +28,10 @@ export default function CSATPage() {
   const [userData, setUserData] = useState<any>([]);
   const [userOption, setUserOption] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [rowData, setRowData] = useState<any>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
-  const {    
+  const {
     control,
     handleSubmit,
     reset,
@@ -34,14 +40,14 @@ export default function CSATPage() {
     resolver: yupResolver(csatType),
   });
 
-  const fetchData = async (params?:any) => {
-    setIsLoading(true)
+  const fetchData = async (params?: any) => {
+    setIsLoading(true);
     try {
       const response = await CSAT.getCSAT(params);
       setCsat(response);
     } catch (e) {
       console.error(e);
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -54,7 +60,7 @@ export default function CSATPage() {
       console.error("Failed to fetch users:", error);
     }
   };
-  
+
   const fetchBranchData = async () => {
     try {
       const response = await Branch.getBranch();
@@ -118,17 +124,18 @@ export default function CSATPage() {
   };
 
   const onSubmit: SubmitHandler<csatFormtype> = async (formData: any) => {
-    try{
+    try {
       await fetchData(formData);
-    }catch(error){
+    } catch (error) {
       console.error("Failed to fetch data:", error);
     }
-  }
+  };
 
   const handleReset = () => {
     fetchData();
     reset();
-  }
+  };
+
   useEffect(() => {
     fetchBranchData();
     fetchData();
@@ -136,8 +143,69 @@ export default function CSATPage() {
     getUser();
   }, []);
 
+  const columns = [
+    {
+      field: "ticket_id",
+      headerName: "Ticket ID",
+      width: 250,
+      renderCell: (params: any) => params?.row?.ticket_id,
+    },
+    {
+      field: "ticket_name",
+      headerName: "Ticket Name",
+      width: 250,
+      renderCell: (params: any) => params?.row?.title,
+    },
+    {
+      field: "assigneed",
+      headerName: "Facilitator",
+      width: 250,
+      renderCell: (params: any) =>
+        params?.row?.ticket_logs_latest?.assignee?.name,
+    },
+    {
+      field: "satisfactory",
+      headerName: "Overall Satisfaction",
+      width: 250,
+      renderCell: (params: any) => {
+        return (
+          <div>
+            {params?.row?.ticket_satisfactory === null ? (
+              "Unanswered Question"
+            ) : (
+              <>
+                {params?.row?.ticket_satisfactory?.satisfactory_1}{" "}
+                <FaStar color={"rgba(31, 80, 154 , 0.5)"} />
+              </>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "created_at",
+      headerName: "Created On",
+      width: 250,
+      renderCell: (params: any) => params?.row?.created_at,
+    },
+  ];
+
+  const handleRowClick = (params: any) => {
+    setRowData(params.row);
+    setOpen(true);
+  };
+
   return (
     <>
+      <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <CSATTicketSatisfactoryData data={rowData} />
+      </Dialog>
+
       <Box
         component="main"
         sx={{
@@ -151,140 +219,138 @@ export default function CSATPage() {
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-  <Box
-    sx={{
-      backgroundColor: "white",
-      height: "auto",
-      padding: 3,
-      mb: 2,
-      borderRadius: 3,
-    }}
-  >
-    <Grid container spacing={2} alignItems="center">
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <ComboBoxComponent
-          label="Branch Name"
-          control={control}
-          error={errors}
-          options={branch}
-          name="branch_id"
-        />
-      </Grid>
+          <Box
+            sx={{
+              backgroundColor: "white",
+              height: "auto",
+              padding: 3,
+              mb: 2,
+              borderRadius: 3,
+            }}
+          >
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <ComboBoxComponent
+                  label="Branch Name"
+                  control={control}
+                  error={errors}
+                  options={branch}
+                  name="branch_id"
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <ComboBoxComponent
-          label="Division Name"
-          control={control}
-          options={division}
-          error={errors}
-          name="division_id"
-          onChange={(e: any) => handleDivision(e)}
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <ComboBoxComponent
+                  label="Division Name"
+                  control={control}
+                  options={division}
+                  error={errors}
+                  name="division_id"
+                  onChange={(e: any) => handleDivision(e)}
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <ComboBoxComponent
-          label="Department Name"
-          control={control}
-          options={department}
-          error={errors}
-          name="department_id"
-          onChange={(e: any) => handleDepartment(e)}
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <ComboBoxComponent
+                  label="Department Name"
+                  control={control}
+                  options={department}
+                  error={errors}
+                  name="department_id"
+                  onChange={(e: any) => handleDepartment(e)}
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <ComboBoxComponent
-          label="Section Name"
-          control={control}
-          options={section}
-          error={errors}
-          name="section_id"
-          onChange={(e: any) => handleSection(e)}
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <ComboBoxComponent
+                  label="Section Name"
+                  control={control}
+                  options={section}
+                  error={errors}
+                  name="section_id"
+                  onChange={(e: any) => handleSection(e)}
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <ComboBoxComponent
-          label="User Name"
-          error={errors}
-          control={control}
-          options={userOption}
-          name="user_id"
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <ComboBoxComponent
+                  label="User Name"
+                  error={errors}
+                  control={control}
+                  options={userOption}
+                  name="user_id"
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <InputDateComponent
-          label="Start Date"
-          control={control}
-          name="start_date"
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <InputDateComponent
+                  label="Start Date"
+                  control={control}
+                  name="start_date"
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <InputDateComponent
-          label="End Date"
-          control={control}
-          name="end_date"
-        />
-      </Grid>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <InputDateComponent
+                  label="End Date"
+                  control={control}
+                  name="end_date"
+                />
+              </Grid>
 
-      <Grid item xs={12} sm={4} md={3} lg={2}>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-          }}
-        >
-          <Button variant="contained" color="primary" type="submit">
-            Submit
-          </Button>
-          <Button variant="contained" color="error" type="button" onClick={handleReset}>
-            Clear
-          </Button>
-        </Box>
-      </Grid>
-    </Grid>
-  </Box>
-</form>
-
-
-        <CSATStats data={csat} isLoading={isLoading}/>
-        <Box sx={{ display: "flex", gap: 2, alignItems: "stretch" }}>
-          <Box sx={{ flex: "1" }}>
-            <Box
-              sx={{
-                backgroundColor: "white",
-                padding: 2,
-                borderRadius: 2,
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CSATBarGraph data={csat?.satisfactory} />
-            </Box>
+              <Grid item xs={12} sm={4} md={3} lg={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                  }}
+                >
+                  <Button variant="contained" color="primary" type="submit">
+                    Submit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    type="button"
+                    onClick={handleReset}
+                  >
+                    Clear
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
           </Box>
+        </form>
 
-          <Box sx={{ width: "25%" }}>
-            <CSATPercentage
-              data={csat?.average_satisfactory}
-              isPassed={csat?.csat_passed}
-            />
+        <Box>
+          <CSATStats data={csat} isLoading={isLoading} />
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 2, marginBottom: 1, alignItems: "center" }}>
+    <CSATPercentage
+      data={csat?.average_satisfactory}
+      isPassed={csat?.csat_passed}
+    />
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+    <TableComponents
+      rows={csat?.data}
+      columns={columns}
+      onRowClick={handleRowClick}
+    />
+  </Box>
+</Box>
+
+
+          <Box sx={{ display: "flex", gap: 2 }}>
             <Box
               sx={{
                 backgroundColor: "white",
-                width: "100%",
+                width: "25%",
                 borderRadius: 3,
                 padding: 2,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 4, 
+                gap: 4,
               }}
             >
               <Typography
@@ -296,7 +362,7 @@ export default function CSATPage() {
                   color: "rgba(31, 80, 154 , 1)",
                 }}
               >
-                Total Ticket Satisfactory React
+                Total Ticket Satisfactory
               </Typography>
               <Box
                 sx={{
@@ -304,32 +370,53 @@ export default function CSATPage() {
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 2,
                 }}
               >
-                <BsEmojiLaughing color={"green"} size={80} />
+                <BsEmojiLaughing color={"green"} size={40} />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                   {csat?.total_satisfied} Satisfied
                 </Typography>
-                <Typography variant="body1">{csat?.total_tickets}</Typography>
               </Box>
-
               <Box
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: 2,
                 }}
               >
-                <BsEmojiFrown color={"red"} size={80} />
+                <BsEmojiNeutral color={"rgba(31, 80, 154 , 0.5)"} size={40} />
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  {csat?.total_unsatisfied} Satisfied
+                  {csat?.total_neutral} Neutral
                 </Typography>
-                <Typography variant="body1">{csat?.total_tickets}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <BsEmojiFrown color={"red"} size={40} />
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {csat?.total_unsatisfied} Not Satisfied
+                </Typography>
               </Box>
             </Box>
+            <Box
+                sx={{
+                  backgroundColor: "white",
+                  padding: 2,
+                  borderRadius: 2,
+                  display: "flex",
+                  width: "100%",                  
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CSATBarGraph data={csat?.satisfactory} />
+              </Box>
           </Box>
         </Box>
       </Box>

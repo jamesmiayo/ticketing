@@ -218,7 +218,7 @@ class TicketHdr extends Model
     public static function getTicketCSAT($searchParams)
     {
         $query = self::with([
-            'ticket_satisfactory:ticket_id,satisfactory_1',
+            'ticket_satisfactory',
             'ticket_logs:id,ticket_id,status',
         ])
             ->whereHas('ticket_logs', function ($query) {
