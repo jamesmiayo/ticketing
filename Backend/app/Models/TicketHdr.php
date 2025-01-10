@@ -25,7 +25,7 @@ class TicketHdr extends Model
         'updated_by'
     ];
 
-    protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id,resolution_time', 'requestor.branch:id,branch_description', 'sub_category.category.division'];
+    protected $with = ['ticket_files', 'ticket_images', 'ticket_documents', 'ticket_attachment', 'updatedBy', 'ticket_logs_latest', 'requestor:id,branch_id,section_id,name,phone_number', 'requestor.section:id,section_description,department_id', 'requestor.section.department:id,department_description,division_id', 'sub_category:id,category_id,subcategory_description', 'sub_category.category:id,category_description,division_id,resolution_time', 'requestor.branch:id,branch_description', 'sub_category.category.division' , 'requestor.section.department.division'];
 
     protected $appends = ['ticket_status', 'time_finished'];
 
@@ -135,7 +135,7 @@ class TicketHdr extends Model
 
     public function ticket_logs_latest()
     {
-        return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name,section_id')->latestOfMany();
+        return $this->hasOne(TicketStatus::class, 'ticket_id')->with('updated_by:id,name', 'assignee:id,name,section_id,branch_id' , 'assignee.branch' , 'assignee.section' , 'assignee.section.department' ,'assignee.section.department.division')->latestOfMany();
     }
 
     public function getTicketLog($searchParams)
@@ -392,7 +392,7 @@ class TicketHdr extends Model
         if (!empty($inProgressLog)) {
             $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($inProgressLog?->created_at));
             $diffInMinutes = round($diffInSeconds / 60, 2);
-            return abs($diffInMinutes);
+            return round(abs($diffInMinutes) , 2);
         }
         return null;
     }
@@ -403,7 +403,7 @@ class TicketHdr extends Model
         if (!empty($doneLog)) {
             $diffInSeconds = Carbon::parse($this->created_at)->diffInSeconds(Carbon::parse($doneLog?->created_at));
             $diffInMinutes = round($diffInSeconds / 60, 2);
-            return abs($diffInMinutes);
+            return round(abs($diffInMinutes) , 2);
         }
 
         return null;

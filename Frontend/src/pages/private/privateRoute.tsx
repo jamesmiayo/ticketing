@@ -1,8 +1,15 @@
 import { Navigate } from "react-router-dom";
 import Sidebar from "../../components/navigation/SideBar";
 import NavBar from "../../components/navigation/NavBar";
+import { useEffect } from "react";
 
-const PrivateRoute = ({ component: Component }: any) => {
+const PrivateRoute = ({ component: Component , title }: any) => {
+  useEffect(() => {
+    if (title) {
+      document.title = title; 
+    }
+  }, [title]);
+  
   const token = localStorage.getItem("token");
   return token ? (
     <Sidebar>

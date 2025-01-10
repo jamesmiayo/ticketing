@@ -1,29 +1,17 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import AHTTicketTable from "./AHTTicketTable";
 import { AHT } from "../../api/services/aht";
-import { SLA } from "../../api/services/SLA";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { aht, ahtFormtype } from "../../schema/Aht/aht";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { SubmitHandler } from "react-hook-form";
+import { ahtFormtype } from "../../schema/Aht/aht";
+import GlobalFilterComponents from "../../components/common/GlobalFilterComponents";
+import AHTStats from "./AHTStats";
+import AHTTicketData from "./AHTTicketData";
 
 export default function AHTPage() {
   const [data, setData] = useState<any>([]);
-  const [priority, setPriority] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const [searchParams] = useSearchParams();
-
-  const {
-    reset,
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<ahtFormtype>({
-    resolver: yupResolver(aht),
-  });
-
+  const [rowData, setRowData] = useState<any>([]);
   const fetchAHTData = async (params?: any) => {
     setLoading(true);
     try {
@@ -36,23 +24,9 @@ export default function AHTPage() {
       setLoading(false);
     }
   };
-
-  const fetchPriority = async () => {
-    try {
-      const response = await SLA.getSLA();
-      const data = response.map((row: any) => {
-        return { value: row.id, label: row.priority_label };
-      });
-      setPriority(data);
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    fetchPriority();
     fetchAHTData();
   }, []);
-
-  const userId = searchParams.get("user_id");
 
   const onSubmit: SubmitHandler<ahtFormtype> = async (formData: any) => {
     setLoading(true);
@@ -65,46 +39,10 @@ export default function AHTPage() {
     }
   };
 
-  const handleReset = () => {
-    reset();
-    fetchAHTData();
+
+  const handleRowClick = (params: any) => {
+     setRowData(params.row);
   };
-
-  const ticketSearchFilter = [
-    {
-      name: "ticket_id",
-      label: "Ticket ID",
-      register: register,
-      errors: errors,
-      type: "text",
-    },
-    {
-      name: "priority",
-      label: "Priority",
-      register: register,
-      errors: errors,
-      control: control,
-      options: priority,
-      type: "select",
-    },
-    {
-      name: "start_date",
-      label: "Start Date",
-      register: register,
-      control: control,
-      errors: errors,
-      type: "date",
-    },
-    {
-      name: "end_date",
-      label: "End Date",
-      register: register,
-      control: control,
-      errors: errors,
-      type: "date",
-    },
-  ];
-
   return (
     <>
       <Box
@@ -116,66 +54,28 @@ export default function AHTPage() {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-          Ticket Handle Time
+          Ticket Average Handle Time
         </Typography>
-        <Box sx={{ height: "auto", padding: 1, marginBottom: 1 }}>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-              gap: 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {loading
-              ? Array.from({ length: 6 }).map((_, index) => (
-                  <Skeleton
-                    key={index}
-                    variant="rectangular"
-                    sx={{
-                      borderRadius: 1,
-                      height: 65,
-                    }}
-                  />
-                ))
-              : data?.analytics &&
-                Object.entries(data.analytics).map(
-                  ([key, value]: any, index: any) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        backgroundColor: "white",
-                        borderRadius: 1,
-                        boxShadow: 1,
-                        textAlign: "center",
-                        padding: 2,
-                        fontSize: "16px",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      <strong>{key}</strong>
-                      <br />
-                      {value}
-                    </Box>
-                  )
-                )}
+        <GlobalFilterComponents  
+        onSubmit={onSubmit}
+        />
+        <AHTStats data={data?.analytics} isLoading={loading}/>
+        <Box sx={{ display:"flex" , gap: 1 }}>
+        <Box sx={{ width: '25%' , backgroundColor: "white" , borderRadius: 2}}>
+        <Typography variant="h6" gutterBottom sx={{ paddingTop: 2 , textAlign: 'center'}}>
+          Ticket ID : {rowData?.ticket_id}
+        </Typography>
+         <AHTTicketData data={rowData} isLoading={loading}/>
           </Box>
-        </Box>
-
-        {userId ? (
-          <AHTTicketTable />
-        ) : (
-          <AHTTicketTable
-            ticketSearchFilter={ticketSearchFilter}
+        <Box sx={{ width: '75%' }}>
+        <AHTTicketTable
             data={data?.data}
             isLoading={loading}
-            priority={priority}
             onSubmit={onSubmit}
-            handleSubmit={handleSubmit}
-            handleReset={handleReset}
+            onRowClick={handleRowClick}
           />
-        )}
+        </Box>
+        </Box>      
       </Box>
     </>
   );

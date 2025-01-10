@@ -20,7 +20,7 @@ export default function UpdateUserBranchSection({ onClose }: any) {
   const [division, setDivision] = useState<any>([]);
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState([]);
-  const { setUser } = useAuth();
+  const { logoutUser } = useAuth();
 
   const toast = useExecuteToast();
   const {
@@ -92,7 +92,6 @@ export default function UpdateUserBranchSection({ onClose }: any) {
   ) => {
     try {
       const response = await User.updateUserBranchSection(formData);
-      setUser(response.data);
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
@@ -100,6 +99,10 @@ export default function UpdateUserBranchSection({ onClose }: any) {
       console.error("Failed to fetch data:", error);
     } finally {
       onClose(false);
+      const response:any = await logoutUser();
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
     }
   };
   useEffect(() => {

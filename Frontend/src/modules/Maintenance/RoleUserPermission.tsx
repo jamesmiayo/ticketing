@@ -85,14 +85,12 @@ export default function RoleUserPermission({
         data?.id,
         checkedPermissions
       );
-      console.log(response);
       toast.executeToast(response.message, "top-center", true, {
         type: "success",
       });
       refetch();
       onClose(false);
     } catch (e) {
-      console.log(e)
       toast.executeToast("Failed to assign permissions", "top-center", true, {
         type: "error",
       });

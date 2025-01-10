@@ -1,7 +1,6 @@
 import { DialogContent, DialogTitle, Rating, Typography } from "@mui/material";
 
 export default function CSATTicketSatisfactoryData({ data }: any) {
-  console.log(data);
   const satisfactoryFields = [
     {
       name: "satisfactory_1",

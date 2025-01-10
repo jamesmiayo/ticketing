@@ -122,7 +122,6 @@ export default function UserProfile() {
   const onSubmit = async (formData: any) => {
     try {
       const response = await User.updateUserPhoneNumber(formData);
-      console.log(response);
       toast.executeToast(response.message, "top-center", true, {
         type: "success",
       });

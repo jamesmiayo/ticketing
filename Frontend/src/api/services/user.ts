@@ -118,8 +118,7 @@ export const User = {
         method: "POST",
         data: data,
       });
-
-      return response.data.data;
+      return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
       throw error;

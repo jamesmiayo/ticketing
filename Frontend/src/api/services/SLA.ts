@@ -14,11 +14,12 @@ export const SLA = {
       throw error;
     }
   },
-  getSLAReport: async function (isPassed = "", startDate = "", endDate = "") {
+  getSLAReport: async function (params?:any) {
     try {
       const response = await apiClient.request({
-        url: `/ticket/SLA-REPORT?isPassed=${isPassed}&start_date=${startDate}&end_date=${endDate}`,
+        url: `/ticket/SLA-REPORT`,
         method: "GET",
+        params: params
       });
 
       return response.data.data;

@@ -31,9 +31,6 @@ export default function FaqPage() {
         value: row.FAQ_ID,
         label: row.description,
       }));
-
-      console.log(dataOption);
-
       setSelectedCategory(dataOption[0]?.label);
 
       const faqData = response.flatMap((row: any) =>

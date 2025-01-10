@@ -1,22 +1,13 @@
-import { Chip, Dialog, IconButton, Tooltip } from "@mui/material";
-import { GridRenderCellParams } from "@mui/x-data-grid";
-import { useState } from "react";
-import { FaEye } from "react-icons/fa";
+import { Chip, Tooltip } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
-import AHTModal from "./AHTModal";
 import { Cancel, CheckCircle } from "@mui/icons-material";
 
 export default function AHTTicketTable({
-  ticketSearchFilter,
   data,
   isLoading,
-  onSubmit,
-  handleSubmit,
-  handleReset,
+  handleReset, 
+  onRowClick
 }: any) {
-  const [open, setOpen] = useState(false);
-  const [rowData, setRowData] = useState([]);
-
   const columns = [
     {
       field: "ticket_id",
@@ -40,6 +31,12 @@ export default function AHTTicketTable({
           icon={params?.row?.aht_passed === 1 ? <CheckCircle /> : <Cancel />}
         />
       ),
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 140,
+      renderCell: (params: any) => params?.row?.title,
     },
     {
       field: "ticket_priority",
@@ -73,18 +70,18 @@ export default function AHTTicketTable({
       renderCell: (params: any) =>
         params?.row?.ticket_logs_latest?.assignee?.name,
     },
-    {
-      field: "idle_time",
-      headerName: "Total Idle Time",
-      width: 140,
-      renderCell: (params: any) => params?.row?.aht_idle_time,
-    },
-    {
-      field: "lead_time",
-      headerName: "Lead Time",
-      width: 140,
-      renderCell: (params: any) => params?.row?.aht_lead_time,
-    },
+    // {
+    //   field: "idle_time",
+    //   headerName: "Total Idle Time",
+    //   width: 140,
+    //   renderCell: (params: any) => params?.row?.aht_idle_time,
+    // },
+    // {
+    //   field: "lead_time",
+    //   headerName: "Lead Time",
+    //   width: 140,
+    //   renderCell: (params: any) => params?.row?.aht_lead_time,
+    // },
     {
       field: "total_duration",
       headerName: "Total Duration",
@@ -97,41 +94,18 @@ export default function AHTTicketTable({
       width: 250,
       renderCell: (params: any) => params?.row?.created_at,
     },
-    {
-      field: "view",
-      headerName: "Options",
-      width: 170,
-      sortable: false,
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <Tooltip title="View">
-            <IconButton onClick={() => handleViewClick(params.row)}>
-              <FaEye />
-            </IconButton>
-          </Tooltip>
-        </>
-      ),
-    },
   ];
-
-  function handleViewClick(data: any) {
-    setRowData(data);
-    setOpen(true);
-  }
 
   return (
     <>
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-        <AHTModal data={rowData} setOpen={open} />
-      </Dialog>
+
       <TableComponents
         rows={data}
         isLoading={isLoading}
         columns={columns}
         height={700}
-        customInputs={ticketSearchFilter}
-        onSubmit={handleSubmit(onSubmit)}
         onReset={handleReset}
+        onRowClick={onRowClick}
       />
     </>
   );

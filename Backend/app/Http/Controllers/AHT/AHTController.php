@@ -22,11 +22,12 @@ class AHTController extends Controller
                 [
                     'aht_passed' => $ticket->ahtPassed(),
                     'aht_lead_time' => $ticket->ahtLeadTime(),
-                    'aht_idle_time' => $ticket->ahtIdleTime(),
+                    'aht_idle_time' =>$ticket->ahtIdleTime(),
                     'aht_total_duration_time' => $ticket->ahtTotalDuration(),
                 ]
             );
         });
+
         $analytics = $processedTickets->reduce(function ($carry, $ticket) {
             $carry['Total Tickets']++;
             $carry['Passed'] += $ticket['aht_passed'];
@@ -36,18 +37,31 @@ class AHTController extends Controller
             $carry['Total Duration Time'] += $ticket['aht_total_duration_time'];
             return $carry;
         }, [
-            'Total Tickets' => 0,
-            'Passed' => 0,
-            'Failed' => 0,
             'Total Lead Time' => 0,
             'Total Idle Time' => 0,
             'Total Duration Time' => 0,
+            'Total Tickets' => 0,
+            'Passed' => 0,
+            'Failed' => 0,
         ]);
 
-        return new JsonResponse([
+        $totalTickets = max($analytics['Total Tickets'], 1);
+        $analytics['Total Lead Time'] = round($analytics['Total Lead Time'], 2);
+        $analytics['Total Idle Time'] = round($analytics['Total Idle Time'], 2);
+        $analytics['Average Total Passed'] = $analytics['Passed'] / $totalTickets;
+        $analytics['Average Total Failed'] = $analytics['Failed'] / $totalTickets;
+
+        $analytics = collect($analytics)->map(function ($value, $key) {
+            return [
+                'label' => $key,
+                'value' => $value,
+            ];
+        })->values();
+
+        return response()->json([
             'status' => Response::HTTP_OK,
             'data' => $processedTickets,
-            'analytics' => $analytics
+            'analytics' => $analytics,
         ], Response::HTTP_OK);
     }
 

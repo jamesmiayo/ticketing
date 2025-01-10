@@ -27,7 +27,6 @@ any) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
-  console.log(tickets)
   const [, setPriorityColorMap] = useState<any>({});
 
   // Predefined colors for priority levels

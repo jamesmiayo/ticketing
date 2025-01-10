@@ -30,10 +30,22 @@ export default function AHTModal({ data }: any) {
   ];
 
   const totalStatuses = [
-    { title: 'Total In Progress', content: data?.ticket_logs.filter((row: any) => row.status === 2).length },
-  { title: 'Total Pending', content: data?.ticket_logs.filter((row: any) => row.status === 3).length },
-  { title: 'Total On Hold', content: data?.ticket_logs.filter((row: any) => row.status === 4).length },
-]
+    {
+      title: "Total In Progress",
+      content: data?.ticket_logs?.filter((row: any) => row.status === 2).length,
+      backgroundColor: "rgba(76, 175, 80, 0.1)", 
+    },
+    {
+      title: "Total Pending",
+      content: data?.ticket_logs?.filter((row: any) => row.status === 3).length,
+      backgroundColor: "rgba(63, 81, 181, 0.1)", 
+    },
+    {
+      title: "Total On Hold",
+      content: data?.ticket_logs?.filter((row: any) => row.status === 4).length,
+      backgroundColor: "rgba(156, 39, 176, 0.1)", 
+    },
+  ];
   return (
     <>
       <DialogTitle>
@@ -55,7 +67,7 @@ export default function AHTModal({ data }: any) {
       <Box
         key={index}
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: card.backgroundColor,
           boxShadow: 2,
           padding: 2,
           borderRadius: 2,

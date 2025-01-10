@@ -85,7 +85,7 @@ class SLAController extends Controller
         $startDate = $request->query('start_date'); // Optional start date
         $endDate = $request->query('end_date'); // Optional end date
 
-        $tickets = TicketHdr::getSpecificTicket()->latest()->get();
+        $tickets = TicketHdr::getSpecificTicket($request->all())->latest()->get();
 
         $timeDifferences = $tickets->filter(function ($ticket) use ($startDate, $endDate) {
             $hasInProgress = collect($ticket['ticket_statuses'])->contains(function ($status) {
@@ -152,7 +152,7 @@ class SLAController extends Controller
                 $ticket['id'] => array_merge($ticket->toArray(), [
                     'first_created_in_progress' => $firstStatus['created_at'] ?? null,
                     'first_response_message' => $firstResponse['created_at'] ?? null,
-                    'time_difference' => $startTime->diffForHumans($responseTime, true),
+                    'time_difference' => $startTime?->diffForHumans($responseTime, true),
                     'sla_passed' => $slaPassed,
                 ])
             ];
