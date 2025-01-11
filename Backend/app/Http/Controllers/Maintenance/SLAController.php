@@ -12,6 +12,7 @@ use App\Models\TicketHdr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Constants\GlobalConstants;
+use Carbon\Carbon;
 
 class SLAController extends Controller
 {
@@ -31,7 +32,7 @@ class SLAController extends Controller
     {
         $data = SLA::create($request->getFAQData());
 
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -45,7 +46,7 @@ class SLAController extends Controller
             return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'SLA Not Found'], Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data, 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -81,107 +82,77 @@ class SLAController extends Controller
     }
     public function SLAReport(Request $request)
     {
-        $isPassed = $request->query('isPassed'); // "1" for passed, "0" for failed
-        $startDate = $request->query('start_date'); // Optional start date
-        $endDate = $request->query('end_date'); // Optional end date
-
         $tickets = TicketHdr::getSpecificTicket($request->all())->latest()->get();
 
-        $timeDifferences = $tickets->filter(function ($ticket) use ($startDate, $endDate) {
-            $hasInProgress = collect($ticket['ticket_statuses'])->contains(function ($status) {
-                return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
-            });
-
-            if (!$hasInProgress) {
-                return false;
-            }
-
-            if ($startDate || $endDate) {
-                $firstCreatedInProgress = collect($ticket['ticket_statuses'])
-                    ->filter(function ($status) {
-                        return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
-                    })
-                    ->sortBy('created_at')
-                    ->first()['created_at'] ?? null;
-
-                if (!$firstCreatedInProgress) {
-                    return false;
-                }
-
-                $firstCreatedInProgressDate = \Carbon\Carbon::parse($firstCreatedInProgress);
-
-                if ($startDate && $firstCreatedInProgressDate->lt(\Carbon\Carbon::parse($startDate))) {
-                    return false;
-                }
-
-                if ($endDate && $firstCreatedInProgressDate->gt(\Carbon\Carbon::parse($endDate))) {
-                    return false;
-                }
-            }
-
-            return true;
-        })->mapWithKeys(function ($ticket) {
+        $timeDifferences = $tickets->filter(
+            fn($ticket) =>
+            collect($ticket['ticket_statuses'])->contains(
+                fn($status) =>
+                $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS)
+            )
+        )->mapWithKeys(function ($ticket) {
             $firstStatus = collect($ticket['ticket_statuses'])
-                ->filter(function ($status) {
-                    return $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS);
-                })
+                ->filter(fn($status) => $status['ticket_status'] === GlobalConstants::getStatusType(GlobalConstants::IN_PROGRESS))
                 ->sortBy('created_at')
                 ->first();
 
             $firstResponse = collect($ticket['ticket_messages'])->sortBy('created_at')->first();
-
-            $timeDifference = null;
             $slaPassed = null;
 
             if ($firstStatus && $firstResponse) {
-                $startTime = \Carbon\Carbon::parse($firstStatus['created_at']);
-                $responseTime = \Carbon\Carbon::parse($firstResponse['created_at']);
-
-                $timeDifference = \Carbon\Carbon::parse($startTime->diffForHumans($responseTime, true));
-
-                $slaResponseTimeString = $ticket['sla']['response_time'] ?? '00:00:00';
-                $slaResponseTimeParts = explode(':', $slaResponseTimeString);
-                $slaResponseTime = \Carbon\CarbonInterval::hours($slaResponseTimeParts[0])
-                    ->minutes($slaResponseTimeParts[1])
-                    ->seconds($slaResponseTimeParts[2]);
-
-                $slaPassed = $timeDifference->lessThanOrEqualTo($slaResponseTime);
+                $startTime = Carbon::parse($firstStatus['created_at']);
+                $responseTime = Carbon::parse($firstResponse['created_at']);
+                $timeDifference = $startTime->diffInSeconds($responseTime);
+                $slaResponseTimeParts = explode(':', $ticket['sla']['response_time'] ?? '00:00:00');
+                $slaResponseTime = ($slaResponseTimeParts[0] * 3600) + ($slaResponseTimeParts[1] * 60) + $slaResponseTimeParts[2];
+                $slaPassed = $timeDifference <= $slaResponseTime;
             }
 
-            return [
-                $ticket['id'] => array_merge($ticket->toArray(), [
-                    'first_created_in_progress' => $firstStatus['created_at'] ?? null,
-                    'first_response_message' => $firstResponse['created_at'] ?? null,
-                    'time_difference' => $startTime?->diffForHumans($responseTime, true),
-                    'sla_passed' => $slaPassed,
-                ])
-            ];
+            return [$ticket['id'] => array_merge($ticket->toArray(), [
+                'first_created_in_progress' => $firstStatus['created_at'] ?? null,
+                'first_response_message' => $firstResponse['created_at'] ?? null,
+                'sla_passed' => $slaPassed,
+            ])];
         });
 
-        $slaPassCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true)->count();
-        $slaFailCount = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false)->count();
+        $slaPassCount = $timeDifferences->where('sla_passed', true)->count();
+        $slaFailCount = $timeDifferences->where('sla_passed', false)->count();
         $totalCount = $slaPassCount + $slaFailCount;
         $passRate = $totalCount ? ($slaPassCount / $totalCount) * 100 : 0;
 
-        if ($isPassed === "1") {
-            $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === true);
-        } elseif ($isPassed === "0") {
-            $timeDifferences = $timeDifferences->filter(fn($data) => $data['sla_passed'] === false);
-        }
+        $startDate = $request->start_date ? Carbon::parse($request->start_date) : Carbon::now()->startOfMonth();
+        $endDate = $request->end_date ? Carbon::parse($request->end_date) : Carbon::now()->endOfMonth();
+
+        $labels = collect(range(0, $startDate->diffInDays($endDate)))
+            ->map(fn($i) => $startDate->copy()->addDays($i)->format('d-m'));
+
+        $ticketData = $labels->mapWithKeys(function ($label) use ($timeDifferences) {
+            $date = Carbon::createFromFormat('d-m', $label);
+
+            $dailyTickets = $timeDifferences->filter(
+                fn($ticket) =>
+                Carbon::parse($ticket['created_at'])->isSameDay($date)
+            );
+
+            return [$label => [
+                'passed' => $dailyTickets->where('sla_passed', true)->count(),
+                'failed' => $dailyTickets->where('sla_passed', false)->count(),
+            ]];
+        });
 
         return new JsonResponse([
             'status' => Response::HTTP_OK,
             'data' => [
                 'sla_report' => $timeDifferences,
                 'sla_pass_count' => $slaPassCount,
+                'sla_pass_percentage' => $passRate,
                 'sla_fail_count' => $slaFailCount,
+                'sla_fail_percentage' => 100 - $passRate,
                 'total_count' => $totalCount,
-                'pass_rate' => $passRate,
+                'labels' => $labels->toArray(),
+                'passed_data' => array_column($ticketData->toArray(), 'passed'),
+                'failed_data' => array_column($ticketData->toArray(), 'failed'),
             ],
         ], Response::HTTP_OK);
     }
-
-
-
-
 }

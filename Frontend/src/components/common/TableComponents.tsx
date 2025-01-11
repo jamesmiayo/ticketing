@@ -29,6 +29,7 @@ interface DataGridProps {
   isLoading?: boolean;
   onReset?: () => void;
   onRowClick?: any;
+  sx?: object; // Optional sx prop for custom styling
 }
 
 const TableComponents = ({
@@ -43,7 +44,8 @@ const TableComponents = ({
   maxCount,
   isLoading = false,
   onReset,
-  onRowClick
+  onRowClick,
+  sx = {}, // Default to an empty object if not provided
 }: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -60,62 +62,58 @@ const TableComponents = ({
   return (
     <>
       {customInputs.length > 0 && (
- <div
- style={{
-   backgroundColor: "white",
-   padding: "20px",
-   marginBottom: 5,
-   boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-   borderRadius: 5,
- }}
->
- <form
-   onSubmit={(e) => {
-     e.preventDefault();
-     onSubmit?.();
-   }}
- >
-   <Grid container spacing={2} alignItems="center">
-     {customInputs.map((inputProps, index) => (
-       <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
-         {inputProps.type === "text" ? (
-           <InputComponent {...inputProps} />
-         ) : inputProps.type === "select" ? (
-           <SelectItem {...inputProps} />
-         ) : inputProps.type === "date" ? (
-           <InputDateComponent {...inputProps} />
-         ) : inputProps.type === "combobox" ? (
-           <ComboBoxComponent {...inputProps} />
-         ) : null}
-       </Grid>
-     ))}
-     {/* Buttons Section in the Last Column */}
-     <Grid item xs={12} sm={6} md={4} lg={2}>
-       <Box
-         sx={{
-           display: "flex",
-           gap: 1, // Add spacing between buttons
-         }}
-       >
-         <Button variant="contained" color="primary" type="submit">
-           Submit
-         </Button>
-         <Button
-           variant="contained"
-           color="error"
-           type="button"
-           onClick={onReset}
-         >
-           Clear
-         </Button>
-       </Box>
-     </Grid>
-   </Grid>
- </form>
-</div>
-
-  
-     
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "20px",
+            marginBottom: 5,
+            boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+            borderRadius: 5,
+          }}
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit?.();
+            }}
+          >
+            <Grid container spacing={2} alignItems="center">
+              {customInputs.map((inputProps, index) => (
+                <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
+                  {inputProps.type === "text" ? (
+                    <InputComponent {...inputProps} />
+                  ) : inputProps.type === "select" ? (
+                    <SelectItem {...inputProps} />
+                  ) : inputProps.type === "date" ? (
+                    <InputDateComponent {...inputProps} />
+                  ) : inputProps.type === "combobox" ? (
+                    <ComboBoxComponent {...inputProps} />
+                  ) : null}
+                </Grid>
+              ))}
+              <Grid item xs={12} sm={6} md={4} lg={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                  }}
+                >
+                  <Button variant="contained" color="primary" type="submit">
+                    Submit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    type="button"
+                    onClick={onReset}
+                  >
+                    Clear
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </form>
+        </div>
       )}
 
       <div style={{ height: height, width: width }}>
@@ -145,6 +143,7 @@ const TableComponents = ({
               maxHeight: "40px",
               minHeight: "40px",
             },
+            ...sx, // Merge custom styles with default styles
           }}
         />
 
@@ -176,12 +175,6 @@ const TableComponents = ({
                   },
                   "& .MuiPaginationItem-root:hover": {
                     backgroundColor: "#e3f2fd",
-                  },
-                  "& .MuiDataGrid-virtualScroller": {
-                    overflowX: "auto !important",
-                  },
-                  "& .MuiDataGrid-root": {
-                    overflowX: "visible",
                   },
                 }}
               />

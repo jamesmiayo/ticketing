@@ -58,6 +58,7 @@ export default function AHTPage() {
         </Typography>
         <GlobalFilterComponents  
         onSubmit={onSubmit}
+        onReset={() => fetchAHTData()}
         />
         <AHTStats data={data?.analytics} isLoading={loading}/>
         <Box sx={{ display:"flex" , gap: 1 }}>

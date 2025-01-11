@@ -11,31 +11,24 @@ import {
 import { useEffect, useState } from "react";
 import { SLA } from "../../api/services/SLA";
 import TableComponents from "../../components/common/TableComponents";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { updateUserBranchSection } from "../../schema/User/UpdateUserBranchSection";
 import GlobalFilterComponents from "../../components/common/GlobalFilterComponents";
+import SLALineGraph from "./SLALineGraph";
+import SLAStats from "./SLAStats";
 
 const SlaReportPage = () => {
   const [slaReport, setSlaReport] = useState<any>({});
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-
-  const {
-    reset,
-  } = useForm<any>({
-    resolver: yupResolver(updateUserBranchSection),
-  });
 
   const slaReportFetchData = async (formData?:any) => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const result = await SLA.getSLAReport(formData);
       setSlaReport(result);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -83,13 +76,13 @@ const SlaReportPage = () => {
     {
       field: "ticket_id",
       headerName: "Ticket ID",
-      width: 250,
+      width: 150,
       renderCell: (params: any) => params?.row?.ticket_id,
     },
     {
       field: "sla_passed",
       headerName: "SLA Passed",
-      width: 250,
+      width: 150,
       renderCell: (params: any) => {
         return (
           <Chip
@@ -140,35 +133,90 @@ const SlaReportPage = () => {
   ];
 
   const onSubmit = async (formData: any) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       slaReportFetchData(formData);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
-  const handleReset = () => {
-    slaReportFetchData();
-    reset();
-  };
+
   return (
     <>
-      <Box
-        component="main"
-        sx={{
-          p: 3,
-          minHeight: "100vh",
-          width: "100%",
-        }}
-      >
-        <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-          Ticket Service Level Agreement
-        </Typography>
-        <GlobalFilterComponents onSubmit={onSubmit} onReset={handleReset} />
-        <TableComponents rows={tickets} columns={columns} height={700} />
-      </Box>
+ <Box
+  component="main"
+  sx={{
+    p: 3,
+    minHeight: "100vh",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+  }}
+>
+  <Typography variant="h4" gutterBottom>
+    Ticket Service Level Agreement
+  </Typography>
+  <GlobalFilterComponents onSubmit={onSubmit} onReset={() => slaReportFetchData()} />
+
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection:"row",
+      backgroundColor: "white",
+      borderRadius: 2,
+      height: "100%",
+      padding: 2,
+    }}
+  >
+    <Box sx={{ padding: 1, flex: 1 }}>
+      <SLAStats data={slaReport} isLoading={loading}/>
+    </Box>
+    
+    <Box
+  sx={{
+    width: "100%",
+    maxWidth: "1350px",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    flex: 2, 
+    padding: 1,
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      height: "50%", 
+      flex: 1,
+      minHeight: 0, 
+    }}
+  >
+    <SLALineGraph value={slaReport}/>
+  </Box>
+  <Box
+    sx={{
+      width: "100%",
+      height: "50%", 
+      flex: 1, // Adjust based on available space
+      minHeight: 0, // Prevent flex items from growing unexpectedly
+    }}
+  >
+    <TableComponents rows={tickets} columns={columns} isLoading={loading} sx={{
+      height: "100%", // Ensure the table stretches to the parent's full height
+      width: "100%", // Ensure the table spans the parent's full width
+    }}/>
+  </Box>
+</Box>
+
+  </Box>
+
+</Box>
+
+
     </>
 
     // <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

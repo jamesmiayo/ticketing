@@ -196,12 +196,24 @@ class TicketHdr extends Model
             $query->where('status', GlobalConstants::VALIDATION);
         });
 
-        if (array_key_exists('ticket_id', $searchParams)) {
-            $query->ticketId($searchParams['ticket_id']);
+        if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
+            $query->branchId($searchParams['branch_id']);
         }
 
-        if (array_key_exists('priority', $searchParams) && $searchParams['priority'] !== null) {
-            $query->priority($searchParams['priority']);
+        if (array_key_exists('division_id', $searchParams) && $searchParams['division_id'] !== null) {
+            $query->divisionId($searchParams['division_id']);
+        }
+
+        if (array_key_exists('department_id', $searchParams) && $searchParams['department_id'] !== null) {
+            $query->departmentId($searchParams['department_id']);
+        }
+
+        if (array_key_exists('section_id', $searchParams) && $searchParams['section_id'] !== null) {
+            $query->sectionId($searchParams['section_id']);
+        }
+
+        if (array_key_exists('user_id', $searchParams) && $searchParams['user_id'] !== null) {
+            $query->assignee($searchParams['user_id']);
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
@@ -257,7 +269,7 @@ class TicketHdr extends Model
         return $query;
     }
 
-    public static function getSpecificTicket()
+    public static function getSpecificTicket($searchParams)
     {
         $query = self::with([
             'ticket_logs_latest',
@@ -268,6 +280,15 @@ class TicketHdr extends Model
             'ticket_messages.user:id,name',
             'sla'
         ]);
+
+        if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
+            $query->startDate($searchParams['start_date']);
+        }
+
+        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
+            $query->endDate($searchParams['end_date']);
+        }
+
         return $query;
     }
 
