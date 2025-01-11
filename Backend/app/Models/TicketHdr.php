@@ -281,6 +281,26 @@ class TicketHdr extends Model
             'sla'
         ]);
 
+        if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
+            $query->branchId($searchParams['branch_id']);
+        }
+
+        if (array_key_exists('division_id', $searchParams) && $searchParams['division_id'] !== null) {
+            $query->divisionId($searchParams['division_id']);
+        }
+
+        if (array_key_exists('department_id', $searchParams) && $searchParams['department_id'] !== null) {
+            $query->departmentId($searchParams['department_id']);
+        }
+
+        if (array_key_exists('section_id', $searchParams) && $searchParams['section_id'] !== null) {
+            $query->sectionId($searchParams['section_id']);
+        }
+
+        if (array_key_exists('user_id', $searchParams) && $searchParams['user_id'] !== null) {
+            $query->assignee($searchParams['user_id']);
+        }
+
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
             $query->startDate($searchParams['start_date']);
         }
