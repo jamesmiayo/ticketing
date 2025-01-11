@@ -269,7 +269,7 @@ class TicketHdr extends Model
         return $query;
     }
 
-    public static function getSpecificTicket($searchParams)
+    public static function getSpecificTicket($searchParams=[])
     {
         $query = self::with([
             'ticket_logs_latest',

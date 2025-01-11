@@ -39,8 +39,10 @@ export default function AHTStats({ data, isLoading }: any) {
                 textAlign: "center",
               }}
             >
+                    <Typography variant="h6" sx={{ color: "#1976d2", fontWeight: "bold" }}>
+                    {row?.value}                        
+                    </Typography>
                               <Typography variant="subtitle1" fontWeight="bold">{row?.label}</Typography>
-              {row?.value}
             </Box>
           ))}
     </Box>

@@ -11,8 +11,8 @@ export default function SLaDoughnutGraph({ rowData, isLoading }: any) {
       {
         label: "Tasks",
         data: [rowData?.sla_pass_percentage, rowData?.sla_fail_percentage],
-        backgroundColor: ["green", "red"],
-        borderColor: ["rgb(0, 139, 7)", "rgb(116, 0, 0)"],
+        backgroundColor: ["rgba(76, 175, 80, 0.3)", "rgba(175, 76, 76, 0.3)"],
+        borderColor: ["rgba(76, 175, 80, 1)", "rgb(175, 76, 76, 1)"],
         borderWidth: 1,
       },
     ],

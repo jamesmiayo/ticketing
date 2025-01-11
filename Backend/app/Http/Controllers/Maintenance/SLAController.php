@@ -111,6 +111,7 @@ class SLAController extends Controller
             return [$ticket['id'] => array_merge($ticket->toArray(), [
                 'first_created_in_progress' => $firstStatus['created_at'] ?? null,
                 'first_response_message' => $firstResponse['created_at'] ?? null,
+                'time_difference' => $startTime?->diffForHumans($responseTime, true),
                 'sla_passed' => $slaPassed,
             ])];
         });

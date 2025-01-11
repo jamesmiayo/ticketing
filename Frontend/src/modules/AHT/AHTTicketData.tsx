@@ -83,7 +83,7 @@ export default function AHTTicketData({ data }: any) {
                     {metric.label}
                   </Typography>
                   <Typography variant="h6" align="center" fontWeight="bold">
-                    {metric.value} m
+                    {metric.value} min
                   </Typography>
                 </Grid>
               ))}
