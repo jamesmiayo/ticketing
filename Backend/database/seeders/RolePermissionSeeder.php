@@ -38,7 +38,7 @@ class RolePermissionSeeder extends Seeder
             'Can Change Division Assignee',
             'Can Change Department Assignee',
             'Can Change Section Assignee',
-            'Can Modify Ticket',
+            'Can View Reports',
             'Can View Ticket Remarks',
             'Can Create FAQs',
             'Can Update FAQs',

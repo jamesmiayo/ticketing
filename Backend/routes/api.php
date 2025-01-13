@@ -23,6 +23,7 @@ use App\Http\Controllers\Ticket\TicketLogController;
 use App\Http\Controllers\Ticket\TicketDocumentController;
 use App\Http\Controllers\User\UserTicketController;
 use App\Http\Controllers\CSAT\CSATController;
+use App\Http\Controllers\Report\ReportController;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
@@ -36,8 +37,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('announcement', AnnouncementController::class);
     Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
     Route::get('average-handle-time', [AHTController::class , 'averageHandlingTimeTicket']);
-    Route::get('csat-report', CSATController::class);
+    Route::get('csat-report', [CSATController::class, 'CsatReport']);
     Route::get('average-handle-time/user', [AHTController::class , 'averageHandlingTimeUser']);
+    Route::get('ticket-reports', ReportController::class);
     //maintenance routes
     Route::prefix('maintenance')->group(function () {
         Route::resource('permission', PermissionController::class);

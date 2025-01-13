@@ -1,13 +1,8 @@
 import {
   Dialog,
-  //  Dialog,
-  IconButton,
-  Tooltip,
 } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
-import { FaCheckCircle, FaEye } from "react-icons/fa";
-import { GridRenderCellParams } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import TicketStatus from "./TicketStatus";
 import { SLA } from "../../api/services/SLA";
@@ -15,7 +10,6 @@ import { SLA } from "../../api/services/SLA";
 export default function TicketTable({
   tickets,
   isLoading,
-  isOptions = false,
   onPageChange,
   pageProps,
   customInputs,
@@ -28,7 +22,6 @@ any) {
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
   const [, setPriorityColorMap] = useState<any>({});
-
   // Predefined colors for priority levels
   const predefinedColors = [
     "#C62E2E", // Critical - Dark Red
@@ -68,13 +61,13 @@ any) {
   }
 
   const handleViewClick = (params: any) => {
-    navigate(`/ticket-information?id=${params.ticket_id}`);
+    if (params?.row?.ticket_logs_latest?.status === 7) {
+      setData(params);
+      setOpen(true);
+    } else {
+      navigate(`/ticket-information?id=${params?.row?.ticket_id}`);
+    }
   };
-
-  function handleAssigneClick(params: any) {
-    setData(params);
-    setOpen(true);
-  }
 
   useEffect(() => {
     getDataList();
@@ -128,7 +121,8 @@ any) {
       renderCell: (params: any) => (
         <div
           style={{
-            backgroundColor: params.row.sla?.priority_color || 'rgb(96, 139, 193)',
+            backgroundColor:
+              params.row.sla?.priority_color || "rgb(96, 139, 193)",
             borderRadius: "4px",
             padding: "4px 8px",
             textAlign: "center",
@@ -150,35 +144,6 @@ any) {
         "No Assignee",
     },
     { field: "created_at", headerName: "Date Time", width: 180 },
-    ...(isOptions
-      ? [
-          {
-            field: "view",
-            headerName: "Options",
-            width: 180,
-            sortable: false,
-            renderCell: (params: GridRenderCellParams) => (
-              <>
-                <Tooltip title={"View"}>
-                  <IconButton onClick={() => handleViewClick(params.row)}>
-                    <FaEye />
-                  </IconButton>
-                </Tooltip>
-                {params.row.ticket_logs_latest?.status == "7" &&
-                  params.row.b_status != "7" && (
-                    <Tooltip title="Done This Ticket">
-                      <IconButton
-                        onClick={() => handleAssigneClick(params.row)}
-                      >
-                        <FaCheckCircle />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-              </>
-            ),
-          },
-        ]
-      : []),
   ];
   return (
     <>
@@ -197,6 +162,7 @@ any) {
         onReset={onReset}
         maxCount={maxCount}
         isLoading={isLoading}
+        onRowClick={handleViewClick}
       />
     </>
   );

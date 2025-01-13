@@ -20,7 +20,7 @@ import { FaRegQuestionCircle } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { MdAnnouncement } from "react-icons/md";
 import { IoBarChart } from "react-icons/io5";
-// import { FaUser } from "react-icons/fa";
+import { IoIosStats } from "react-icons/io";
 
 const Sidebar = ({ children }: any) => {
   const { permission } = useContext(PermissionContext);
@@ -72,6 +72,12 @@ const Sidebar = ({ children }: any) => {
       path: "/Sla/report",
       icon: <MdAccessTimeFilled />,
       show: permission?.includes("Can View SLA Reports"),
+    },
+    {
+      title: "Reports",
+      path: "/reports",
+      icon: <IoIosStats />,
+      show: permission?.includes("Can View Reports"),
     },
     {
       title: "Maintenance",

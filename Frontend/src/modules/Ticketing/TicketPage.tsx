@@ -325,7 +325,6 @@ const TicketPage: React.FC = () => {
             onReset={handleReset}
             tickets={data}
             isLoading={loading}
-            isOptions={true}
             onPageChange={handlePageChange}
             pageProps={page}
             maxCount={maxPage}

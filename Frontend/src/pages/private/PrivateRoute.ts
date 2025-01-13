@@ -12,6 +12,7 @@ import AnnouncementPage from "../../modules/Announcement/AnnouncementPage.tsx";
 import SlaReportPage from "../../modules/SLA_Report/SlaReportPage.tsx";
 import AHTPage from "../../modules/AHT/AHTPage.tsx";
 import CSATPage from "../../modules/CSAT/CSATPage.tsx";
+import ReportPage from "../../modules/Report/ReportPage.tsx";
 
 export const usePrivateRoutes = () => {
   const { permission } = useContext(PermissionContext);
@@ -109,6 +110,15 @@ export const usePrivateRoutes = () => {
       path: PathConstants.SLAREPORT,
       component: SlaReportPage,
       show: permission?.includes("Can View SLA Reports"),
+    },
+    {
+      id: uuidv4,
+      name: "Reports",
+      title: "Report Page",
+      description: "Reports",
+      path: PathConstants.REPORT,
+      component: ReportPage,
+      show: permission?.includes("Can View Reports"),
     },
   ];
 

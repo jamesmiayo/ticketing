@@ -49,8 +49,8 @@ class AHTController extends Controller
         $analytics['Total Lead Time'] = round($analytics['Total Lead Time'], 2) . ' min';
         $analytics['Total Idle Time'] = round($analytics['Total Idle Time'], 2) . ' min';
         $analytics['Total Duration Time'] = round($analytics['Total Duration Time'], 2) . ' min';
-        $analytics['Average Total Passed'] = round(($analytics['Passed'] / $totalTickets) * 100, 2) . '%';
-        $analytics['Average Total Failed'] = round(($analytics['Failed'] / $totalTickets) * 100, 2) . '%';
+        $analytics['Average Total Passed'] = round(($analytics['Passed'] / $totalTickets) * 100, 2);
+        $analytics['Average Total Failed'] = round(($analytics['Failed'] / $totalTickets) * 100, 2);
 
         $analytics = collect($analytics)->map(function ($value, $key) {
             return [

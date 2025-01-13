@@ -11,7 +11,7 @@ use App\Constants\GlobalConstants;
 
 class CSATController extends Controller
 {
-    public function __invoke(Request $request)
+    public function CsatReport(Request $request)
     {
         $data = TicketHdr::getTicketCSAT($request->all())->latest()->get();
 

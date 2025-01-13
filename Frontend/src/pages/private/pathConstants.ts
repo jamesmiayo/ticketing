@@ -11,4 +11,5 @@ export const PathConstants = {
   SLAREPORT: "/sla/report",
   ANNOUNCEMENT: "/announcement",
   AHT: "/average-handle-time",
+  REPORT: "/reports",
 };

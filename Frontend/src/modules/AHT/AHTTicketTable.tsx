@@ -18,7 +18,7 @@ export default function AHTTicketTable({
     {
       field: "aht_passed",
       headerName: "SLA Resolution Time",
-      width: 180,
+      width: 160,
       renderCell: (params: any) => (
         <Chip
           label={params?.row?.aht_passed === 1 ? "Passed" : "Failed"}
