@@ -30,12 +30,12 @@ class ReportController extends Controller
         $slaData = $this->sla->SLAReport($request)->original['data'];
         $ahtData = $this->aht->averageHandlingTimeTicket($request)->original['analytics'];
         $csat = $this->csat->CsatReport($request)->original;
-        $ticketWithoutCsat = round(!empty($csat['data']->count()) ? $csat['total_satisfied'] / $csat['data']->count() * 100 : 0 , 2);
+        $ticketWithoutCsat = !empty($csat['total_unresponse']) ? round($csat['total_satisfied'] / $csat['total_unresponse'], 2) * 100 : 0;
         return new JsonResponse([
             'status' => Response::HTTP_OK,
             'data' => [
-                'total_ticket_w_csat' => $csat['data']->count() - $csat['total_unresponse'],
-                'total_ticket_wo_csat' => $csat['data']->count(),
+                'total_ticket_w_csat' => $csat['total_answered'],
+                'total_ticket_wo_csat' => $csat['total_unresponse'],
                 'total_passed_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $csat['average_satisfactory']) / 3 , 2),
                 'total_passed_w_csat_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $ticketWithoutCsat) / 3 , 2),
                 'sla' => [
