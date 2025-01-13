@@ -54,9 +54,9 @@ class ReportController extends Controller
                     'csat_pass' => $csat['total_satisfied'],
                     'csat_fail' => $csat['total_unsatisfied'] + $csat['total_neutral'],
                     'csat_w_pass_percentage' => $csat['average_satisfactory'],
-                    'csat_w_fail_percentage' => round(!empty($total_answered) ? ($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['total_answered'] * 100 : 0, 2),
+                    'csat_w_fail_percentage' => !empty($csat['total_answered']) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['total_answered'] * 100 , 2): 0,
                     'csat_w_o_pass_percentage' => $ticketWithoutCsat,
-                    'csat_w_o_fail_percentage' => round(!empty($csat['data']->count()) ? ($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['data']->count() * 100 : 0 , 2),
+                    'csat_w_o_fail_percentage' => !empty($csat['data']->count()) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['data']->count() * 100 , 2): 0,
                     'csat_unresponse' => $csat['total_unresponse']
                 ]
             ],

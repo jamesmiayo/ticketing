@@ -1,7 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 
 export default function ReportStats({data}:any) {
-    console.log(data);
   return (
     <Grid
       container
@@ -33,7 +32,7 @@ export default function ReportStats({data}:any) {
                 variant="h4"
                 sx={{ color: "green", fontWeight: "bold" }}
               >
-                0
+               {data?.total_ticket_w_csat}
               </Typography>
               <Typography variant="subtitle1">Ticket with CSAT</Typography>
             </Box>
@@ -43,9 +42,9 @@ export default function ReportStats({data}:any) {
                 variant="h4"
                 sx={{ color: "red", fontWeight: "bold" }}
               >
-                0
+                {data?.total_ticket_wo_csat}
               </Typography>
-              <Typography variant="subtitle1">Ticket w/o CSAT</Typography>
+              <Typography variant="subtitle1">Ticket without CSAT</Typography>
             </Box>
           </Box>
         </Box>
@@ -74,7 +73,7 @@ export default function ReportStats({data}:any) {
                 variant="h4"
                 sx={{ color: "green", fontWeight: "bold" }}
               >
-                0
+                {data?.total_passed_percentage} %
               </Typography>
               <Typography variant="subtitle1">Ticket with CSAT</Typography>
             </Box>
@@ -84,9 +83,9 @@ export default function ReportStats({data}:any) {
                 variant="h4"
                 sx={{ color: "red", fontWeight: "bold" }}
               >
-                0
+                {data?.total_passed_w_csat_percentage} %
               </Typography>
-              <Typography variant="subtitle1">Ticket w/o CSAT</Typography>
+              <Typography variant="subtitle1">Ticket without CSAT</Typography>
             </Box>
           </Box>
         </Box>

@@ -12,19 +12,17 @@ import { Box } from '@mui/material';
 // Register Chart.js components
 ChartJS.register(RadialLinearScale, Tooltip, Legend, Title);
 
-const PolarAreaChart: React.FC = () => {
+const PolarAreaChart = ({value}:any) => {
   const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
+    labels: ['Average Handle Time' , 'Customer Satisfaction' , 'Service Level Agreement'],
     datasets: [
       {
         label: 'My Dataset',
-        data: [11, 16, 7, 3, 14],
+        data: [value?.aht?.aht_pass_percentage, value?.csat?.csat_w_pass_percentage, value?.sla?.sla_pass_percentage],
         backgroundColor: [
           'rgba(255, 99, 132, 0.5)',
           'rgba(54, 162, 235, 0.5)',
           'rgba(255, 206, 86, 0.5)',
-          'rgba(75, 192, 192, 0.5)',
-          'rgba(153, 102, 255, 0.5)',
         ],
         borderWidth: 1,
       },

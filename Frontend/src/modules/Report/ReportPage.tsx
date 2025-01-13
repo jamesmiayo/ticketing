@@ -51,7 +51,7 @@ export default function ReportPage() {
           <ReportStats data={data}/>
         </Box>
         <Box sx={{ width: '100%' , justifyContent: 'center' , display: 'flex' , alignContent: 'center'}}>
-          <PolarAreaChart />
+          <PolarAreaChart value={data}/>
         </Box>
         </Box>
       </Box>
