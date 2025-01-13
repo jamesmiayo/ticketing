@@ -44,7 +44,7 @@ const PolarAreaChart = ({value}:any) => {
       },
       title: {
         display: true,
-        text: 'All Ticket Reports',
+        text: 'Ticket Overview Reports',
         font: {
           size: 18,
         },

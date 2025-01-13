@@ -42,7 +42,7 @@ export default function ReportPage() {
       }}
     >
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-        Ticket Reports
+        Ticket Overview Reports
       </Typography>
       <GlobalFilterComponents onSubmit={onSubmit} />
       <Box sx={{ minHeight: '80vh' , gap: 2 , backgroundColor: "white", borderRadius: 2 }}>
