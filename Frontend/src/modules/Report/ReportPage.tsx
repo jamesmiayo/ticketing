@@ -8,14 +8,17 @@ import { REPORT } from "../../api/services/reports";
 
 export default function ReportPage() {
   const [ data , setData ] = useState<any>([]);
+  const [ loading , setLoading ] = useState<boolean>(false);
 
   const fetchData = async (params?:any) => {
+    setLoading(true);
     try {
       const response = await REPORT.getReport(params);
       setData(response);
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -44,11 +47,11 @@ export default function ReportPage() {
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Ticket Overview Reports
       </Typography>
-      <GlobalFilterComponents onSubmit={onSubmit} />
+      <GlobalFilterComponents onSubmit={onSubmit} onReset={() => fetchData()}/>
       <Box sx={{ minHeight: '80vh' , gap: 2 , backgroundColor: "white", borderRadius: 2 }}>
         <Box sx={{ display: 'flex' , padding: 2 }}>
         <Box sx={{ width: '25%' }}>
-          <ReportStats data={data}/>
+          <ReportStats data={data} isLoading={loading}/>
         </Box>
         <Box sx={{ width: '100%' , justifyContent: 'center' , display: 'flex' , alignContent: 'center'}}>
           <PolarAreaChart value={data}/>

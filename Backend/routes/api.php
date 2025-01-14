@@ -35,26 +35,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::resource('announcement', AnnouncementController::class);
-    Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
-    Route::get('average-handle-time', [AHTController::class , 'averageHandlingTimeTicket']);
-    Route::get('csat-report', [CSATController::class, 'CsatReport']);
-    Route::get('average-handle-time/user', [AHTController::class , 'averageHandlingTimeUser']);
-    Route::get('ticket-reports', ReportController::class);
-    //maintenance routes
-    Route::prefix('maintenance')->group(function () {
-        Route::resource('permission', PermissionController::class);
-        Route::resource('division', DivisionController::class);
-        Route::resource('branch', BranchController::class);
-        Route::resource('department', DepartmentController::class);
-        Route::resource('section', SectionController::class);
-        Route::resource('category', CategoryController::class);
-        Route::resource('sub-category', SubCategoryController::class);
-        Route::resource('role', RoleController::class);
-        Route::post('role-permission', [PermissionController::class, 'assignRolePermission']);
-        Route::resource('FAQ-HDR', FAQHdrController::class);
-        Route::resource('FAQ-DTL', FAQDtlController::class);
-        Route::resource('SLA', SLAController::class);
-    });
 
     //tickets routes
     Route::prefix('ticket')->group(function () {
@@ -82,4 +62,31 @@ Route::middleware(['auth'])->group(function () {
         Route::post('role', [UserController::class, 'updateUserRole']);
         Route::post('upload-profile', [UserController::class, 'uploadProfilePicture']);
     });
+});
+
+//Can View Reports should be Upper Level.
+Route::middleware(['auth', 'upper-level'])->group(function () {
+    Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
+    Route::get('average-handle-time', [AHTController::class , 'averageHandlingTimeTicket']);
+    Route::get('csat-report', [CSATController::class, 'CsatReport']);
+    Route::get('average-handle-time/user', [AHTController::class , 'averageHandlingTimeUser']);
+    Route::get('ticket-reports', ReportController::class);
+});
+
+//Maintenance is For Admin Only.
+Route::middleware(['auth', 'admin'])->group(function () {
+        Route::prefix('maintenance')->group(function () {
+            Route::resource('permission', PermissionController::class);
+            Route::resource('division', DivisionController::class);
+            Route::resource('branch', BranchController::class);
+            Route::resource('department', DepartmentController::class);
+            Route::resource('section', SectionController::class);
+            Route::resource('category', CategoryController::class);
+            Route::resource('sub-category', SubCategoryController::class);
+            Route::resource('role', RoleController::class);
+            Route::post('role-permission', [PermissionController::class, 'assignRolePermission']);
+            Route::resource('FAQ-HDR', FAQHdrController::class);
+            Route::resource('FAQ-DTL', FAQDtlController::class);
+            Route::resource('SLA', SLAController::class);
+        });
 });

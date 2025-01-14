@@ -9,11 +9,15 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 class AHTController extends Controller
 {
     public function averageHandlingTimeTicket(Request $request): JsonResponse
     {
+        if(!Auth::user('Can View Ticket AHT'))
+        {
+            return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
         $tickets = TicketHdr::getTicketAHT($request->all())->get();
 
         $processedTickets = $tickets->map(function ($ticket) {

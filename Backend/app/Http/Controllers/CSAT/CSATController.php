@@ -8,11 +8,17 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use App\Models\TicketHdr;
 use App\Constants\GlobalConstants;
+use Illuminate\Support\Facades\Auth;
 
 class CSATController extends Controller
 {
     public function CsatReport(Request $request)
     {
+        if(!Auth::user('Can View CSAT Report'))
+        {
+            return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $data = TicketHdr::getTicketCSAT($request->all())->latest()->get();
 
         $satisfactoryValues = $data->pluck('ticket_satisfactory.satisfactory_1')->filter();

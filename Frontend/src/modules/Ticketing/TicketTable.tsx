@@ -3,9 +3,8 @@ import {
 } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TicketStatus from "./TicketStatus";
-import { SLA } from "../../api/services/SLA";
 
 export default function TicketTable({
   tickets,
@@ -21,44 +20,44 @@ any) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
-  const [, setPriorityColorMap] = useState<any>({});
-  // Predefined colors for priority levels
-  const predefinedColors = [
-    "#C62E2E", // Critical - Dark Red
-    "#E53935", // High - Red
-    "#FF9800", // Medium - Orange
-    "#66BB6A", // Low - Green
-    "#608BC1", // Default - Blue
-  ];
+  // const [, setPriorityColorMap] = useState<any>({});
+  // // Predefined colors for priority levels
+  // const predefinedColors = [
+  //   "#C62E2E", // Critical - Dark Red
+  //   "#E53935", // High - Red
+  //   "#FF9800", // Medium - Orange
+  //   "#66BB6A", // Low - Green
+  //   "#608BC1", // Default - Blue
+  // ];
 
-  const getDataList = async () => {
-    try {
-      const response = await SLA.getSLA();
+  // const getDataList = async () => {
+  //   try {
+  //     const response = await SLA.getSLA();
 
-      const sortedPriorities = response.sort((a: any, b: any) => {
-        const timeA = parseTimeToSeconds(a.response_time);
-        const timeB = parseTimeToSeconds(b.response_time);
-        return timeA - timeB; // Ascending order
-      });
+  //     const sortedPriorities = response.sort((a: any, b: any) => {
+  //       const timeA = parseTimeToSeconds(a.response_time);
+  //       const timeB = parseTimeToSeconds(b.response_time);
+  //       return timeA - timeB; // Ascending order
+  //     });
 
-      const colorMap = sortedPriorities.reduce(
-        (map: any, row: any, index: number) => {
-          map[row.priority_label] = predefinedColors[index] || "#608BC1";
-          return map;
-        },
-        {}
-      );
+  //     const colorMap = sortedPriorities.reduce(
+  //       (map: any, row: any, index: number) => {
+  //         map[row.priority_label] = predefinedColors[index] || "#608BC1";
+  //         return map;
+  //       },
+  //       {}
+  //     );
 
-      setPriorityColorMap(colorMap);
-    } catch (error) {
-      console.error("Error fetching SLA data:", error);
-    }
-  };
+  //     setPriorityColorMap(colorMap);
+  //   } catch (error) {
+  //     console.error("Error fetching SLA data:", error);
+  //   }
+  // };
 
-  function parseTimeToSeconds(time: string): number {
-    const [hours, minutes, seconds] = time.split(":").map(Number);
-    return hours * 3600 + minutes * 60 + seconds;
-  }
+  // function parseTimeToSeconds(time: string): number {
+  //   const [hours, minutes, seconds] = time.split(":").map(Number);
+  //   return hours * 3600 + minutes * 60 + seconds;
+  // }
 
   const handleViewClick = (params: any) => {
     if (params?.row?.ticket_logs_latest?.status === 7) {
@@ -69,9 +68,9 @@ any) {
     }
   };
 
-  useEffect(() => {
-    getDataList();
-  }, []);
+  // useEffect(() => {
+  //   getDataList();
+  // }, []);
 
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 120 },

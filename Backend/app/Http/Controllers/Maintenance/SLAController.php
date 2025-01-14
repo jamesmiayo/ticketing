@@ -82,6 +82,11 @@ class SLAController extends Controller
     }
     public function SLAReport(Request $request)
     {
+        if(!Auth::user('Can View SLA Reports'))
+        {
+            return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $tickets = TicketHdr::getSpecificTicket($request->all())->latest()->get();
 
         $timeDifferences = $tickets->filter(
