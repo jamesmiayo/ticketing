@@ -278,6 +278,7 @@ class TicketHdr extends Model
             },
             'ticket_messages',
             'ticket_messages.user:id,name',
+            'ticket_logs',
             'sla'
         ])->whereHas('ticket_logs', function ($query) {
             $query->where('status', GlobalConstants::VALIDATION)
