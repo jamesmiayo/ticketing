@@ -80,7 +80,16 @@ class TicketHdrController extends Controller
      */
     public function show(string $ticket_id): JsonResponse
     {
-        $ticket = TicketHdr::getSpecificTicket()->where('ticket_id', $ticket_id)->first();
+        $ticket = TicketHdr::with([
+            'ticket_logs_latest',
+            'ticket_statuses' => function ($query) {
+                $query->orderBy('id', 'desc');
+            },
+            'ticket_messages',
+            'ticket_messages.user:id,name',
+            'sla',
+        ])->where('ticket_id', $ticket_id)->first();
+
         if (!$ticket) {
             return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Ticket not found'], Response::HTTP_NOT_FOUND);
         }

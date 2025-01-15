@@ -279,11 +279,15 @@ class TicketHdr extends Model
             'ticket_messages',
             'ticket_messages.user:id,name',
             'ticket_logs',
-            'sla'
-        ])->whereHas('ticket_logs', function ($query) {
-            $query->where('status', GlobalConstants::VALIDATION)
-                ->orWhere('status', GlobalConstants::COMPLETED);
-        });;
+            'sla',
+        ])
+        ->whereHas('ticket_logs', function ($query) {
+            $query->whereIn('status', [
+                GlobalConstants::VALIDATION,
+                GlobalConstants::COMPLETED
+            ]);
+        });
+
 
         if (array_key_exists('branch_id', $searchParams) && $searchParams['branch_id'] !== null) {
             $query->branchId($searchParams['branch_id']);
