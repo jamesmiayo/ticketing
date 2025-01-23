@@ -45,7 +45,7 @@ const TableComponents = ({
   isLoading = false,
   onReset,
   onRowClick,
-  sx = {}, 
+  sx = {},
 }: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -81,15 +81,9 @@ const TableComponents = ({
               {customInputs.map((inputProps, index) => (
                 <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
                   {inputProps.type === "text" ? (
-                    <InputComponent
-                      fullWidth
-                      {...inputProps}
-                    />
+                    <InputComponent fullWidth {...inputProps} />
                   ) : inputProps.type === "select" ? (
-                    <SelectItem
-                      fullWidth
-                      {...inputProps}
-                    />
+                    <SelectItem fullWidth {...inputProps} />
                   ) : inputProps.type === "date" ? (
                     <InputDateComponent fullWidth {...inputProps} />
                   ) : inputProps.type === "combobox" ? (
@@ -97,34 +91,13 @@ const TableComponents = ({
                   ) : null}
                 </Grid>
               ))}
-              <Grid
-                item
-                xs={12} 
-                lg={2} 
-              >
-                <Button
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    marginRight: "5px",
-                  }}
-                  type="submit"
-                >
+              <Grid item xs={12} lg={2}>
+                <Button variant="contained" color="primary" type="submit" sx={{ marginRight: 1 }}>
                   Submit
                 </Button>
                 <Button
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#d32f2f",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
+                  variant="contained"
+                  color="error"
                   type="button"
                   onClick={onReset}
                 >
