@@ -102,7 +102,7 @@ const TableComponents = ({
                 xs={12} 
                 lg={2} 
               >
-                <button
+                <Button
                   style={{
                     padding: "8px 16px",
                     backgroundColor: "#1976d2",
@@ -115,8 +115,8 @@ const TableComponents = ({
                   type="submit"
                 >
                   Submit
-                </button>
-                <button
+                </Button>
+                <Button
                   style={{
                     padding: "8px 16px",
                     backgroundColor: "#d32f2f",
@@ -129,7 +129,7 @@ const TableComponents = ({
                   onClick={onReset}
                 >
                   Clear
-                </button>
+                </Button>
               </Grid>
             </Grid>
           </form>

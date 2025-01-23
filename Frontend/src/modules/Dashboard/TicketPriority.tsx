@@ -9,7 +9,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function TicketPriority({ ticketPriority, isLoading }: any) {
   const [chartData, setChartData] = useState<any>(null);
   const getDataList = async () => {
-    const labels = ticketPriority.map((item: any) => item.priority_label);
+    const labels = ticketPriority?.map((item: any) => item.priority_label);
 
     setChartData({
       labels,

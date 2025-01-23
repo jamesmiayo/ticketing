@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -20,7 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useExecuteToast } from "../../context/ToastContext";
 import { useLoader } from "../../context/LoaderContext";
-import logo from "../../assets/images/enhance LOGO II 002.png";
+import logo from "../../assets/images/logo.png";
 
 interface FormData {
   username: string;
@@ -46,6 +46,10 @@ const LoginPage: React.FC<any> = () => {
     setShowPassword(!showPassword);
   };
 
+  useEffect(() => {
+    document.title = "Login Page"; 
+  }, []);
+  
   const onSubmit = async (data: FormData) => {
     showLoader();
     try {

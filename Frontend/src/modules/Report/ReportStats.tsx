@@ -93,7 +93,7 @@ export default function ReportStats({ data, isLoading }: any) {
                   `${data?.total_passed_w_csat_percentage} %`
                 )}
               </Typography>
-              <Typography variant="subtitle1">Ticket without CSAT</Typography>
+              <Typography variant="subtitle1">Ticket w & w/o CSAT</Typography>
             </Box>
           </Box>
         </Box>

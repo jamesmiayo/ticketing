@@ -160,6 +160,14 @@ class TicketHdrController extends Controller
 
         if ($ticket->ticket_logs_latest->assignee->id === Auth::user()->id || Auth::user('Can Change Status')) {
             TicketStatus::create($request->getChangeStatusData($ticket));
+            if(empty($ticket->ticket_messages->id)){
+                TicketDtl::create([
+                    'thread_id' => mt_rand(1000, 9999),
+                    'ticket_id' => $ticket->id,
+                    'user_id' => Auth::user()->id,
+                   'message' => 'This Ticket Done Successfully.',
+                ]);
+            }
             return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Ticket Status Successfully Changed.'], Response::HTTP_OK);
         } else {
             return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'You do not have permission to done this ticket as it is not assigned to you..'], Response::HTTP_FORBIDDEN);

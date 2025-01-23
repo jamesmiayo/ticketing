@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\TicketDtl;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
 class TicketDtlController extends Controller
 {
@@ -29,20 +28,12 @@ class TicketDtlController extends Controller
         $data = TicketDtl::with(['user', 'documents'])
             ->where('ticket_id', $request->ticket_id)
             ->get();
-            // ->map(function ($ticket) {
-            //     if ($ticket->user) {
-            //         $ticket->user->profile_picture = $ticket->user->profile_picture
-            //             ? url(Storage::url($ticket->user->profile_picture))
-            //             : null;
-            //     }
-            //     return $ticket;
-            // });
-    
+
         return response()->json([
             'status' => 200,
             'data' => $data,
         ], 200);
     }
-    
-    
+
+
 }

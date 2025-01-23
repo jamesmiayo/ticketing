@@ -30,14 +30,14 @@ class ReportController extends Controller
         $slaData = $this->sla->SLAReport($request)->original['data'];
         $ahtData = $this->aht->averageHandlingTimeTicket($request)->original['analytics'];
         $csat = $this->csat->CsatReport($request)->original;
-        $ticketWithoutCsat = !empty($csat['total_unresponse']) ? round($csat['total_satisfied'] / $csat['total_unresponse'], 2) * 100 : 0;
+        $ticketWithoutCsat = !empty($csat['data']->count()) ? round($csat['total_satisfied'] / ($csat['data']->count()) * 100, 2) : 0;
         return new JsonResponse([
             'status' => Response::HTTP_OK,
             'data' => [
                 'total_ticket_w_csat' => $csat['total_answered'],
                 'total_ticket_wo_csat' => $csat['total_unresponse'],
-                'total_passed_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $csat['average_satisfactory']) / 3 , 2),
-                'total_passed_w_csat_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $ticketWithoutCsat) / 3 , 2),
+                'total_passed_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $csat['average_satisfactory']) / 3, 2),
+                'total_passed_w_csat_percentage' => round(($slaData['sla_pass_percentage'] + $ahtData[6]['value'] + $ticketWithoutCsat) / 3, 2),
                 'sla' => [
                     'sla_pass' => $slaData['sla_pass_count'],
                     'sla_fail' => $slaData['sla_fail_count'],
@@ -54,9 +54,9 @@ class ReportController extends Controller
                     'csat_pass' => $csat['total_satisfied'],
                     'csat_fail' => $csat['total_unsatisfied'] + $csat['total_neutral'],
                     'csat_w_pass_percentage' => $csat['average_satisfactory'],
-                    'csat_w_fail_percentage' => !empty($csat['total_answered']) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['total_answered'] * 100 , 2): 0,
+                    'csat_w_fail_percentage' => !empty($csat['total_answered']) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['total_answered'] * 100, 2) : 0,
                     'csat_w_o_pass_percentage' => $ticketWithoutCsat,
-                    'csat_w_o_fail_percentage' => !empty($csat['data']->count()) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['data']->count() * 100 , 2): 0,
+                    'csat_w_o_fail_percentage' => !empty($csat['data']->count()) ? round(($csat['total_unsatisfied'] + $csat['total_neutral']) / $csat['data']->count() * 100, 2) : 0,
                     'csat_unresponse' => $csat['total_unresponse']
                 ]
             ],

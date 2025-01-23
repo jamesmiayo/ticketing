@@ -20,44 +20,6 @@ any) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>();
   const navigate = useNavigate();
-  // const [, setPriorityColorMap] = useState<any>({});
-  // // Predefined colors for priority levels
-  // const predefinedColors = [
-  //   "#C62E2E", // Critical - Dark Red
-  //   "#E53935", // High - Red
-  //   "#FF9800", // Medium - Orange
-  //   "#66BB6A", // Low - Green
-  //   "#608BC1", // Default - Blue
-  // ];
-
-  // const getDataList = async () => {
-  //   try {
-  //     const response = await SLA.getSLA();
-
-  //     const sortedPriorities = response.sort((a: any, b: any) => {
-  //       const timeA = parseTimeToSeconds(a.response_time);
-  //       const timeB = parseTimeToSeconds(b.response_time);
-  //       return timeA - timeB; // Ascending order
-  //     });
-
-  //     const colorMap = sortedPriorities.reduce(
-  //       (map: any, row: any, index: number) => {
-  //         map[row.priority_label] = predefinedColors[index] || "#608BC1";
-  //         return map;
-  //       },
-  //       {}
-  //     );
-
-  //     setPriorityColorMap(colorMap);
-  //   } catch (error) {
-  //     console.error("Error fetching SLA data:", error);
-  //   }
-  // };
-
-  // function parseTimeToSeconds(time: string): number {
-  //   const [hours, minutes, seconds] = time.split(":").map(Number);
-  //   return hours * 3600 + minutes * 60 + seconds;
-  // }
 
   const handleViewClick = (params: any) => {
     if (params?.row?.ticket_logs_latest?.status === 7) {
@@ -67,10 +29,6 @@ any) {
       navigate(`/ticket-information?id=${params?.row?.ticket_id}`);
     }
   };
-
-  // useEffect(() => {
-  //   getDataList();
-  // }, []);
 
   const columns = [
     { field: "ticket_id", headerName: "Ticket ID", width: 120 },
@@ -142,7 +100,7 @@ any) {
         params.row.sub_category?.category?.category_description ||
         "No Assignee",
     },
-    { field: "created_at", headerName: "Date Time", width: 180 },
+    { field: "created_at", headerName: "Created On", width: 180 },
   ];
   return (
     <>

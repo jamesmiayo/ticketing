@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Card,
@@ -38,6 +38,7 @@ import { ticketApi } from "../../api/services/ticket";
 import { useExecuteToast } from "../../context/ToastContext";
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { FaFile } from "react-icons/fa";
+import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -65,6 +66,7 @@ interface TicketDetailsProps {
       assignee?: {
         name?: string;
       };
+      status: string;
       ticket_status: string;
     };
     sla: {
@@ -84,7 +86,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   const [modal, setModal] = useState<any>();
   const toast = useExecuteToast();
   const theme = useTheme();
-
+  const { permission } = useContext(PermissionContext);
+  
   const tools = [
     {
       label: "Assign Ticket",
@@ -504,7 +507,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
           )}
 
           {ticketDetail?.b_status !== "7" &&
-            ticketDetail?.ticket_logs_latest?.assignee?.name !== undefined && (
+            ticketDetail?.ticket_logs_latest?.assignee?.name !== undefined && ticketDetail?.ticket_logs_latest?.status != "8" && (
               <Box mt={4}>
                 <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
                   Actions
@@ -537,7 +540,7 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                 </Grid>
               </Box>
             )}
-          {ticketDetail?.ticket_logs_latest?.assignee?.name === undefined && (
+          {ticketDetail?.ticket_logs_latest?.assignee?.name === undefined && permission?.includes("Can Change Priority") && (
             <>
               <Box sx={{ mt: 2 }}>
                 <Button

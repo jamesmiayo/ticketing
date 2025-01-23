@@ -63,8 +63,7 @@ class DashboardController extends Controller
 
             case 'Head':
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $divisionId) {
-                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)
-                        ->orWhereHas('requestor.section.department', function ($subQuery) use ($divisionId) {
+                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor', function ($subQuery) use ($divisionId) {
                             $subQuery->where('division_id', $divisionId);
                         })
                         ->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) use ($divisionId) {
@@ -74,8 +73,7 @@ class DashboardController extends Controller
                 break;
             case 'Manager':
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $departmentId) {
-                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)
-                        ->orWhereHas('requestor.section', function ($subQuery) use ($departmentId) {
+                        $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor', function ($subQuery) use ($departmentId) {
                             $subQuery->where('department_id', $departmentId);
                         })
                         ->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) use ($departmentId) {
@@ -85,8 +83,7 @@ class DashboardController extends Controller
                 break;
             case 'Supervisor':
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
-                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)
-                        ->orWhereHas('requestor', function ($subQuery) use ($sectionId) {
+                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor', function ($subQuery) use ($sectionId) {
                             $subQuery->where('section_id', $sectionId);
                         })
                         ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
@@ -94,12 +91,19 @@ class DashboardController extends Controller
                         });
                 });
                 break;
-            default:
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId, $userId) {
-                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)
-                        ->whereHas('requestor', function ($subQuery) use ($sectionId) {
+            case 'Tech':
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
+                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor', function ($subQuery) use ($sectionId) {
+                        $subQuery->where('section_id', $sectionId);
+                    })
+                        ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
                             $subQuery->where('section_id', $sectionId);
-                        })
+                        });
+                });
+                break;
+            default:
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $userId) {
+                    $query->where('emp_id', $userId)
                         ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($userId) {
                             $subQuery->where('id', $userId);
                         });

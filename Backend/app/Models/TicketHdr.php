@@ -164,11 +164,7 @@ class TicketHdr extends Model
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
-            $query->startDate($searchParams['start_date']);
-        }
-
-        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
-            $query->endDate($searchParams['end_date']);
+            $query->date($searchParams['start_date'] , $searchParams['end_date']);
         }
 
         if (array_key_exists('status', $searchParams) && $searchParams['status'] !== null) {
@@ -217,11 +213,7 @@ class TicketHdr extends Model
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
-            $query->startDate($searchParams['start_date']);
-        }
-
-        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
-            $query->endDate($searchParams['end_date']);
+            $query->date($searchParams['start_date'] , $searchParams['end_date']);
         }
 
         return $query;
@@ -259,11 +251,7 @@ class TicketHdr extends Model
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
-            $query->startDate($searchParams['start_date']);
-        }
-
-        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
-            $query->endDate($searchParams['end_date']);
+            $query->date($searchParams['start_date'] , $searchParams['end_date']);
         }
 
         return $query;
@@ -310,11 +298,7 @@ class TicketHdr extends Model
         }
 
         if (array_key_exists('start_date', $searchParams) && $searchParams['start_date'] !== null) {
-            $query->startDate($searchParams['start_date']);
-        }
-
-        if (array_key_exists('end_date', $searchParams) && $searchParams['end_date'] !== null) {
-            $query->endDate($searchParams['end_date']);
+            $query->date($searchParams['start_date'] , $searchParams['end_date']);
         }
 
         return $query;
@@ -356,7 +340,7 @@ class TicketHdr extends Model
     }
     public function scopeBranchId($query, $branch_id)
     {
-        return $query->whereHas('requestor.section.department.division', function ($query) use ($branch_id) {
+        return $query->whereHas('requestor.branch', function ($query) use ($branch_id) {
             $query->where('id', $branch_id);
         });
     }
@@ -396,14 +380,14 @@ class TicketHdr extends Model
         return $query->where('subcategory_id', $subcategory_id);
     }
 
-    public function scopeStartDate($query, $start_date)
+    public function scopeDate($query, $start_date , $end_date)
     {
-        return $query->whereDate('created_at', '>=', Carbon::parse($start_date)->startOfDay());
-    }
+        if ($end_date) {
+            return $query->whereDate('created_at', '>=', Carbon::parse($start_date)->startOfDay())
+                         ->whereDate('created_at', '<=', Carbon::parse($end_date)->endOfDay());
+        }
 
-    public function scopeEndDate($query, $end_date)
-    {
-        return $query->whereDate('created_at', '<=', Carbon::parse($end_date)->endOfDay());
+        return $query->whereDate('created_at', '=', Carbon::parse($start_date)->startOfDay());
     }
 
     //AHT
