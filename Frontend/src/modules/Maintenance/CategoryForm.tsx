@@ -144,7 +144,7 @@ const CategoryForm: React.FC<Props> = ({ refetch, onClose, defaultValues }) => {
                 render={({ field }) => (
                   <TimePicker
                     {...field}
-                    label="Response Time"
+                    label="Resolution Time"
                     ampm={false}
                     onChange={(newValue) => field.onChange(newValue)}
                     value={field.value}

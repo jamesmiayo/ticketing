@@ -35,7 +35,6 @@ const ComboBoxComponent = <T,>({
             size="small"
             variant="outlined"
             fullWidth
-            style={{ minWidth: '250px' }}
         >
             <Controller
                 name={name || ""}

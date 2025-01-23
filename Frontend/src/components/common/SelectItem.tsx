@@ -25,8 +25,7 @@ const SelectItem = ({
       variant="outlined"
       fullWidth
       error={!!error}
-      style={{ minWidth: '250px' }}
-      disabled={disabled} // Pass disabled to FormControl for visual consistency
+      disabled={disabled} 
     >
       <InputLabel>{label}</InputLabel>
       <Controller

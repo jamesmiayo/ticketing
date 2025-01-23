@@ -267,7 +267,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" color="primary" disabled={loading ? true : false} fullWidth>
               {loading ? (
                 <CircularProgress size={20} color="inherit" />
               ) : (

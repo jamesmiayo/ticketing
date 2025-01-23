@@ -74,7 +74,6 @@ export default function SLATable({
     try {
       setLoading(true);
       const response = await SLA.getSLA();
-
       const data = response.map((row: any) => ({
         id: row.id,
         label: row.priority_label,
@@ -106,7 +105,7 @@ export default function SLATable({
       align: "center",
     },
     { field: "label", headerName: "Priority", flex: 1 },
-    { field: "3", headerName: "Response Time", flex: 1 },
+    { field: "response_time", headerName: "Response Time", flex: 1 },
     {
       field: "priority_color",
       headerName: "Color",
