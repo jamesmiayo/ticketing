@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use LdapRecord\Container;
 use Illuminate\Support\Arr;
+use App\Models\TicketNotification;
+use App\Models\Announcement;
 
 class LdapAuthenticationService
 {
@@ -72,7 +74,16 @@ class LdapAuthenticationService
             'message' => 'Login successful.',
             'user' => $localUser,
             'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
-            'role' => $localUser->roles->pluck('name'),
+            'role' => $localUser->roles->pluck('name')->first(),
+            'notifications' => [
+                    'data' => TicketNotification::where('to_user', $localUser->id)
+                    ->orderBy('is_read', 'asc')
+                    ->orderBy('created_at', 'desc')
+                    ->take(10)->get(),
+                    'total_unread_ticket' => TicketNotification::where('to_user', $localUser->id)
+                    ->where('is_read', false)->count()
+                ],
+                'announcement' => Announcement::with('createdBy')->latest()->first(),
             'access_token' => $token,
         ], Response::HTTP_OK);
     }

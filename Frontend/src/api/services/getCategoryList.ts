@@ -14,6 +14,19 @@ export const getCategoryAPI = {
       throw error;
     }
   },
+  getCategoryList: async function () {
+    try {
+      const response = await apiClient.request({
+        url: "/list/maintenance/category",
+        method: "GET",
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
   newCategory: async function (body: Record<string, any>) {
     try {
       const response = await apiClient.request({

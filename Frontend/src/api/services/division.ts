@@ -14,6 +14,19 @@ export const Division = {
       throw error;
     }
   },
+  getDivisionList: async function () {
+    try {
+      const response = await apiClient.request({
+        url: "/list/maintenance/division",
+        method: "GET",
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
   newDivision: async function (body: Record<string, any>) {
     try {
       const response = await apiClient.request({

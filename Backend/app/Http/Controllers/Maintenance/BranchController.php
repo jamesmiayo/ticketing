@@ -46,4 +46,9 @@ class BranchController extends Controller
         $branch->delete();
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
+
+    public function getListBranch(){
+        $data = Branch::where('b_active' , true)->get();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+    }
 }

@@ -22,4 +22,18 @@ class Category extends Model
     public function sub_category(){
         return $this->hasMany(SubCategory::class);
     }
+
+    public function active_sub_category()
+    {
+        return $this->sub_category()->where('b_active', true);
+    }
+
+    public function active_division()
+    {
+        return $this->division()->where('b_active', true);
+    }
+    public function active_category()
+    {
+        return $this->where('b_active', true);
+    }
 }

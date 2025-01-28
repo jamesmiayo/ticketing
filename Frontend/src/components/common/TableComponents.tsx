@@ -6,6 +6,8 @@ import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
 import ComboBoxComponent from "./ComboBoxComponent";
+import { FaSearch } from "react-icons/fa";
+import { FaRedo } from "react-icons/fa";
 
 interface DataGridProps {
   columns: any;
@@ -92,16 +94,23 @@ const TableComponents = ({
                 </Grid>
               ))}
               <Grid item xs={12} lg={2}>
-                <Button variant="contained" color="primary" type="submit" sx={{ marginRight: 1 }}>
-                  Submit
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ marginRight: 1 }}
+                  startIcon={<FaSearch size="18" />}
+                >
+                  Search
                 </Button>
                 <Button
                   variant="contained"
                   color="error"
                   type="button"
                   onClick={onReset}
+                  startIcon={<FaRedo size="18" />}
                 >
-                  Clear
+                  Reset
                 </Button>
               </Grid>
             </Grid>

@@ -7,12 +7,13 @@ import { ahtFormtype } from "../../schema/Aht/aht";
 import GlobalFilterComponents from "../../components/common/GlobalFilterComponents";
 import AHTStats from "./AHTStats";
 import AHTTicketData from "./AHTTicketData";
+import { AHTData, AHTFormType, RowData } from "../../interface";
 
 export default function AHTPage() {
-  const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
-  const [rowData, setRowData] = useState<any>([]);
-  const fetchAHTData = async (params?: any) => {
+  const [data, setData] = useState<AHTData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [rowData, setRowData] = useState<AHTData | null>(null);
+  const fetchAHTData = async (params?: Partial<AHTFormType>) => {
     setLoading(true);
     try {
       const response = await AHT.getAHT(params);
@@ -28,7 +29,7 @@ export default function AHTPage() {
     fetchAHTData();
   }, []);
 
-  const onSubmit: SubmitHandler<ahtFormtype> = async (formData: any) => {
+  const onSubmit: SubmitHandler<ahtFormtype> = async (formData) => {
     setLoading(true);
     try {
       fetchAHTData(formData);
@@ -39,9 +40,8 @@ export default function AHTPage() {
     }
   };
 
-
-  const handleRowClick = (params: any) => {
-     setRowData(params.row);
+  const handleRowClick = (params: RowData) => {
+    setRowData(params.row);
   };
   return (
     <>
@@ -56,27 +56,31 @@ export default function AHTPage() {
         <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
           Ticket Average Handle Time
         </Typography>
-        <GlobalFilterComponents  
-        onSubmit={onSubmit}
-        onReset={() => fetchAHTData()}
+        <GlobalFilterComponents
+          onSubmit={onSubmit}
+          onReset={() => fetchAHTData()}
         />
-        <AHTStats data={data?.analytics} isLoading={loading}/>
-        <Box sx={{ display:"flex" , gap: 1 }}>
-        <Box sx={{ width: '25%' , backgroundColor: "white" , borderRadius: 2}}>
-        <Typography variant="h6" gutterBottom sx={{ paddingTop: 2 , textAlign: 'center'}}>
-          Ticket ID : {rowData?.ticket_id}
-        </Typography>
-         <AHTTicketData data={rowData} isLoading={loading}/>
+        <AHTStats data={data?.analytics} isLoading={loading} />
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ width: "25%", backgroundColor: "white", borderRadius: 2 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ paddingTop: 2, textAlign: "center" }}
+            >
+              Ticket ID : {rowData?.ticket_id}
+            </Typography>
+            <AHTTicketData data={rowData} isLoading={loading} />
           </Box>
-        <Box sx={{ width: '75%' }}>
-        <AHTTicketTable
-            data={data?.data}
-            isLoading={loading}
-            onSubmit={onSubmit}
-            onRowClick={handleRowClick}
-          />
+          <Box sx={{ width: "75%" }}>
+            <AHTTicketTable
+              data={data?.data}
+              isLoading={loading}
+              onSubmit={onSubmit}
+              onRowClick={handleRowClick}
+            />
+          </Box>
         </Box>
-        </Box>      
       </Box>
     </>
   );

@@ -46,4 +46,9 @@ class CategoryController extends Controller
         $category->delete();
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
+
+    public function getListCategory(){
+        $data = Category::with('active_division','active_sub_category:id,category_id,subcategory_id,subcategory_description')->where('b_active', true)->latest()->get();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+    }
 }

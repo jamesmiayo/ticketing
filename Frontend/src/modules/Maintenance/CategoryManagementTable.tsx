@@ -63,14 +63,15 @@ export default function CategoryManagementTable({
     const updatedStatus = selectedCategory.active ? 0 : 1;
     try {
       setLoading(true);
-
+      console.log(selectedCategory)
       const responseUpdate = await getCategoryAPI.updateCategory({
         id: selectedCategory.id,
         body: {
           b_active: updatedStatus,
           category_description: selectedCategory.label,
+          resolution_time: selectedCategory.resolution_time,
           category_id: selectedCategory.category_id,
-          division_id: selectedCategory.division.id
+          division_id: selectedCategory.division_id
         },
       });
       toast.executeToast(responseUpdate.message, "top-center", true, {

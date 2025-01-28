@@ -34,7 +34,7 @@ export default function GlobalFilterComponents({
 
   const fetchBranchData = async () => {
     try {
-      const response = await Branch.getBranch();
+      const response = await Branch.getBranchList();
       const data = response.map((row: any) => {
         return { value: row.id, label: row.branch_description };
       });
@@ -46,11 +46,11 @@ export default function GlobalFilterComponents({
 
   const fetchDivisionData = async () => {
     try {
-      const response = await Division.getDivision();
+      const response = await Division.getDivisionList();
       const data = response?.map((row: any) => ({
         value: row.id,
         label: row.division_description,
-        department: row.department,
+        department: row.active_department,
       }));
       setDivision(data);
     } catch (error) {
@@ -65,7 +65,7 @@ export default function GlobalFilterComponents({
         return {
           value: row.id,
           label: row.department_description,
-          section: row.section,
+          section: row.active_section,
         };
       });
     setDepartment(data || []);

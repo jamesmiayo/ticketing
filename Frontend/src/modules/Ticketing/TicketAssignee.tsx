@@ -119,7 +119,6 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   const departmentCode = watch("department");
   const sectionCode = watch("section");
   useEffect(() => {
-    getUser();
     getDivision();
     getUser();
 

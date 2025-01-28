@@ -31,7 +31,7 @@ export default function TicketPriority({ data, setOpen, refetch }: any) {
   const getDataList = async () => {
     try {
       const response = await SLA.getSLA();
-      const dataOption = response.map((row: any) => {
+      const dataOption = response?.map((row: any) => {
         return { value: row.SLA_ID, label: row.priority_label };
       });
       setDataList(dataOption);

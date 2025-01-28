@@ -70,18 +70,6 @@ export default function AHTTicketTable({
       renderCell: (params: any) =>
         params?.row?.ticket_logs_latest?.assignee?.name,
     },
-    // {
-    //   field: "idle_time",
-    //   headerName: "Total Idle Time",
-    //   width: 140,
-    //   renderCell: (params: any) => params?.row?.aht_idle_time,
-    // },
-    // {
-    //   field: "lead_time",
-    //   headerName: "Lead Time",
-    //   width: 140,
-    //   renderCell: (params: any) => params?.row?.aht_lead_time,
-    // },
     {
       field: "total_duration",
       headerName: "Total Duration",

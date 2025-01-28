@@ -18,7 +18,6 @@ import {
 } from "../../schema/Ticket/ticketSearchSchema";
 import { getCategoryAPI } from "../../api/services/getCategoryList";
 import { statusList } from "../../constants/constants";
-import { useQuery } from "../TicketInformation/TicketInformationPage";
 import { useAuth } from "../../context/AuthContext";
 import UpdateUserBranchSection from "../UsersProfile/UpdateUserBranchSection";
 import { Division } from "../../api/services/division";
@@ -28,6 +27,7 @@ import { IoAddCircleSharp } from "react-icons/io5";
 import { SLA } from "../../api/services/SLA";
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
+  const [categoryList , setCategoryList] = useState<any>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [division, setDivision] = useState<any[]>([]);
   const [branch, setBranch] = useState<any[]>([]);
@@ -37,13 +37,11 @@ const TicketPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
-  const query = useQuery();
-  const [page, setPage] = useState(query.get("page") || "1");
+  const [page, setPage] = useState<string>('1');
   const [maxPage, setMaxPage] = useState("");
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const {
     reset,
     register,
@@ -70,6 +68,7 @@ const TicketPage: React.FC = () => {
 
   const handlePageChange = (newPage: string) => {
     setPage(newPage);
+    fetchData(null, newPage);
   };
 
   const onSubmit: SubmitHandler<filterFormtype> = async (formData: any) => {
@@ -80,23 +79,6 @@ const TicketPage: React.FC = () => {
       console.error("Failed to fetch data:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getCategoryList = async () => {
-    try {
-      const response = await getCategoryAPI.getAllData();
-      const data = response.map((row: any) => {
-        return {
-          value: row.id,
-          label: row.category_description,
-          sub_category: row.sub_category,
-        };
-      });
-      setCategories(data);
-    } catch (error) {
-      console.error("Error fetching category list:", error);
-      throw error;
     }
   };
 
@@ -116,14 +98,31 @@ const TicketPage: React.FC = () => {
     }
   };
 
+  const getCategoryList = async () => {
+    try {
+      const response = await getCategoryAPI.getCategoryList();
+      const data = response.map((row: any) => {
+        return {
+          value: row.id,
+          label: row.category_description,
+          sub_category: row.active_sub_category,
+        };
+      });
+      setCategoryList(data);
+    } catch (error) {
+      console.error("Error fetching category list:", error);
+      throw error;
+    }
+  };
+
   const getDivisionList = async () => {
     try {
-      const response = await Division.getDivision();
+      const response = await Division.getDivisionList();
       const data = response.map((row: any) => {
         return {
           value: row.id,
           label: row.division_description,
-          category: row.category,
+          category: row.active_category,
         };
       });
       setDivision(data);
@@ -135,7 +134,7 @@ const TicketPage: React.FC = () => {
 
   const getBranchList = async () => {
     try {
-      const response = await Branch.getBranch();
+      const response = await Branch.getBranchList();
       const data = response.map((row: any) => {
         return {
           value: row.id,
@@ -156,7 +155,7 @@ const TicketPage: React.FC = () => {
         return {
           value: row.id,
           label: row.category_description,
-          sub_category: row.sub_category,
+          sub_category: row.active_sub_category,
         };
       });
     setCategories(data);
@@ -165,6 +164,15 @@ const TicketPage: React.FC = () => {
 
   function handleSubCategoryList(e: any) {
     const data = categories
+      .find((category: any) => category.value == e)
+      ?.sub_category.map((row: any) => {
+        return { value: row.id, label: row.subcategory_description };
+      });
+    setSubCategories(data);
+  }
+
+  function handleSubCategoryListFilter(e: any) {
+    const data = categoryList
       .find((category: any) => category.value == e)
       ?.sub_category.map((row: any) => {
         return { value: row.id, label: row.subcategory_description };
@@ -224,9 +232,9 @@ const TicketPage: React.FC = () => {
       register: register,
       control: control,
       errors: errors,
-      options: categories,
+      options: categoryList,
       type: "select",
-      onChange: (value: any) => handleSubCategoryList(value),
+      onChange: (value: any) => handleSubCategoryListFilter(value),
     },
     {
       name: "subcategory_id",
@@ -288,13 +296,24 @@ const TicketPage: React.FC = () => {
   };
 
   useEffect(() => {
-    getPriorityList();
-    fetchData(null, page);
-    getDivisionList();
-    getCategoryList();
-    getBranchList();
-    getUser();
-  }, [page]);
+    const fetchInitialData = async () => {
+      try {
+        await fetchData(null, '1');
+  
+        await Promise.all([
+          getPriorityList(),
+          getDivisionList(),
+          getBranchList(),
+          getUser(),
+          getCategoryList(),
+        ]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchInitialData();
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>

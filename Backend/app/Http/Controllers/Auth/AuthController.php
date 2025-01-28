@@ -45,16 +45,7 @@ class AuthController extends Controller
                 'isValid' => true,
                 'roles' => $user->roles->pluck('name')->first(),
                 'user' => $user,
-                'notifications' => [
-                    'data' => TicketNotification::where('to_user', Auth::user()->id)
-                    ->orderBy('is_read', 'asc')
-                    ->orderBy('created_at', 'desc')
-                    ->take(10)->get(),
-                    'total_unread_ticket' => TicketNotification::where('to_user', Auth::user()->id)
-                    ->where('is_read', false)->count()
-                ],
-                'announcement' => Announcement::with('createdBy')->latest()->first()
-            ], Response::HTTP_OK);
+        ], Response::HTTP_OK);
         } else {
             return new JsonResponse([
                 'status' => Response::HTTP_UNAUTHORIZED,

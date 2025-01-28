@@ -3,12 +3,13 @@ import { useSearchParams } from "react-router-dom";
 import { AHT } from "../../api/services/aht";
 import { Box, Typography } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
+import { AHTData } from "../../interface";
 
 export default function AHTUserPage() {
   const [searchParams] = useSearchParams();
   const userId = searchParams.get("user_id");
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<AHTData[]>([]);
   const fetchUserData = async () => {
     try {
       setIsLoading(true);

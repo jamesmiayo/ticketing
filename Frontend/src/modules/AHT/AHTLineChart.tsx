@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Box } from "@mui/material";
+import { AHTChartOptions } from "../../interface";
 
 // Register required Chart.js components
 ChartJS.register(
@@ -23,9 +24,8 @@ ChartJS.register(
 );
 
 export default function AHTLineChart() {
-  // Mock data
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June"], // X-axis labels
+    labels: ["January", "February", "March", "April", "May", "June"],
     datasets: [
       {
         label: "Average Handling Time (AHT)",
@@ -37,8 +37,7 @@ export default function AHTLineChart() {
     ],
   };
 
-  // Chart options
-  const options:any = {
+  const options:AHTChartOptions = {
     responsive: true,
     plugins: {
       legend: {

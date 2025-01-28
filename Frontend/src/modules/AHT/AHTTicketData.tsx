@@ -14,7 +14,7 @@ import AHTModal from "./AHTModal";
 import { GiClick } from "react-icons/gi";
 
 export default function AHTTicketData({ data }: any) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   const metrics = [
     { label: "Idle Time", value: data?.aht_idle_time },
@@ -47,10 +47,10 @@ export default function AHTTicketData({ data }: any) {
 
   return (
     <>
-      {data?.length !== 0 ? (
+      {data !== null ? (
         <Box>
           <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg">
-            <AHTModal data={data} setOpen={open} />
+            <AHTModal data={data} />
           </Dialog>
           <Box sx={{ width: "100%", paddingX: 2 }}>
             <Box

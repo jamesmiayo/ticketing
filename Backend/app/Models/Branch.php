@@ -11,4 +11,8 @@ class Branch extends Model
 
     protected $fillable = ['branch_id' , 'branch_description' , 'b_active'];
 
+    public function active_branch()
+    {
+        return $this->where('b_active', true);
+    }
 }

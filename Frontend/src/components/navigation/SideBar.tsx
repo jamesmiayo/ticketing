@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -27,8 +27,12 @@ const Sidebar = ({ children }: any) => {
   const navigate = useNavigate();
   const [activeNavItem, setActiveNavItem] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logoutUser } = useAuth();
+  const { logoutUser , fetchUserNotification } = useAuth();
   const toast = useExecuteToast();
+
+  useEffect(() => {
+    fetchUserNotification();
+  }, []);
 
   const navItems = [
     {
@@ -90,6 +94,7 @@ const Sidebar = ({ children }: any) => {
   const handleNavigation = (path: string, title: string) => {
     setActiveNavItem(title);
     navigate(path);
+    fetchUserNotification(); 
   };
 
   const handleLogout = async () => {

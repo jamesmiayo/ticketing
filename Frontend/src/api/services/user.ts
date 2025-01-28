@@ -1,6 +1,18 @@
 import apiClient from "../configs/axiosConfigs";
 
 export const User = {
+  getUserNotification: async function () {
+    try {
+      const response = await apiClient.request({
+        url: "/user/notification",
+        method: "GET",
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
   getUser: async function (data: any) {
     try {
       const response = await apiClient.request({

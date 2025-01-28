@@ -20,4 +20,20 @@ class Division extends Model
     {
         return $this->hasMany(Category::class , 'division_id');
     }
+
+    public function active_division()
+    {
+        return $this->where('b_active', true);
+    }
+
+    public function active_category()
+    {
+        return $this->category()->where('b_active', true);
+    }
+
+    public function active_department()
+    {
+        return $this->department()->where('b_active', true);
+    }
+
 }

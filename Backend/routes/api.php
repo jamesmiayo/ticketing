@@ -22,6 +22,7 @@ use App\Http\Controllers\Ticket\TicketHdrController;
 use App\Http\Controllers\Ticket\TicketLogController;
 use App\Http\Controllers\Ticket\TicketDocumentController;
 use App\Http\Controllers\User\UserTicketController;
+use App\Http\Controllers\User\UserNotificationController;
 use App\Http\Controllers\CSAT\CSATController;
 use App\Http\Controllers\Report\ReportController;
 
@@ -31,7 +32,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', [DashboardController::class , 'index']);
+    Route::get('dashboard', [DashboardController::class, 'index']);
     Route::get('get-user', [UserController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::resource('announcement', AnnouncementController::class);
@@ -43,8 +44,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('sent-message/{ticket_id}', [TicketDtlController::class, 'show']);
         Route::get('ticket-logs', TicketLogController::class);
         Route::resource('ticket-hdr', TicketHdrController::class);
-        Route::post('assign' , [TicketHdrController::class , 'assignTicket']);
-        Route::put('priority', [TicketHdrController::class , 'updatePriority']);
+        Route::post('assign', [TicketHdrController::class, 'assignTicket']);
+        Route::put('priority', [TicketHdrController::class, 'updatePriority']);
         Route::post('upload', [TicketDocumentController::class, 'store']);
         Route::get('documents', [TicketDocumentController::class, 'getByAuthenticatedUser']);
         Route::put('change-status/{ticket_id}', [TicketHdrController::class, 'changeTicketStatus']);
@@ -53,8 +54,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('user')->group(function () {
-        Route::post('phone-number' , [UserController::class, 'updatePhoneNumber']);
-        Route::post('branch-section' , [UserController::class, 'updateUserBranchSection']);
+        Route::get('notification', UserNotificationController::class);
+        Route::post('phone-number', [UserController::class, 'updatePhoneNumber']);
+        Route::post('branch-section', [UserController::class, 'updateUserBranchSection']);
         Route::get('profile', [UserController::class, 'showProfile']);
         Route::get('ticket', UserTicketController::class);
         Route::post('branch', [UserController::class, 'updateUserBranch']);
@@ -63,11 +65,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('upload-profile', [UserController::class, 'uploadProfilePicture']);
     });
 
-    Route::post('/update/announcement/{announcements}', [AnnouncementController::class , 'updateAnnouncement']);
-    Route::get('average-handle-time', [AHTController::class , 'averageHandlingTimeTicket']);
+    Route::post('/update/announcement/{announcements}', [AnnouncementController::class, 'updateAnnouncement']);
+    Route::get('average-handle-time', [AHTController::class, 'averageHandlingTimeTicket']);
     Route::get('csat-report', [CSATController::class, 'CsatReport']);
-    Route::get('average-handle-time/user', [AHTController::class , 'averageHandlingTimeUser']);
+    Route::get('average-handle-time/user', [AHTController::class, 'averageHandlingTimeUser']);
     Route::get('ticket-reports', ReportController::class);
+
     Route::prefix('maintenance')->group(function () {
         Route::resource('permission', PermissionController::class);
         Route::resource('division', DivisionController::class);
@@ -82,7 +85,18 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('FAQ-DTL', FAQDtlController::class);
         Route::resource('SLA', SLAController::class);
     });
+
+    //List of active in maintenance
+    Route::prefix('list/maintenance')->group(function () {
+        Route::get('division', [DivisionController::class, 'getListDivision']);
+        Route::get('branch', [BranchController::class, 'getListBranch']);
+        Route::get('department', [DepartmentController::class, 'getListDepartment']);
+        Route::get('section', [SectionController::class, 'getListSection']);
+        Route::get('category', [CategoryController::class, 'getListCategory']);
+        Route::get('sub-category', [SubCategoryController::class, 'getListSubCategory']);
+    });
 });
+
 
 // //Can View Reports should be Upper Level.
 // Route::middleware(['auth', 'upper-level'])->group(function () {
