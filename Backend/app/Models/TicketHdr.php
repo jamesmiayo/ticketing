@@ -141,7 +141,7 @@ class TicketHdr extends Model
     public function getTicketLog($searchParams)
     {
 
-        $query = self::select('id' , 'ticket_id' , 'title' , 'emp_id' , 'subcategory_id' , 'priority' , 'created_at');
+        $query = self::query();
 
         if (array_key_exists('ticket_id', $searchParams)) {
             $query->ticketId($searchParams['ticket_id']);
