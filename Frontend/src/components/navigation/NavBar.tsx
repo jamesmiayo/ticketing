@@ -26,7 +26,6 @@ const NavBar: React.FC = () => {
     setShowDiv((prev) => !prev);
     setShowAnnouncement(false)
   };
-
   const handleShowAttachment = () => {
     setShowAnnouncement((prev) => !prev);
     setShowDiv(false)
@@ -281,7 +280,7 @@ const NavBar: React.FC = () => {
                               maxWidth: "350px"
                             }}
                           >
-                            {row?.ticket_hdr?.title}
+                            {row?.ticket_hdr?.ticket_logs_latest?.remarks}
                           </Typography>
                           <Chip
                             label={

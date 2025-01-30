@@ -76,14 +76,20 @@ class LdapAuthenticationService
             'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
             'role' => $localUser->roles->pluck('name')->first(),
             'notifications' => [
-                    'data' => TicketNotification::where('to_user', $localUser->id)
+                'data' => TicketNotification::whereIn('id', function ($query) use ($user) {
+                    $query->selectRaw('MAX(id)')
+                        ->from('ticket_notifications')
+                        ->where('to_user', $user->id)
+                        ->groupBy('ticket_id');
+                })
                     ->orderBy('is_read', 'asc')
                     ->orderBy('created_at', 'desc')
-                    ->take(10)->get(),
-                    'total_unread_ticket' => TicketNotification::where('to_user', $localUser->id)
+                    ->take(10)
+                    ->get(),
+                'total_unread_ticket' => TicketNotification::where('to_user', $localUser->id)
                     ->where('is_read', false)->count()
-                ],
-                'announcement' => Announcement::with('createdBy')->latest()->first(),
+            ],
+            'announcement' => Announcement::with('createdBy')->latest()->first(),
             'access_token' => $token,
         ], Response::HTTP_OK);
     }
