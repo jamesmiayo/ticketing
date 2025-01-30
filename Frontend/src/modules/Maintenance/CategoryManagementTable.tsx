@@ -63,7 +63,6 @@ export default function CategoryManagementTable({
     const updatedStatus = selectedCategory.active ? 0 : 1;
     try {
       setLoading(true);
-      console.log(selectedCategory)
       const responseUpdate = await getCategoryAPI.updateCategory({
         id: selectedCategory.id,
         body: {
@@ -79,8 +78,10 @@ export default function CategoryManagementTable({
       });
 
       await getCategoryList();
-    } catch (error) {
-      console.error("Error updating category status:", error);
+    } catch (error:any) {
+      toast.executeToast(error?.response.data.message, "top-center", true, {
+        type: "error",
+      });
     } finally {
       setLoading(false);
       setConfirmOpen(false);

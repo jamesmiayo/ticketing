@@ -373,13 +373,6 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                   </Grid>
                   <Grid item xs={12}>
                     <InfoItem
-                      icon={<Work />}
-                      title="Position"
-                      value={ticketDetail?.requestor?.position || "N/A"}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <InfoItem
                       icon={<LocalPhone />}
                       title="Viber Number"
                       value={ticketDetail?.requestor?.phone_number || "N/A"}
@@ -491,13 +484,6 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                           ticketDetail?.requestor?.section
                             ?.section_description || "No Section"
                         }
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <InfoItem
-                        icon={<Work />}
-                        title="Position"
-                        value={ticketDetail?.requestor?.position || "N/A"}
                       />
                     </Grid>
                   </Grid>
