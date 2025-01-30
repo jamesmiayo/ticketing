@@ -38,6 +38,7 @@ import { useExecuteToast } from "../../context/ToastContext";
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { FaFile } from "react-icons/fa";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
+import { useAuth } from "../../context/AuthContext";
 
 interface TicketDetailsProps {
   ticketDetail: {
@@ -57,12 +58,16 @@ interface TicketDetailsProps {
         section_description?: string;
         department?: {
           department_description?: string;
+          division?: {
+            division_description?: string;
+          };
         };
       };
     };
     ticket_priority: string;
     ticket_logs_latest?: {
       assignee?: {
+        id: number;
         name?: string;
       };
       status: string;
@@ -85,31 +90,42 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
   const [modal, setModal] = useState<any>();
   const toast = useExecuteToast();
   const theme = useTheme();
+  const { user } = useAuth();
   const { permission } = useContext(PermissionContext);
-  
+
   const tools = [
     {
       label: "Assign Ticket",
       onClick: () => handleAssigneClick("assignee"),
       icon: <Person />,
+      show:
+        permission.includes("Can Change Assignee") ||
+        ticketDetail?.ticket_logs_latest?.assignee?.id == user?.id,
     },
     {
       label: "Change Priority",
       onClick: () => handleAssigneClick("priority"),
       icon: <Flag />,
+      show: permission.includes("Can Change Priority"),
     },
     {
       label: "Done This Ticket",
       onClick: () => handleTicketForValidation(),
       icon: <CheckCircle />,
+      show:
+        permission.includes("Can Done Ticket") ||
+        ticketDetail?.ticket_logs_latest?.assignee?.id == user?.id,
     },
     {
       label: "Change Status",
       onClick: () => handleAssigneClick("status"),
       icon: <ChangeCircle />,
+      show:
+        permission.includes("Can Change Priority") ||
+        ticketDetail?.ticket_logs_latest?.assignee?.id == user?.id,
     },
   ];
-
+  
   function handleAssigneClick(value: any) {
     setModal(value);
     setOpen(true);
@@ -400,8 +416,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                       icon={<Domain />}
                       title="Division"
                       value={
-                        ticketDetail?.requestor?.section?.department
-                          ?.department_description || "No Division"
+                        ticketDetail?.requestor?.section?.department?.division
+                          ?.division_description || "No Division"
                       }
                     />
                   </Grid>
@@ -460,8 +476,8 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                         icon={<Domain />}
                         title="Division"
                         value={
-                          ticketDetail?.requestor?.section?.department
-                            ?.department_description || "No Division"
+                          ticketDetail?.requestor?.section?.department?.division
+                            ?.division_description || "No Division"
                         }
                       />
                     </Grid>
@@ -492,69 +508,52 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
           )}
 
           {ticketDetail?.b_status !== "7" &&
-            ticketDetail?.ticket_logs_latest?.assignee?.name !== undefined && ticketDetail?.ticket_logs_latest?.status != "8" && (
+            ticketDetail?.ticket_logs_latest?.assignee?.name !== undefined &&
+            ticketDetail?.ticket_logs_latest?.status != "8" && (
               <Box mt={4}>
-                <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
-                  Actions
-                </Typography>
+                {tools.filter((row) => row.show === true).length !== 0 && (
+                  <Typography variant="subtitle1" gutterBottom sx={{ mb: 2 }}>
+                    Actions
+                  </Typography>
+                )}
                 <Grid container spacing={2}>
-                  {tools.map((item, index) => (
-                    <Grid item xs={12} sm={6} key={index}>
-                      <Button
-                        variant="outlined"
-                        startIcon={item.icon}
-                        onClick={item.onClick}
-                        fullWidth
-                        sx={{
-                          borderRadius: 2,
-                          textTransform: "none",
-                          p: 1.5,
-                          justifyContent: "flex-start",
-                          borderColor: "primary.main",
-                          color: "primary.main",
-                          "&:hover": {
-                            backgroundColor: "primary.main",
-                            color: "primary.contrastText",
-                          },
-                        }}
-                      >
-                        {item.label}
-                      </Button>
-                    </Grid>
-                  ))}
+                  {tools
+                    .filter((row: any) => row.show === true)
+                    .map((item, index) => (
+                      <Grid item xs={12} sm={6} key={index}>
+                        <Button
+                          variant="outlined"
+                          startIcon={item.icon}
+                          onClick={item.onClick}
+                          fullWidth
+                          sx={{
+                            borderRadius: 2,
+                            textTransform: "none",
+                            p: 1.5,
+                            justifyContent: "flex-start",
+                            borderColor: "primary.main",
+                            color: "primary.main",
+                            "&:hover": {
+                              backgroundColor: "primary.main",
+                              color: "primary.contrastText",
+                            },
+                          }}
+                        >
+                          {item.label}
+                        </Button>
+                      </Grid>
+                    ))}
                 </Grid>
               </Box>
             )}
-          {ticketDetail?.ticket_logs_latest?.assignee?.name === undefined && permission?.includes("Can Change Priority") && (
-            <>
-              <Box sx={{ mt: 2 }}>
-                <Button
-                  variant="outlined"
-                  startIcon={<Person />}
-                  onClick={() => handleAssigneClick("priority")}
-                  fullWidth
-                  sx={{
-                    borderRadius: 2,
-                    textTransform: "none",
-                    p: 1.5,
-                    justifyContent: "flex-start",
-                    borderColor: "primary.main",
-                    color: "primary.main",
-                    "&:hover": {
-                      backgroundColor: "primary.main",
-                      color: "primary.contrastText",
-                    },
-                  }}
-                >
-                  Change Priority
-                </Button>
-              </Box>
-              {ticketDetail?.sla !== null && (
+          {ticketDetail?.ticket_logs_latest?.assignee?.name === undefined &&
+            permission?.includes("Can Change Priority") && (
+              <>
                 <Box sx={{ mt: 2 }}>
                   <Button
                     variant="outlined"
                     startIcon={<Person />}
-                    onClick={() => handleAssigneClick("assignee")}
+                    onClick={() => handleAssigneClick("priority")}
                     fullWidth
                     sx={{
                       borderRadius: 2,
@@ -569,12 +568,35 @@ const TicketDetails: React.FC<TicketDetailsProps> = ({
                       },
                     }}
                   >
-                    Assign Ticket
+                    Change Priority
                   </Button>
                 </Box>
-              )}
-            </>
-          )}
+                {ticketDetail?.sla !== null && (
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Person />}
+                      onClick={() => handleAssigneClick("assignee")}
+                      fullWidth
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: "none",
+                        p: 1.5,
+                        justifyContent: "flex-start",
+                        borderColor: "primary.main",
+                        color: "primary.main",
+                        "&:hover": {
+                          backgroundColor: "primary.main",
+                          color: "primary.contrastText",
+                        },
+                      }}
+                    >
+                      Assign Ticket
+                    </Button>
+                  </Box>
+                )}
+              </>
+            )}
         </CardContent>
       </Card>
     </>

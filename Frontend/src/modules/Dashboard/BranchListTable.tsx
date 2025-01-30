@@ -3,13 +3,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton,
   Paper,
   Typography,
 } from "@mui/material";
 import TableComponents from "../../components/common/TableComponents";
-import { GridRenderCellParams } from "@mui/x-data-grid";
-import { FaEye } from "react-icons/fa";
 import { useState } from "react";
 import TicketCard from "../Ticketing/TicketCard";
 import { cardColors } from "../../constants/constants";
@@ -18,24 +15,12 @@ export default function BranchListTable({ data, isLoading }: any) {
   const [open, setOpen] = useState(false);
   const [dataTicket, setDataTicket] = useState<any>([]);
   const columns = [
-    { field: "branch_name", headerName: "Branch Name", width: 200 },
-    { field: "total_tickets", headerName: "Total Ticket", width: 140 },
-    {
-      field: "test",
-      headerName: "See More",
-      width: 100,
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <IconButton onClick={() => handleViewClick(params.row)}>
-            <FaEye />
-          </IconButton>
-        </>
-      ),
-    },
+    { field: "branch_name", headerName: "Branch Name", width: 250 },
+    { field: "total_tickets", headerName: "Total Ticket", width: 250 },
   ];
 
   function handleViewClick(data: any) {
-    setDataTicket(data);
+    setDataTicket(data.row);
     setOpen(true);
   }
   return (
@@ -49,9 +34,6 @@ export default function BranchListTable({ data, isLoading }: any) {
           }}
         >
           <DialogTitle>Total Ticket in {dataTicket.branch_name}</DialogTitle>
-          {/* <Box sx={{  backgroundColor: "rgba(76, 175, 80, 0.1)" , borderRadius: 2, padding: 2 , margin: 2}}>
-    <Typography sx={{ fontSize: '15px' ,  fontWeight: "600", }}>Unassigned Ticket: {dataTicket?.status_counts?.unassigned_ticket} </Typography>
-  </Box> */}
         </Box>
 
         <DialogContent>
@@ -101,16 +83,13 @@ export default function BranchListTable({ data, isLoading }: any) {
             }}
           >
             <Typography variant="h6">Branch List</Typography>
-            <Typography variant="h6">
-              Total Ticket Without Branch:{" "}
-              {data?.total_count_without_branch || 0}
-            </Typography>
           </Box>
           <TableComponents
             columns={columns}
             rows={data?.total_count_with_branch}
             height={350}
             isLoading={isLoading}
+            onRowClick={handleViewClick}
           />
         </Box>
       </Paper>

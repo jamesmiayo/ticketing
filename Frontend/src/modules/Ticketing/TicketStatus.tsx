@@ -76,30 +76,30 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
   const ratingTitles = [
     { name: "satisfactory_1", label: "Overall Satisfaction" },
     { name: "satisfactory_2", label: "Customer Support" },
-    { name: "satisfactory_3", label: "Ease of Use" },
-    { name: "satisfactory_4", label: "Features" },
-    { name: "satisfactory_5", label: "Value for Money" },
+    { name: "satisfactory_3", label: "Speed of Response" },
+    { name: "satisfactory_4", label: "Ease of Use" },
+    { name: "satisfactory_5", label: "Features" },
   ];
 
   const userSatisfaction = [
     {
-      value: "Terrible",
+      value: "Very Unsatisfied",
       svg: cry,
     },
     {
-      value: "Bad",
+      value: "Unsatisfied",
       svg: sad,
     },
     {
-      value: "Okay",
+      value: "Neutral",
       svg: okay,
     },
     {
-      value: "Good",
+      value: "Satisfied",
       svg: good,
     },
     {
-      value: "Amazing",
+      value: "Very satisfied",
       svg: amazing,
     },
   ];
@@ -139,6 +139,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                       sx={{
                         textAlign: "center",
                         cursor: "pointer",
+                        minWidth: '80px'
                       }}
                       key={index}
                       onClick={() => setActiveSatisfaction(index)}
@@ -146,8 +147,6 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                       <Box
                         sx={{
                           padding: "1px",
-                          border: "1px solid #8988",
-                          borderRadius: "50%",
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
@@ -159,7 +158,6 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                               : "none",
                           "&:hover": {
                             transform: "scale(1.2)",
-                            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
                           },
                         }}
                       >

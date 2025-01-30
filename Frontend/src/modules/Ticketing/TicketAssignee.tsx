@@ -121,8 +121,7 @@ export default function TicketAssignee({ data, setOpen, refetch }: any) {
   useEffect(() => {
     getDivision();
     getUser();
-
-    if (user.roles[0].name !== "Admin") {
+    if (user.roles !== "Admin") {
       reset({
         division: user?.section?.department?.division_id,
         department: user?.section?.department_id,
