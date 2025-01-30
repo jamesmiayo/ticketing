@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import {
   Person,
-  Work,
   Flag,
   CheckCircle,
   ChangeCircle,

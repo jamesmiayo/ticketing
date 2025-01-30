@@ -6,11 +6,7 @@ import { Pie } from "react-chartjs-2";
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface TicketPriorityProps{
-  ticketPriority: any;
-  isLoading: boolean;
-}
-export default function TicketPriority({ ticketPriority, isLoading }: TicketPriorityProps) {
+export default function TicketPriority({ ticketPriority, isLoading }: any) {
   const [chartData, setChartData] = useState<any>(null);
   const getDataList = async () => {
     const labels = ticketPriority?.map((item: any) => item.priority_label);
@@ -24,7 +20,7 @@ export default function TicketPriority({ ticketPriority, isLoading }: TicketPrio
             (item: any) => item.priority_color
           ),
           hoverBackgroundColor: ticketPriority?.map(
-            (item: string) => item.priority_color
+            (item: any) => item.priority_color
           ),
         },
       ],
