@@ -74,9 +74,9 @@ class TicketHdrRoleDataService
                 });
                 break;
             default:
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($authUser , $ticketLogsFilter, $userId) {
-                    $query->whereHas('requestor', function ($subQuery) use ($authUser) {
-                        $subQuery->where('id', $authUser);
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $userId) {
+                    $query->whereHas('requestor', function ($subQuery) use ($userId) {
+                        $subQuery->where('id', $userId);
                     })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($userId) {
                             $subQuery->where('id', $userId);
                         })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
