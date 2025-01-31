@@ -30,7 +30,6 @@ class TicketHdr extends Model
     protected $appends = ['ticket_status', 'time_finished'];
 
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s A',
         'total_duration' => 'float',
     ];
 

@@ -183,4 +183,10 @@ class TicketHdrController extends Controller
         ]);
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Successfully Update The Ticket Remarks.'], Response::HTTP_OK);
     }
+
+    public function destroy(TicketHdr $ticket)
+    {
+        $ticket->delete();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
+    }
 }
