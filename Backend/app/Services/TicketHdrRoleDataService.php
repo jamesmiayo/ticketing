@@ -25,13 +25,8 @@ class TicketHdrRoleDataService
         $sectionId = $authUser?->section_id;
         $userId = $authUser?->id;
 
-        $ticketLogsFilter = function ($query) use ($divisionId, $departmentId, $sectionId) {
-            $query->whereNull('emp_id')
-                ->where(function ($nestedQuery) use ($divisionId, $departmentId, $sectionId) {
-                    $nestedQuery->where('division_id', $divisionId)
-                        ->orWhere('department_id', $departmentId)
-                        ->orWhere('section_id', $sectionId);
-                });
+        $ticketLogsFilter = function ($query) use ($divisionId) {
+            $query->whereNull('emp_id')->where('division_id' , $divisionId);
         };
 
         switch ($this->role) {
@@ -40,50 +35,49 @@ class TicketHdrRoleDataService
                 break;
                 case 'Head':
                     $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $divisionId) {
-                        $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor.section.department.division', function ($subQuery) use ($divisionId) {
+                        $query->whereHas('requestor.section.department.division', function ($subQuery) use ($divisionId) {
                                 $subQuery->where('division_id', $divisionId);
                             })
                             ->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) use ($divisionId) {
                                 $subQuery->where('division_id', $divisionId);
-                            });
+                            })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
                     });
                     break;
                 case 'Manager':
                     $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $departmentId) {
-                            $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor.section.department', function ($subQuery) use ($departmentId) {
+                            $query->whereHas('requestor.section.department', function ($subQuery) use ($departmentId) {
                                 $subQuery->where('department_id', $departmentId);
                             })
                             ->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) use ($departmentId) {
                                 $subQuery->where('department_id', $departmentId);
-                            });
+                            })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
                     });
                     break;
                 case 'Supervisor':
                     $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
-                        $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor.section', function ($subQuery) use ($sectionId) {
+                        $query->whereHas('requestor.section', function ($subQuery) use ($sectionId) {
                                 $subQuery->where('section_id', $sectionId);
                             })
                         ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
                             $subQuery->where('section_id', $sectionId);
-                        });
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);
                 });
                 break;
             case 'Tech':
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
-                    $query->whereHas('ticket_logs_latest', $ticketLogsFilter)->orWhereHas('requestor.section', function ($subQuery) use ($sectionId) {
+                    $query->whereHas('requestor.section', function ($subQuery) use ($sectionId) {
                         $subQuery->where('section_id', $sectionId);
                     })
                         ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
                             $subQuery->where('section_id', $sectionId);
-                        });
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);
                 });
                 break;
             default:
                 $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $userId) {
-                    $query->where('emp_id', $userId)
-                        ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($userId) {
+                    $query->whereHas('ticket_logs_latest.assignee', function ($subQuery) use ($userId) {
                             $subQuery->where('id', $userId);
-                        });
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
                 });
                 break;
         }
