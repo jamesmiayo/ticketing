@@ -7,45 +7,56 @@ import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
 import { usePrivateRoutes } from "./pages/private/PrivateRoute.ts";
+import { SWRConfig } from "swr";
+import { fetcher } from "./api/swr/ticket.ts";
+
 function App() {
   const newPrivateRoutes = usePrivateRoutes();
 
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <LoaderProvider>
-          <BrowserRouter future={{ v7_startTransition: true }}>
-            <Routes>
-              <Route index element={<LoginPage />} />
-              <Route
-                path="/login"
-                element={
-                  <PublicRoute>
-                    <LoginPage />
-                  </PublicRoute>
-                }
-              />
+    <SWRConfig
+      value={{
+        fetcher,
+        revalidateOnFocus: true,
+        shouldRetryOnError: false,
+      }}
+    >
+      <AuthProvider>
+        <ToastProvider>
+          <LoaderProvider>
+            <BrowserRouter future={{ v7_startTransition: true }}>
+              <Routes>
+                <Route index element={<LoginPage />} />
+                <Route
+                  path="/login"
+                  element={
+                    <PublicRoute>
+                      <LoginPage />
+                    </PublicRoute>
+                  }
+                />
 
-              {newPrivateRoutes.privateRoutes.map(
-                (route) =>
-                  route.show && (
-                    <Route
-                      key={String(route.id)}
-                      path={route.path}
-                      element={
-                        <PrivateRoute
-                          title={route.title}
-                          component={route.component}
-                        />
-                      }
-                    />
-                  )
-              )}
-            </Routes>
-          </BrowserRouter>
-        </LoaderProvider>
-      </ToastProvider>
-    </AuthProvider>
+                {newPrivateRoutes.privateRoutes.map(
+                  (route) =>
+                    route.show && (
+                      <Route
+                        key={String(route.id)}
+                        path={route.path}
+                        element={
+                          <PrivateRoute
+                            title={route.title}
+                            component={route.component}
+                          />
+                        }
+                      />
+                    )
+                )}
+              </Routes>
+            </BrowserRouter>
+          </LoaderProvider>
+        </ToastProvider>
+      </AuthProvider>
+    </SWRConfig>
   );
 }
 

@@ -12,7 +12,6 @@ const apiClient: AxiosInstance = axios.create({
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
   },
-  // timeout: 10000,
   withCredentials: false,
 });
 

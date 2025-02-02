@@ -25,6 +25,8 @@ import { User } from "../../api/services/user";
 import { Branch } from "../../api/services/branch";
 import { IoAddCircleSharp } from "react-icons/io5";
 import { SLA } from "../../api/services/SLA";
+import { useTicket } from "../../api/swr/ticket";
+import { useFetch } from "../../hooks/useFetchSWR";
 const TicketPage: React.FC = () => {
   const { user } = useAuth();
   const [categoryList , setCategoryList] = useState<any>([]);
@@ -34,11 +36,12 @@ const TicketPage: React.FC = () => {
   const [priority, setPriority] = useState<any[]>([]);
   const [subcategories, setSubCategories] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState([]);
+  const [data1, setData] = useState([]);
   const [page, setPage] = useState<string>('1');
   const [maxPage, setMaxPage] = useState("");
+  const { data, error, isLoading, mutate , globalMutate } = useFetch("ticket/ticket-hdr");
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -298,7 +301,7 @@ const TicketPage: React.FC = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        await fetchData(null, '1');
+        // await fetchData(null, '1');
   
         await Promise.all([
           getPriorityList(),
@@ -342,7 +345,7 @@ const TicketPage: React.FC = () => {
         <Box>
           <TicketTable
             onReset={handleReset}
-            tickets={data}
+            tickets={data?.data?.data}
             isLoading={loading}
             onPageChange={handlePageChange}
             pageProps={page}
@@ -359,7 +362,7 @@ const TicketPage: React.FC = () => {
               <DialogContent>
                 <TicketCreationForm
                   onCreate={() => setOpen(false)}
-                  refetch={() => fetchData(null, page)}
+                  globalMutate={mutate}
                   division={division}
                   categories={categories}
                   subcategories={subcategories}

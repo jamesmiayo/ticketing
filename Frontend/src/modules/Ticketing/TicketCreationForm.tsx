@@ -29,7 +29,7 @@ import { Attachment, Close } from "@mui/icons-material";
 import AttachmentCmp from "../TicketInformation/AttachmentCmp";
 interface TicketCreationFormProps {
   onCreate: (ticket: any) => void;
-  refetch?: any;
+  globalMutate?: any;
   categories: any;
   division: any;
   subcategories: any;
@@ -44,7 +44,7 @@ const statusOptions = [
 
 const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   onCreate,
-  refetch,
+  globalMutate,
   categories,
   division,
   subcategories,
@@ -68,6 +68,7 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
   });
 
   const onSubmit = async (data: any) => {
+    globalMutate('ticket/ticket-hdr', (currentTickets = []) => [...currentTickets, data], false);
     try {
       setLoading(true);
       const formData = new FormData();
@@ -78,8 +79,8 @@ const TicketCreationForm: React.FC<TicketCreationFormProps> = ({
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
+      globalMutate('ticket/ticket-hdr');
       onCreate(data);
-      refetch();
     } catch (error) {
       console.error("Error creating ticket:", error);
     } finally {
