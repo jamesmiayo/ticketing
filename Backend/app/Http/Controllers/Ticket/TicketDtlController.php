@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ticket;
 
+use App\Events\TicketSentEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,12 +14,14 @@ class TicketDtlController extends Controller
 {
     public function create(Request $request) : JsonResponse
     {
-        TicketDtl::create([
+        $data = TicketDtl::create([
             'thread_id' => mt_rand(1000, 9999),
             'ticket_id' => $request->ticket_id,
             'message' => $request->message,
             'user_id' => Auth::id()
         ]);
+
+        broadcast(new TicketSentEvent($data));
 
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Message Sent Successfully'], Response::HTTP_OK);
     }

@@ -29,6 +29,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import AttachmentCmp from "./AttachmentCmp";
 import { styled } from "@mui/material/styles";
+import useEchoPrivate from "../../hooks/useEchoPrivate";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -96,6 +97,17 @@ export default function ChatBox({ ticketDetail }: any) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handlePrivateEvent = (event) => {
+    console.log("Private event received:", event);
+
+    if (event && event.ticket) {
+      setMessages((prevMessages) => [...prevMessages, event.ticket]);
+      scrollToBottom();
+    }
+  };
+
+  useEchoPrivate("ticket-message", "TicketSentEvent", handlePrivateEvent);
+  
   const fetchMessage = async () => {
     try {
       setLoading(true);
@@ -112,8 +124,7 @@ export default function ChatBox({ ticketDetail }: any) {
 
   useEffect(() => {
     fetchMessage();
-    const timer = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timer);
+    scrollToBottom();
   }, [ticketDetail]);
 
   useEffect(() => {
@@ -237,9 +248,9 @@ export default function ChatBox({ ticketDetail }: any) {
                               : "flex-start",
                         }}
                       >
-                        <Tooltip title={message.user.name}>
+                        <Tooltip title={message?.user?.name}>
                           <Avatar
-                            src={message.user.profile_picture}
+                            src={message.user?.profile_picture}
                             sx={{
                               width: 40,
                               height: 40,
@@ -251,8 +262,8 @@ export default function ChatBox({ ticketDetail }: any) {
                               //   : "transparent",
                             }}
                           >
-                            {!message.user.profile_picture &&
-                              message.user.name.charAt(0).toUpperCase()}
+                            {!message?.user?.profile_picture &&
+                              message?.user?.name.charAt(0).toUpperCase()}
                           </Avatar>
                         </Tooltip>
                       </ListItemAvatar>
@@ -271,7 +282,7 @@ export default function ChatBox({ ticketDetail }: any) {
                       </Box>
                     </MessageBubble>
                   </ListItem>
-                  {message.documents.length > 0 && (
+                  {message?.documents?.length > 0 && (
                     <Box
                       sx={{
                         display: "flex",
@@ -280,13 +291,13 @@ export default function ChatBox({ ticketDetail }: any) {
                         mt: 1,
                         mr: 3,
                         alignItems:
-                          message.user?.id === user?.id
+                          message?.user?.id === user?.id
                             ? "flex-end"
                             : "flex-start",
                       }}
                     >
-                      {message.documents.map((document: any, index: number) => {
-                        const fileExtension = document.file_url
+                      {message?.documents.map((document: any, index: number) => {
+                        const fileExtension = document?.file_url
                           .split(".")
                           .pop()
                           ?.toLowerCase();
@@ -297,7 +308,7 @@ export default function ChatBox({ ticketDetail }: any) {
                         return (
                           <a
                             key={index}
-                            href={document.file_url}
+                            href={document?.file_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{
@@ -310,7 +321,7 @@ export default function ChatBox({ ticketDetail }: any) {
                           >
                             {isImage ? (
                               <img
-                                src={document.file_url}
+                                src={document?.file_url}
                                 alt={`Document ${index}`}
                                 style={{
                                   maxWidth: "200px",
