@@ -18,7 +18,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        return (new LdapAuthenticationService($request))->authenticate();
+        return (new ApiAuthenticationService($request))->authenticate();
         // if (env('AUTHENTICATION') == 'LDAP') {
         //     return (new LdapAuthenticationService($request))->authenticate();
         // } elseif (env('AUTHENTICATION') == 'API') {

@@ -9,6 +9,7 @@
         "directorytree/ldaprecord-laravel": "3.3",
         "doctrine/dbal": "^4.1",
         "laravel/framework": "^11.9",
+        "laravel/reverb": "^1.4",
         "laravel/sanctum": "^4.0",
         "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.9",

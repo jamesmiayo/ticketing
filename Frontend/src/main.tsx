@@ -2,6 +2,8 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { PermissionProvider } from "./helpers/Providers/PermissionProvider.tsx";
+import "./echo.tsx";
+
 createRoot(document.getElementById("root")!).render(
   <PermissionProvider>
     <App />
