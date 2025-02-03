@@ -7,9 +7,9 @@ import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { LoaderProvider } from "./context/LoaderContext";
 import { usePrivateRoutes } from "./pages/private/PrivateRoute.ts";
-function App() {
-  const newPrivateRoutes = usePrivateRoutes();
 
+function App() {
+  const newPrivateRoutes = usePrivateRoutes();  
   return (
     <AuthProvider>
       <ToastProvider>

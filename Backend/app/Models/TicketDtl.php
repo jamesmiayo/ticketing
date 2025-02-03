@@ -17,6 +17,11 @@ class TicketDtl extends Model
         return $this->belongsTo(User::class , 'user_id');
     }
 
+    public function tickethdr()
+    {
+        return $this->belongsTo(TicketHdr::class , 'ticket_id');
+    }
+
     public function documents()
     {
         return $this->hasMany(TicketDocument::class, 'ticket_tdl_id');

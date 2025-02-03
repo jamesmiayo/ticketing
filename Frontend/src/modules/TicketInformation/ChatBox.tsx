@@ -15,6 +15,7 @@ import {
   DialogContent,
   TextField,
   IconButton,
+  Badge,
 } from "@mui/material";
 import { Attachment, Send as SendIcon } from "@mui/icons-material";
 import { format } from "date-fns";
@@ -29,7 +30,8 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import AttachmentCmp from "./AttachmentCmp";
 import { styled } from "@mui/material/styles";
-import useEchoPrivate from "../../hooks/useEchoPrivate";
+import useEchoPrivate from "../../hooks/useEchoPrivate.ts";
+import desktopNotification from "../../hooks/useDesktopNotification.ts";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -84,6 +86,8 @@ export default function ChatBox({ ticketDetail }: any) {
   const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpenClose = () => setOpen((prev) => !prev);
+  const receivedMessages = new Set(); // Track unique messages/events
+
   const { control, handleSubmit, reset } =
     useForm<messageValidationSchemaFormtype>({
       resolver: yupResolver(messageValidationSchema),
@@ -92,18 +96,35 @@ export default function ChatBox({ ticketDetail }: any) {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
+    console.log("twes");
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handlePrivateEvent = (event) => {
     if (event && event.ticket) {
-      setMessages((prevMessages) => [...prevMessages, event.ticket]);
-      scrollToBottom();
+      const messageId =
+        event.ticket.tickethdr?.ticket_id || event.ticket.message; // Use ticket ID or message text as unique key
+
+      if (!receivedMessages.has(messageId)) {
+        receivedMessages.add(messageId); // Mark message as received
+
+        setMessages((prevMessages) => [...prevMessages, event.ticket]);
+
+        desktopNotification(
+          `New Message from Ticket - ${event.ticket.tickethdr?.ticket_id}`,
+          {
+            body: `${event.ticket.message}`,
+            icon: "assets/logo.png",
+            url: `/ticket-information?id=${event.ticket.tickethdr?.ticket_id}`,
+            from: event.ticket.user.name,
+          }
+        );
+      }
     }
   };
 
   useEchoPrivate("ticket-message", "TicketSentEvent", handlePrivateEvent);
-  
+
   const fetchMessage = async () => {
     try {
       setLoading(true);
@@ -119,8 +140,11 @@ export default function ChatBox({ ticketDetail }: any) {
   };
 
   useEffect(() => {
-    fetchMessage();
     scrollToBottom();
+  });
+
+  useEffect(() => {
+    fetchMessage();
   }, [ticketDetail]);
 
   useEffect(() => {
@@ -218,7 +242,37 @@ export default function ChatBox({ ticketDetail }: any) {
                         }}
                       >
                         <Tooltip title={message?.user?.name}>
-                          <Avatar
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "right",
+                            }}
+                            variant="dot"
+                            sx={{
+                              "& .MuiBadge-dot": {
+                                backgroundColor: message.user?.isOnline
+                                  ? "green"
+                                  : "gray",
+                                width: 15,
+                                height: 15,
+                                borderRadius: "50%",
+                                border: "2px solid white",
+                              },
+                            }}
+                          >
+                            <Avatar
+                              src={message.user?.profile_picture}
+                              sx={{
+                                width: 40,
+                                height: 40,
+                              }}
+                            >
+                              {!message?.user?.profile_picture &&
+                                message?.user?.name.charAt(0).toUpperCase()}
+                            </Avatar>
+                          </Badge>
+                          {/* <Avatar
                             src={message.user?.profile_picture}
                             sx={{
                               width: 40,
@@ -227,7 +281,7 @@ export default function ChatBox({ ticketDetail }: any) {
                           >
                             {!message?.user?.profile_picture &&
                               message?.user?.name.charAt(0).toUpperCase()}
-                          </Avatar>
+                          </Avatar> */}
                         </Tooltip>
                       </ListItemAvatar>
                       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -259,82 +313,84 @@ export default function ChatBox({ ticketDetail }: any) {
                             : "flex-start",
                       }}
                     >
-                      {message?.documents.map((document: any, index: number) => {
-                        const fileExtension = document?.file_url
-                          .split(".")
-                          .pop()
-                          ?.toLowerCase();
-                        const isImage = ["jpeg", "png", "jpg"].includes(
-                          fileExtension || ""
-                        );
+                      {message?.documents.map(
+                        (document: any, index: number) => {
+                          const fileExtension = document?.file_url
+                            .split(".")
+                            .pop()
+                            ?.toLowerCase();
+                          const isImage = ["jpeg", "png", "jpg"].includes(
+                            fileExtension || ""
+                          );
 
-                        return (
-                          <a
-                            key={index}
-                            href={document?.file_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              textDecoration: "none",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              maxWidth: "100px",
-                            }}
-                          >
-                            {isImage ? (
-                              <img
-                                src={document?.file_url}
-                                alt={`Document ${index}`}
-                                style={{
-                                  maxWidth: "200px",
-                                  maxHeight: "200px",
-                                  borderRadius: "8px",
-                                  objectFit: "cover",
-                                  marginBottom: "4px",
-                                }}
-                              />
-                            ) : (
-                              <>
-                                <Box
-                                  sx={{
-                                    bgcolor: "secondary.main",
-                                    color: "white",
-                                    fontSize: "12px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                          return (
+                            <a
+                              key={index}
+                              href={document?.file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                textDecoration: "none",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                maxWidth: "100px",
+                              }}
+                            >
+                              {isImage ? (
+                                <img
+                                  src={document?.file_url}
+                                  alt={`Document ${index}`}
+                                  style={{
+                                    maxWidth: "200px",
+                                    maxHeight: "200px",
                                     borderRadius: "8px",
-                                    padding: "12px",
-                                    width: "60px",
-                                    height: "60px",
-                                    transition: "all 0.3s ease",
-                                    "&:hover": {
-                                      bgcolor: "secondary.dark",
-                                      transform: "scale(1.1)",
-                                    },
+                                    objectFit: "cover",
+                                    marginBottom: "4px",
                                   }}
-                                >
-                                  <Attachment fontSize="small" />
-                                </Box>
-                                <Typography
-                                  variant="caption"
-                                  align="center"
-                                  sx={{
-                                    maxWidth: "100px",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    mt: 0.5,
-                                  }}
-                                >
-                                  Document
-                                </Typography>
-                              </>
-                            )}
-                          </a>
-                        );
-                      })}
+                                />
+                              ) : (
+                                <>
+                                  <Box
+                                    sx={{
+                                      bgcolor: "secondary.main",
+                                      color: "white",
+                                      fontSize: "12px",
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      borderRadius: "8px",
+                                      padding: "12px",
+                                      width: "60px",
+                                      height: "60px",
+                                      transition: "all 0.3s ease",
+                                      "&:hover": {
+                                        bgcolor: "secondary.dark",
+                                        transform: "scale(1.1)",
+                                      },
+                                    }}
+                                  >
+                                    <Attachment fontSize="small" />
+                                  </Box>
+                                  <Typography
+                                    variant="caption"
+                                    align="center"
+                                    sx={{
+                                      maxWidth: "100px",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                      mt: 0.5,
+                                    }}
+                                  >
+                                    Document
+                                  </Typography>
+                                </>
+                              )}
+                            </a>
+                          );
+                        }
+                      )}
                     </Box>
                   )}
                 </Box>

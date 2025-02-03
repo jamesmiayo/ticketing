@@ -1,19 +1,19 @@
 import { useEffect } from "react";
+import echo from "../echo";
 
-const useEchoPrivate = (channelName:any, eventName:any, callback:any) => {
+const useEchoPrivate = (channelName, eventName, callback) => {
   useEffect(() => {
-    if (!window.Echo) {
+    if (!echo) {
       console.error("Echo is not initialized.");
       return;
     }
 
-    const privateChannel = window.Echo.channel(channelName);
-
+    const privateChannel = echo.channel(channelName); 
     privateChannel.listen(eventName, callback);
 
     return () => {
-      privateChannel.stopListening(eventName, callback);
-      window.Echo.leave(channelName);
+      privateChannel.stopListening(eventName);
+      echo.leave(channelName);
     };
   }, [channelName, eventName, callback]);
 };

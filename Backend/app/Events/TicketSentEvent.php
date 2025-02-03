@@ -20,7 +20,7 @@ class TicketSentEvent implements ShouldBroadcast
      */
     public function __construct($data)
     {
-        $this->data = $data->load('user'); // Load user relationship
+        $this->data = $data->load('user' , 'tickethdr:id,ticket_id'); // Load user relationship
     }
 
     /**

@@ -30,7 +30,8 @@ class User extends Authenticatable
         'section_id',
         'profile_picture',
         'phone_number',
-        'b_announcement'
+        'b_announcement',
+        'isOnline'
     ];
 
     /**
@@ -72,7 +73,14 @@ class User extends Authenticatable
 
     public static function destroyToken()
     {
-        return Auth::user()->tokens()->delete();
+        $user = Auth::user();
+
+        if ($user) {
+            $user->update(['isOnline' => false]);
+            return $user->tokens()->delete();
+        }
+
+        return false;
     }
 
     public function branch()

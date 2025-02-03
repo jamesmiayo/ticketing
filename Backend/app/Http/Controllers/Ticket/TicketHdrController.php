@@ -86,7 +86,7 @@ class TicketHdrController extends Controller
                 $query->orderBy('id', 'desc');
             },
             'ticket_messages',
-            'ticket_messages.user:id,name',
+            'ticket_messages.user:id,name,isOnline',
             'sla',
         ])->where('ticket_id', $ticket_id)->first();
 
