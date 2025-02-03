@@ -83,9 +83,7 @@ export default function ChatBox({ ticketDetail }: any) {
   const [userLoaded, setUserLoaded] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
-
   const handleOpenClose = () => setOpen((prev) => !prev);
-
   const { control, handleSubmit, reset } =
     useForm<messageValidationSchemaFormtype>({
       resolver: yupResolver(messageValidationSchema),
@@ -98,8 +96,6 @@ export default function ChatBox({ ticketDetail }: any) {
   };
 
   const handlePrivateEvent = (event) => {
-    console.log("Private event received:", event);
-
     if (event && event.ticket) {
       setMessages((prevMessages) => [...prevMessages, event.ticket]);
       scrollToBottom();
@@ -142,7 +138,6 @@ export default function ChatBox({ ticketDetail }: any) {
         type: "success",
       });
       reset();
-      await fetchMessage();
     } catch (error) {
       console.error("Error creating message:", error);
     } finally {
@@ -186,32 +181,6 @@ export default function ChatBox({ ticketDetail }: any) {
           {!userLoaded || loading ? (
             <></>
           ) : (
-            // <List>
-            //   {Array.from(new Array(5)).map((_, index) => (
-            //     <ListItem
-            //       key={index}
-            //       sx={{
-            //         justifyContent: index % 2 === 0 ? "flex-start" : "flex-end",
-            //       }}
-            //     >
-            //       <Skeleton
-            //         variant="circular"
-            //         width={40}
-            //         height={40}
-            //         sx={{
-            //           mr: index % 2 === 0 ? 2 : 0,
-            //           ml: index % 2 !== 0 ? 2 : 0,
-            //         }}
-            //       />
-            //       <Skeleton
-            //         variant="rectangular"
-            //         height={40}
-            //         width="60%"
-            //         sx={{ borderRadius: 2 }}
-            //       />
-            //     </ListItem>
-            //   ))}
-            // </List>
             <List>
               {messages.map((message: any) => (
                 <Box key={message.id} sx={{ mb: 3 }}>
@@ -254,12 +223,6 @@ export default function ChatBox({ ticketDetail }: any) {
                             sx={{
                               width: 40,
                               height: 40,
-
-                              // bgcolor: !message.user.profile_picture
-                              //   ? message.user?.id === user?.id
-                              //     ? "primary.main"
-                              //     : "secondary.main"
-                              //   : "transparent",
                             }}
                           >
                             {!message?.user?.profile_picture &&

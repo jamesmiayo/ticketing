@@ -39,7 +39,7 @@ class LdapAuthenticationService
 
         // $role = Role::where('name', $user['description'][0])->first();
 
-        $localUser = User::where('username', $this->request->username)
+        $localUser = User::with('section.department', 'section.department.division')->where('username', $this->request->username)
             ->where('name', $user->getName())
             ->first();
 
@@ -72,7 +72,7 @@ class LdapAuthenticationService
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Login successful.',
-            'user' => $localUser->with('section.department', 'section.department.division')->first(),
+            'user' => $localUser,
             'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
             'role' => $localUser->roles->pluck('name')->first(),
             'notifications' => [
