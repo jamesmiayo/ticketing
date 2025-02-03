@@ -23,7 +23,7 @@ class GotMessage implements ShouldBroadcast
     // Define which channel to broadcast on
     public function broadcastOn()
     {
-        return new Channel('channel_for_everyone');  // Replace with your actual channel
+        return new PrivateChannel('channel-for-everyone');  // Replace with your actual channel
     }
 
     // Data that will be broadcasted

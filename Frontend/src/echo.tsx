@@ -11,14 +11,14 @@ const echo = new Echo({
   forceTLS: import.meta.env.VITE_REVERB_SCHEME === "true",
   encrypted: import.meta.env.VITE_REVERB_ENCRYPTED === "true",
   enabledTransports: ["ws", "wss"],
-  // authEndpoint: import.meta.env.VITE_BASE_URL + "broadcasting/auth", 
-  // withCredentials: true, 
-  // auth: {
-  //   headers: {
-  //     Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-  //     Accept: "application/json",
-  //   },
-  // },
+  authEndpoint: import.meta.env.VITE_BASE_URL + "broadcasting/auth", 
+  withCredentials: true, 
+  auth: {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+      Accept: "application/json",
+    },
+  },
 });
 
 export default echo;

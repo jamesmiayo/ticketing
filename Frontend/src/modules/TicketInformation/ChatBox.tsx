@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Avatar,
   Box,
@@ -32,6 +32,7 @@ import AttachmentCmp from "./AttachmentCmp";
 import { styled } from "@mui/material/styles";
 import useEchoPrivate from "../../hooks/useEchoPrivate.ts";
 import desktopNotification from "../../hooks/useDesktopNotification.ts";
+import echo from "../../echo.tsx";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -96,7 +97,6 @@ export default function ChatBox({ ticketDetail }: any) {
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    console.log("twes");
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -123,6 +123,49 @@ export default function ChatBox({ ticketDetail }: any) {
     }
   };
 
+
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
+  
+  const sendTypingEvent = useCallback(() => {
+    console.log("Typing event sent...");
+  
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+  
+    // Send whisper event
+    echo.private("channel-for-everyone").whisper("typing", {
+      isTyping: true,
+    });
+  
+    // Stop typing event after 3 seconds
+    typingTimeoutRef.current = setTimeout(() => {
+      echo.private("channel-for-everyone").whisper("typing", {
+        isTyping: false,
+      });
+      console.log("Stopped typing...");
+    }, 3000);
+  }, []);
+  
+  const listeningForTyping = () => {
+    echo.private("channel-for-everyone").listenForWhisper("typing", (e) => {
+      console.log("Received whisper event:", e);
+  
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+      }, 3000);
+    });
+  };
+  
+  useEffect(() => {
+    listeningForTyping();
+    return () => {
+      echo.leaveChannel("channel-for-everyone");
+    };
+  }, []);
+  
   useEchoPrivate("ticket-message", "TicketSentEvent", handlePrivateEvent);
 
   const fetchMessage = async () => {
@@ -138,6 +181,8 @@ export default function ChatBox({ ticketDetail }: any) {
       setLoading(false);
     }
   };
+
+
 
   useEffect(() => {
     scrollToBottom();
@@ -422,6 +467,7 @@ export default function ChatBox({ ticketDetail }: any) {
                   placeholder="Type a message"
                   size="small"
                   sx={{ mr: 1 }}
+                  onKeyDown={sendTypingEvent}
                 />
               )}
             />
