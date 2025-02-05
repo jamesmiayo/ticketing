@@ -8,7 +8,7 @@ const useEchoPrivate = (channelName, eventName, callback) => {
       return;
     }
 
-    const privateChannel = echo.channel(channelName); 
+    const privateChannel = echo.private(channelName); 
     privateChannel.listen(eventName, callback);
 
     return () => {

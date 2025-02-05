@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TicketDtl;
+use App\Models\TicketHdr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -14,6 +15,8 @@ class TicketDtlController extends Controller
 {
     public function create(Request $request) : JsonResponse
     {
+        $ticket = TicketHdr::where('id' , $request->ticket_id)->first();
+
         $data = TicketDtl::create([
             'thread_id' => mt_rand(1000, 9999),
             'ticket_id' => $request->ticket_id,
@@ -21,7 +24,7 @@ class TicketDtlController extends Controller
             'user_id' => Auth::id()
         ]);
 
-        broadcast(new TicketSentEvent($data));
+        broadcast(new TicketSentEvent($data , $ticket->ticket_id));
 
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Message Sent Successfully'], Response::HTTP_OK);
     }

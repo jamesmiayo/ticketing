@@ -41,9 +41,6 @@ class LdapAuthenticationService
             ->where('name', $user->getName())
             ->first();
 
-        $localUser->update(['isOnline' => true]);
-        $localUser->save();
-
         if ($localUser) {
             $localUser->update([
                 'emp_id' => mt_rand(1000, 9999),
@@ -64,12 +61,14 @@ class LdapAuthenticationService
                 'branch_id' => null
             ]);
         }
+
         if (count($localUser->roles) === 0) {
             $localUser->assignRole('User');
         }
 
         $token = $localUser->createToken('SAFC')->plainTextToken;
-
+        $localUser->update(['isOnline' => true]);
+        $localUser->save();
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Login successful.',

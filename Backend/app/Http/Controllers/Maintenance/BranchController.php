@@ -38,6 +38,7 @@ class BranchController extends Controller
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
     }
 
+
     /**
      * Remove the specified resource from storage.
      */

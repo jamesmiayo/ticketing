@@ -33,6 +33,7 @@ import { styled } from "@mui/material/styles";
 import useEchoPrivate from "../../hooks/useEchoPrivate.ts";
 import desktopNotification from "../../hooks/useDesktopNotification.ts";
 import echo from "../../echo.tsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -88,8 +89,7 @@ export default function ChatBox({ ticketDetail }: any) {
   const [open, setOpen] = useState(false);
   const handleOpenClose = () => setOpen((prev) => !prev);
   const receivedMessages = new Set(); // Track unique messages/events
-
-  const { control, handleSubmit, reset } =
+const { control, handleSubmit, reset } =
     useForm<messageValidationSchemaFormtype>({
       resolver: yupResolver(messageValidationSchema),
     });
@@ -110,15 +110,15 @@ export default function ChatBox({ ticketDetail }: any) {
 
         setMessages((prevMessages) => [...prevMessages, event.ticket]);
 
-        desktopNotification(
-          `New Message from Ticket - ${event.ticket.tickethdr?.ticket_id}`,
-          {
-            body: `${event.ticket.message}`,
-            icon: "assets/logo.png",
-            url: `/ticket-information?id=${event.ticket.tickethdr?.ticket_id}`,
-            from: event.ticket.user.name,
-          }
-        );
+        // desktopNotification(
+        //   `New Message from Ticket - ${event.ticket.tickethdr?.ticket_id}`,
+        //   {
+        //     body: `${event.ticket.message}`,
+        //     icon: "assets/logo.png",
+        //     url: `/ticket-information?id=${event.ticket.tickethdr?.ticket_id}`,
+        //     from: event.ticket.user.name,
+        //   }
+        // );
       }
     }
   };
@@ -126,47 +126,54 @@ export default function ChatBox({ ticketDetail }: any) {
 
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef(null);
-  
+
   const sendTypingEvent = useCallback(() => {
-    console.log("Typing event sent...");
-  
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-  
-    // Send whisper event
-    echo.private("channel-for-everyone").whisper("typing", {
-      isTyping: true,
-    });
-  
-    // Stop typing event after 3 seconds
-    typingTimeoutRef.current = setTimeout(() => {
-      echo.private("channel-for-everyone").whisper("typing", {
-        isTyping: false,
+
+    if (ticketDetail?.ticket_id) {
+      echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`).whisper("typing", {
+        isTyping: true,
       });
-      console.log("Stopped typing...");
-    }, 3000);
-  }, []);
-  
-  const listeningForTyping = () => {
-    echo.private("channel-for-everyone").listenForWhisper("typing", (e) => {
+
+      typingTimeoutRef.current = setTimeout(() => {
+        Echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`).whisper("typing", {
+          isTyping: false,
+        });
+        console.log("Stopped typing...");
+      }, 3000);
+    }
+  }, [ticketDetail?.ticket_id]);
+
+  useEffect(() => {
+    if (!ticketDetail?.ticket_id) return;
+
+    const channel = echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`);
+
+    const handleTypingEvent = (e) => {
       console.log("Received whisper event:", e);
-  
       setIsTyping(true);
-      setTimeout(() => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      typingTimeoutRef.current = setTimeout(() => {
         setIsTyping(false);
       }, 3000);
-    });
-  };
-  
-  useEffect(() => {
-    listeningForTyping();
-    return () => {
-      echo.leaveChannel("channel-for-everyone");
     };
-  }, []);
+
+    channel.listenForWhisper("typing", handleTypingEvent);
+
+    return () => {
+      channel.stopListening("typing", handleTypingEvent);
+      echo.leaveChannel(`channel-for-everyone.${ticketDetail.ticket_id}`);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [ticketDetail?.ticket_id]);
   
-  useEchoPrivate("ticket-message", "TicketSentEvent", handlePrivateEvent);
+  useEchoPrivate(`ticket-message.${ticketDetail?.ticket_id}`, "TicketSentEvent", handlePrivateEvent);
 
   const fetchMessage = async () => {
     try {
@@ -181,8 +188,6 @@ export default function ChatBox({ ticketDetail }: any) {
       setLoading(false);
     }
   };
-
-
 
   useEffect(() => {
     scrollToBottom();
@@ -440,9 +445,38 @@ export default function ChatBox({ ticketDetail }: any) {
                   )}
                 </Box>
               ))}
+               <AnimatePresence>
+        {isTyping && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.3 }}
+            className="flex items-center mt-2 text-gray-500 text-sm"
+          >
+            <motion.span
+              className="w-2 h-2 bg-blue-500 rounded-full mr-1"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 1 }}
+            />
+            <motion.span
+              className="w-2 h-2 bg-blue-500 rounded-full mr-1"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 1, delay: 0.3 }}
+            />
+            <motion.span
+              className="w-2 h-2 bg-blue-500 rounded-full"
+              animate={{ opacity: [0, 1, 0] }}
+              transition={{ repeat: Infinity, duration: 1, delay: 0.6 }}
+            />
+            <span className="ml-2">📝 Someone is typing...</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
               <div ref={messagesEndRef} />
             </List>
           )}
+          
         </ScrollableContainer>
         <Box
           component="form"

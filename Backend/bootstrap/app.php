@@ -36,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('api/*')) {
                 switch (get_class($e)) {
                     case NotFoundHttpException::class:
-                        return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Url does not exist'], Response::HTTP_NOT_FOUND);
+                        return new JsonResponse(['status' => Response::HTTP_NOT_FOUND, 'message' => 'Not Found'], Response::HTTP_NOT_FOUND);
                     case AccessDeniedHttpException::class:
                         return new JsonResponse(['status' => Response::HTTP_FORBIDDEN, 'message' => 'This action is unauthorized'], Response::HTTP_FORBIDDEN);
                     case AuthenticationException::class:

@@ -15,12 +15,16 @@ class TicketSentEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     protected $data;
+
+    protected $ticketId;
+
     /**
      * Create a new event instance.
      */
-    public function __construct($data)
+    public function __construct($data , $ticketId)
     {
-        $this->data = $data->load('user' , 'tickethdr:id,ticket_id'); // Load user relationship
+        $this->data = $data->load('user' , 'tickethdr:id,ticket_id');
+        $this->ticketId = $ticketId;
     }
 
     /**
@@ -31,7 +35,7 @@ class TicketSentEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('ticket-message'),
+            new PrivateChannel("ticket-message.{$this->ticketId}"),
         ];
     }
 
