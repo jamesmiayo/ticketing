@@ -16,6 +16,7 @@ import {
   TextField,
   IconButton,
   Badge,
+  InputAdornment,
 } from "@mui/material";
 import { Attachment, Send as SendIcon } from "@mui/icons-material";
 import { format } from "date-fns";
@@ -34,6 +35,10 @@ import useEchoPrivate from "../../hooks/useEchoPrivate.ts";
 import desktopNotification from "../../hooks/useDesktopNotification.ts";
 import echo from "../../echo.tsx";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactionsPicker from "../../components/layouts/ReactionsPicker.tsx";
+import { FaRegFaceGrinBeam } from "react-icons/fa6";
+import usePresence from "../../hooks/useEchoPresence.ts";
+import useTypingStatus from "../../hooks/useTicketTyping.ts";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -89,7 +94,9 @@ export default function ChatBox({ ticketDetail }: any) {
   const [open, setOpen] = useState(false);
   const handleOpenClose = () => setOpen((prev) => !prev);
   const receivedMessages = new Set(); // Track unique messages/events
-const { control, handleSubmit, reset } =
+  const { isTyping, sendTypingEvent } = useTypingStatus(ticketDetail?.ticket_id);
+
+  const { control, handleSubmit, setValue, watch, reset } =
     useForm<messageValidationSchemaFormtype>({
       resolver: yupResolver(messageValidationSchema),
     });
@@ -123,57 +130,11 @@ const { control, handleSubmit, reset } =
     }
   };
 
-
-  const [isTyping, setIsTyping] = useState(false);
-  const typingTimeoutRef = useRef(null);
-
-  const sendTypingEvent = useCallback(() => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    if (ticketDetail?.ticket_id) {
-      echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`).whisper("typing", {
-        isTyping: true,
-      });
-
-      typingTimeoutRef.current = setTimeout(() => {
-        Echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`).whisper("typing", {
-          isTyping: false,
-        });
-        console.log("Stopped typing...");
-      }, 3000);
-    }
-  }, [ticketDetail?.ticket_id]);
-
-  useEffect(() => {
-    if (!ticketDetail?.ticket_id) return;
-
-    const channel = echo.private(`channel-for-everyone.${ticketDetail.ticket_id}`);
-
-    const handleTypingEvent = (e) => {
-      console.log("Received whisper event:", e);
-      setIsTyping(true);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsTyping(false);
-      }, 3000);
-    };
-
-    channel.listenForWhisper("typing", handleTypingEvent);
-
-    return () => {
-      channel.stopListening("typing", handleTypingEvent);
-      echo.leaveChannel(`channel-for-everyone.${ticketDetail.ticket_id}`);
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-    };
-  }, [ticketDetail?.ticket_id]);
-  
-  useEchoPrivate(`ticket-message.${ticketDetail?.ticket_id}`, "TicketSentEvent", handlePrivateEvent);
+  useEchoPrivate(
+    `ticket-message.${ticketDetail?.ticket_id}`,
+    "TicketSentEvent",
+    handlePrivateEvent
+  );
 
   const fetchMessage = async () => {
     try {
@@ -218,6 +179,8 @@ const { control, handleSubmit, reset } =
       setSending(false);
     }
   };
+
+  const messageValue = watch("message", "");
 
   return (
     <>
@@ -322,16 +285,6 @@ const { control, handleSubmit, reset } =
                                 message?.user?.name.charAt(0).toUpperCase()}
                             </Avatar>
                           </Badge>
-                          {/* <Avatar
-                            src={message.user?.profile_picture}
-                            sx={{
-                              width: 40,
-                              height: 40,
-                            }}
-                          >
-                            {!message?.user?.profile_picture &&
-                              message?.user?.name.charAt(0).toUpperCase()}
-                          </Avatar> */}
                         </Tooltip>
                       </ListItemAvatar>
                       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -445,38 +398,37 @@ const { control, handleSubmit, reset } =
                   )}
                 </Box>
               ))}
-               <AnimatePresence>
-        {isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 5 }}
-            transition={{ duration: 0.3 }}
-            className="flex items-center mt-2 text-gray-500 text-sm"
-          >
-            <motion.span
-              className="w-2 h-2 bg-blue-500 rounded-full mr-1"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 1 }}
-            />
-            <motion.span
-              className="w-2 h-2 bg-blue-500 rounded-full mr-1"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 1, delay: 0.3 }}
-            />
-            <motion.span
-              className="w-2 h-2 bg-blue-500 rounded-full"
-              animate={{ opacity: [0, 1, 0] }}
-              transition={{ repeat: Infinity, duration: 1, delay: 0.6 }}
-            />
-            <span className="ml-2">📝 Someone is typing...</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <AnimatePresence>
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center mt-2 text-gray-500 text-sm"
+                  >
+                    <motion.span
+                      className="w-2 h-2 bg-blue-500 rounded-full mr-1"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ repeat: Infinity, duration: 1 }}
+                    />
+                    <motion.span
+                      className="w-2 h-2 bg-blue-500 rounded-full mr-1"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ repeat: Infinity, duration: 1, delay: 0.3 }}
+                    />
+                    <motion.span
+                      className="w-2 h-2 bg-blue-500 rounded-full"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ repeat: Infinity, duration: 1, delay: 0.6 }}
+                    />
+                    <span className="ml-2">📝 Someone is typing...</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div ref={messagesEndRef} />
             </List>
           )}
-          
         </ScrollableContainer>
         <Box
           component="form"
@@ -484,11 +436,6 @@ const { control, handleSubmit, reset } =
           sx={{ p: 2, borderTop: 1, borderColor: "divider" }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Tooltip title="Send File Attachment">
-              <IconButton onClick={handleOpenClose} size="small">
-                <Attachment />
-              </IconButton>
-            </Tooltip>
             <Controller
               name="message"
               control={control}
@@ -502,6 +449,24 @@ const { control, handleSubmit, reset } =
                   size="small"
                   sx={{ mr: 1 }}
                   onKeyDown={sendTypingEvent}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ gap: 1 }}>
+                        <Tooltip title="Add Emoji">
+                          <ReactionsPicker
+                            onSelect={(emoji: string) =>
+                              setValue("message", messageValue + emoji)
+                            }
+                          />
+                        </Tooltip>
+                        <Tooltip title="Send File Attachment">
+                          <IconButton onClick={handleOpenClose} size="small">
+                            <Attachment />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               )}
             />

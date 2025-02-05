@@ -2,27 +2,25 @@
 
 namespace App\Events;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TicketSentEvent implements ShouldBroadcast
+class TicketAssignEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $data;
-
-    protected $ticketId;
-
+    public $data;
     /**
      * Create a new event instance.
      */
-    public function __construct($data , $ticketId)
+    public function __construct($data)
     {
-        $this->data = $data->load('user' , 'tickethdr:id,ticket_id');
-        $this->ticketId = $ticketId;
+        $this->data = $data;
     }
 
     /**
@@ -33,7 +31,7 @@ class TicketSentEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel("ticket-message.{$this->ticketId}"),
+            new PrivateChannel("ticket-assign.{$this->data}"),
         ];
     }
 

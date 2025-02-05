@@ -7,14 +7,11 @@ import { User } from "../api/services/user";
 
 interface AuthContextType {
   user: any | null;
-  isAuthenticated: boolean;
-  loading: boolean;
   loginUser: (
     username: string,
     password: string
   ) => Promise<{ message: string }>;
   logoutUser: () => void;
-  fetchUserNotification: () => void;
   setUser: any;
   notification: any | null;
   announcement: any | null;
@@ -28,29 +25,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [user, setUser] = useState<any | null>(null);
   const [notification, setNotification] = useState<any | null>(null);
   const [announcement, setAnnouncement] = useState<any | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
   const { setPermission } = usePermission();
-
-  useEffect(() => {
-    const initializeAuthState = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const response = await validateToken();
-        if (response?.isValid) {
-          setUser(response?.user);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          setUser(null);
-          localStorage.clear();
-        }
-      }
-      setLoading(false);
-    };
-
-    initializeAuthState();
-  }, []);
 
   const loginUser = async (username: string, password: string) => {
       const response = await LoginAPI.login({ username, password });
@@ -63,10 +38,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
         setPermission(JSON.stringify(response.permissions));
         localStorage.setItem("role", response.role);
         setUser(response.user);
-        setIsAuthenticated(true);
         setNotification(response?.notifications)
         setAnnouncement(response?.announcement)
-
       } else {
         throw new Error("Invalid login response");
       }
@@ -78,7 +51,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
       const response = await LogoutAPI.logout();
       localStorage.clear();
       setUser(null);
-      setIsAuthenticated(false);
       setPermission(null);
       return { message: response.message };
     } catch (error) {
@@ -86,25 +58,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
     }
   };
 
-  const fetchUserNotification = async () => {
-    try{
-      const response = await User.getUserNotification();
-      setPermission(JSON.stringify(response.permissions));
-      localStorage.setItem("role", response.role);
-      setNotification(response?.notifications)
-      setAnnouncement(response?.announcement)
-    }catch (error) {
-      console.error("User.getUserNotification failed", error);
-  }
-}
-
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated,
-        loading,
-        fetchUserNotification,
         loginUser,
         logoutUser,
         setUser,
