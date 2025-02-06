@@ -33,11 +33,8 @@ import AttachmentCmp from "./AttachmentCmp";
 import { styled } from "@mui/material/styles";
 import useEchoPrivate from "../../hooks/useEchoPrivate.ts";
 import desktopNotification from "../../hooks/useDesktopNotification.ts";
-import echo from "../../echo.tsx";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactionsPicker from "../../components/layouts/ReactionsPicker.tsx";
-import { FaRegFaceGrinBeam } from "react-icons/fa6";
-import usePresence from "../../hooks/useEchoPresence.ts";
 import useTypingStatus from "../../hooks/useTicketTyping.ts";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -84,13 +81,10 @@ const ScrollableContainer = styled(Box)({
   },
 });
 
-export default function ChatBox({ ticketDetail }: any) {
+export default function ChatBox({ ticketDetail , setTicketDetails }: any) {
   const { user } = useAuth();
   const toast = useExecuteToast();
-  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [userLoaded, setUserLoaded] = useState(false);
-  const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const handleOpenClose = () => setOpen((prev) => !prev);
   const receivedMessages = new Set(); // Track unique messages/events
@@ -115,7 +109,10 @@ export default function ChatBox({ ticketDetail }: any) {
       if (!receivedMessages.has(messageId)) {
         receivedMessages.add(messageId); // Mark message as received
 
-        setMessages((prevMessages) => [...prevMessages, event.ticket]);
+        setTicketDetails((prevMessages) => ({
+          ...prevMessages,
+          ticket_messages: [...prevMessages.ticket_messages, event.ticket]
+      }));
 
         // desktopNotification(
         //   `New Message from Ticket - ${event.ticket.tickethdr?.ticket_id}`,
@@ -130,37 +127,17 @@ export default function ChatBox({ ticketDetail }: any) {
     }
   };
 
+  
   useEchoPrivate(
     `ticket-message.${ticketDetail?.ticket_id}`,
     "TicketSentEvent",
     handlePrivateEvent
   );
-
-  const fetchMessage = async () => {
-    try {
-      setLoading(true);
-      const response = await ticketApi.getMessage({
-        ticket_id: ticketDetail.id,
-      });
-      setMessages(response.data);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   useEffect(() => {
     scrollToBottom();
   });
-
-  useEffect(() => {
-    fetchMessage();
-  }, [ticketDetail]);
-
-  useEffect(() => {
-    if (user) setUserLoaded(true);
-  }, [user]);
 
   const onSubmit = async (data: any) => {
     setSending(true);
@@ -193,7 +170,7 @@ export default function ChatBox({ ticketDetail }: any) {
         <DialogContent>
           <AttachmentCmp
             ticket_id={ticketDetail?.id}
-            refetch={fetchMessage}
+            refetch={null}
             closeDialog={handleOpenClose}
           />
         </DialogContent>
@@ -215,20 +192,17 @@ export default function ChatBox({ ticketDetail }: any) {
           </Typography>
         </Box>
         <ScrollableContainer p={2}>
-          {!userLoaded || loading ? (
-            <></>
-          ) : (
             <List>
-              {messages.map((message: any) => (
+              {ticketDetail?.ticket_messages?.map((message: any) => (
                 <Box key={message.id} sx={{ mb: 3 }}>
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    align={message.user?.id === user?.id ? "right" : "left"}
+                    align={message.user?.id == user?.id ? "right" : "left"}
                     sx={{
                       display: "block",
                       margin:
-                        message.user?.id === user?.id
+                        message.user?.id == user?.id
                           ? "0 0 4px auto"
                           : "0 auto 4px 0",
                       fontSize: "0.75rem",
@@ -428,7 +402,6 @@ export default function ChatBox({ ticketDetail }: any) {
               </AnimatePresence>
               <div ref={messagesEndRef} />
             </List>
-          )}
         </ScrollableContainer>
         <Box
           component="form"

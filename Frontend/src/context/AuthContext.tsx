@@ -1,10 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { LoginAPI } from "../api/services/login";
 import { LogoutAPI } from "../api/services/logout";
-import { validateToken } from "../api/services/validateToken";
 import { usePermission } from "../helpers/Providers/PermissionProvider";
-import { User } from "../api/services/user";
-
 interface AuthContextType {
   user: any | null;
   loginUser: (
@@ -27,23 +24,26 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
   const [announcement, setAnnouncement] = useState<any | null>(null);
   const { setPermission } = usePermission();
 
+  useEffect(() => {
+    const dataUser:any = localStorage.getItem("user");
+    setUser(JSON.parse(dataUser));
+  }, []);
+
   const loginUser = async (username: string, password: string) => {
-      const response = await LoginAPI.login({ username, password });
-      if (response.access_token) {
-        localStorage.setItem("token", response.access_token);
-        localStorage.setItem(
-          "permissions",
-          JSON.stringify(response.permissions)
-        );
-        setPermission(JSON.stringify(response.permissions));
-        localStorage.setItem("role", response.role);
-        setUser(response.user);
-        setNotification(response?.notifications)
-        setAnnouncement(response?.announcement)
-      } else {
-        throw new Error("Invalid login response");
-      }
-      return { message: response.message };
+    const response = await LoginAPI.login({ username, password });
+    if (response.access_token) {
+      localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("token", response.access_token);
+      localStorage.setItem("permissions", JSON.stringify(response.permissions));
+      setPermission(JSON.stringify(response.permissions));
+      localStorage.setItem("role", response.role);
+      setUser(response.user);
+      setNotification(response?.notifications);
+      setAnnouncement(response?.announcement);
+    } else {
+      throw new Error("Invalid login response");
+    }
+    return { message: response.message };
   };
 
   const logoutUser = async () => {
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({
         logoutUser,
         setUser,
         notification,
-        announcement
+        announcement,
       }}
     >
       {children}

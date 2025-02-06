@@ -1,4 +1,4 @@
-import { Box , Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ChatBox from "./ChatBox";
 import TicketDetails from "./TicketDetails";
 import TicketSideBar from "../Ticketing/TicketSideBar";
@@ -54,8 +54,8 @@ const TicketInformationPage = () => {
           sx={{
             display: "flex",
             justifyContent: "center",
-             width:"100%",
-             padding:"20px"
+            width: "100%",
+            padding: "20px",
           }}
         >
           <TicketSideBar
@@ -70,7 +70,7 @@ const TicketInformationPage = () => {
                   gap: 2,
                 }}
               >
-                <ChatBox ticketDetail={ticket} />
+                <ChatBox ticketDetail={ticket} setTicketDetails={setTicket} />
                 <TicketDetails
                   ticketDetail={ticket}
                   isLoading={isLoading}
@@ -91,12 +91,12 @@ const TicketInformationPage = () => {
             )}
             {activeSection === "Documents" && (
               <>
-                <TicketDocuments data={ticket?.ticket_documents}/>
+                <TicketDocuments data={ticket?.ticket_documents} />
               </>
             )}
             {activeSection === "Images" && (
               <>
-                <TicketImages data={ticket?.ticket_images}/>
+                <TicketImages data={ticket?.ticket_images} />
               </>
             )}
             {activeSection === "All" && "All"}
