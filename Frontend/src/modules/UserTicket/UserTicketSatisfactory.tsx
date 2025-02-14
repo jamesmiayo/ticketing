@@ -28,7 +28,7 @@ export default function UserTicketSatisfactory({ data }: any) {
       value: data?.tickets?.ticket_satisfactory?.satisfactory_5 || 0,
     },
   ];
-  console.log(data);
+  
   return (
     <>
       <DialogTitle> {data?.tickets?.title}</DialogTitle>

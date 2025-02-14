@@ -5,6 +5,9 @@ import { useSearchParams } from "react-router-dom";
 import InputComponent from "./InputComponent";
 import SelectItem from "./SelectItem";
 import InputDateComponent from "./InputDateComponent";
+import ComboBoxComponent from "./ComboBoxComponent";
+import { FaSearch } from "react-icons/fa";
+import { FaRedo } from "react-icons/fa";
 
 interface DataGridProps {
   columns: any;
@@ -27,6 +30,8 @@ interface DataGridProps {
   maxCount?: string;
   isLoading?: boolean;
   onReset?: () => void;
+  onRowClick?: any;
+  sx?: object; // Optional sx prop for custom styling
 }
 
 const TableComponents = ({
@@ -41,6 +46,8 @@ const TableComponents = ({
   maxCount,
   isLoading = false,
   onReset,
+  onRowClick,
+  sx = {},
 }: DataGridProps) => {
   const [page, setPage] = useState(Number(pageProps));
   const [, setSearchParams] = useSearchParams();
@@ -72,38 +79,38 @@ const TableComponents = ({
               onSubmit?.();
             }}
           >
-            <Grid container spacing={2}>
+            <Grid container spacing={2} alignItems="center">
               {customInputs.map((inputProps, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
                   {inputProps.type === "text" ? (
-                    <InputComponent {...inputProps} />
+                    <InputComponent fullWidth {...inputProps} />
                   ) : inputProps.type === "select" ? (
-                    <SelectItem {...inputProps} />
+                    <SelectItem fullWidth {...inputProps} />
                   ) : inputProps.type === "date" ? (
-                    <InputDateComponent {...inputProps} />
+                    <InputDateComponent fullWidth {...inputProps} />
+                  ) : inputProps.type === "combobox" ? (
+                    <ComboBoxComponent {...inputProps} />
                   ) : null}
                 </Grid>
               ))}
-              <Grid
-                item
-                xs={12}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 16,
-                }}
-              >
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
+              <Grid item xs={12} lg={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ marginRight: 1 }}
+                  startIcon={<FaSearch size="18" />}
+                >
+                  Search
                 </Button>
                 <Button
                   variant="contained"
                   color="error"
                   type="button"
                   onClick={onReset}
+                  startIcon={<FaRedo size="18" />}
                 >
-                  Clear
+                  Reset
                 </Button>
               </Grid>
             </Grid>
@@ -113,10 +120,12 @@ const TableComponents = ({
 
       <div style={{ height: height, width: width }}>
         <DataGrid
+          onRowClick={onRowClick}
           rows={rows}
           columns={columns}
           hideFooter
           loading={isLoading}
+          disableColumnMenu
           sx={{
             boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
             bgcolor: "white",
@@ -136,6 +145,7 @@ const TableComponents = ({
               maxHeight: "40px",
               minHeight: "40px",
             },
+            ...sx, // Merge custom styles with default styles
           }}
         />
 
@@ -167,12 +177,6 @@ const TableComponents = ({
                   },
                   "& .MuiPaginationItem-root:hover": {
                     backgroundColor: "#e3f2fd",
-                  },
-                  "& .MuiDataGrid-virtualScroller": {
-                    overflowX: "auto !important",
-                  },
-                  "& .MuiDataGrid-root": {
-                    overflowX: "visible",
                   },
                 }}
               />

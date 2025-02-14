@@ -1,12 +1,18 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosHeaders, AxiosResponse } from "axios";
+import axios, {
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosError,
+  AxiosHeaders,
+  AxiosResponse,
+} from "axios";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL + 'api',
+  baseURL: import.meta.env.VITE_BASE_URL + "api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
   },
-  timeout: 10000,
+  // timeout: 10000,
   withCredentials: false,
 });
 
@@ -25,7 +31,7 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

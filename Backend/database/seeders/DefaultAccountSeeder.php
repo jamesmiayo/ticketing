@@ -27,10 +27,11 @@ class DefaultAccountSeeder extends Seeder
             $supervisor = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.marketing',
-                'name' => 'user.marketing',
+                'name' => 'User Marketing',
                 'email' => 'user.marketing@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 1
+                'section_id' => null,
+                'branch_id' => null
             ]);
 
             $supervisor->assignRole('Admin');
@@ -38,10 +39,11 @@ class DefaultAccountSeeder extends Seeder
             $manager = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.investigator',
-                'name' => 'user.investigator',
+                'name' => 'User Investigator',
                 'email' => 'user.investigator@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 2
+                'section_id' => null,
+                'branch_id' => null
             ]);
 
             $manager->assignRole('manager');
@@ -49,23 +51,14 @@ class DefaultAccountSeeder extends Seeder
             $tech = User::create([
                 'emp_id' => mt_rand(1000, 9999),
                 'username' => 'user.credit',
-                'name' => 'user.credit',
+                'name' => 'User Credit',
                 'email' => 'user.credit@gmail.com',
                 'password' => Hash::make('password'),
-                'section_id' => 3
+                'section_id' => null,
+                'branch_id' => null
             ]);
 
             $tech->assignRole('tech');
-
-            // foreach ($users as $username) {
-            //     User::create([
-            //         'emp_id' => mt_rand(1000, 9999),
-            //         'username' => $username,
-            //         'name' => $username,
-            //         'email' => "{$username}@example.com",
-            //         'password' => Hash::make('password')
-            //     ]);
-            // }
         // }else{
 
         //     $supervisor = User::create([
@@ -77,7 +70,7 @@ class DefaultAccountSeeder extends Seeder
         //         'section_id' => 1
         //     ]);
 
-        //     $supervisor->assignRole('Supervisor');
+        //     $supervisor->assignRole('Admin');
 
         //     $manager = User::create([
         //         'emp_id' => mt_rand(1000, 9999),
@@ -99,7 +92,7 @@ class DefaultAccountSeeder extends Seeder
         //         'section_id' => 3
         //     ]);
 
-        //     $tech->assignRole('tech');
+        //     $tech->assignRole('Supervisor');
         // }
     }
 }

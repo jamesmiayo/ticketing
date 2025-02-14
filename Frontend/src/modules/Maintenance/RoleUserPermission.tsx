@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -6,16 +8,20 @@ import {
   Button,
   CircularProgress,
   Box,
+  Paper,
+  Grid,
 } from "@mui/material";
 import { Permission } from "../../api/services/permission";
 import { useExecuteToast } from "../../context/ToastContext";
+import { FaSpinner } from "react-icons/fa";
 
 interface PermissionType {
   id: string;
   name: string;
   checked: boolean;
-  permissions:any;
+  permissions: any;
 }
+
 interface RoleUserPermissionProps {
   data: any;
   refetch: () => void;
@@ -44,7 +50,7 @@ export default function RoleUserPermission({
       const permissionsWithChecked = response.map((perm: PermissionType) => ({
         ...perm,
         checked:
-          data?.permissions?.some((item:any) => item.id === perm.id) || false,
+          data?.permissions?.some((item: any) => item.id === perm.id) || false,
       }));
       setPermissions(permissionsWithChecked);
       setValue(
@@ -57,6 +63,9 @@ export default function RoleUserPermission({
       );
     } catch (err) {
       console.error("Failed to fetch permissions", err);
+      toast.executeToast("Failed to fetch permissions", "top-center", true, {
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -66,12 +75,13 @@ export default function RoleUserPermission({
     getPermission();
   }, [data]);
 
-  const onSubmit = (formData: { permissions: PermissionType[] }) => {
+  const onSubmit = async (formData: { permissions: PermissionType[] }) => {
     const checkedPermissions = formData.permissions
       .filter((permission) => permission.checked)
       .map((permission) => permission.name);
     try {
-      const response:any = Permission.assignRolePermission(
+      setLoading(true);
+      const response: any = await Permission.assignRolePermission(
         data?.id,
         checkedPermissions
       );
@@ -80,61 +90,80 @@ export default function RoleUserPermission({
       });
       refetch();
       onClose(false);
-    } catch (e) {}
+    } catch (e) {
+      toast.executeToast("Failed to assign permissions", "top-center", true, {
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <>
+    <Paper elevation={3} sx={{ maxWidth: "100%", mx: "auto", p: 3 }}>
       {loading ? (
         <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "50vh",
-            backgroundColor: "#f0f0f0", // Optional background color
-          }}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={200}
         >
-          <CircularProgress size={60} thickness={4} />
+          <CircularProgress />
         </Box>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
-          {permissions?.map((permission:any, index:any) => (
-            <Controller
-              key={permission.id}
-              name={`permissions.${index}.checked`} 
-              control={control}
-              render={({ field }) => (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      {...field}
-                      checked={field.value}
-                      onChange={(e) => {
-                        field.onChange(e.target.checked);
-                        setPermissions((prev) =>
-                          prev.map((perm, i) =>
-                            i === index
-                              ? { ...perm, checked: e.target.checked }
-                              : perm
-                          )
-                        );
+          <Grid container spacing={2}>
+            {permissions?.map((permission: any, index: any) => (
+              <Grid item xs={12} sm={6} md={3} key={permission.id}>
+                <Controller
+                  name={`permissions.${index}.checked`}
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          {...field}
+                          checked={field.value}
+                          onChange={(e) => {
+                            field.onChange(e.target.checked);
+                            setPermissions((prev) =>
+                              prev.map((perm, i) =>
+                                i === index
+                                  ? { ...perm, checked: e.target.checked }
+                                  : perm
+                              )
+                            );
+                          }}
+                          color="primary"
+                        />
+                      }
+                      label={permission.name}
+                      sx={{
+                        "& .MuiFormControlLabel-label": {
+                          fontSize: "0.875rem",
+                          fontWeight: 500,
+                        },
                       }}
-                      color="primary"
                     />
-                  }
-                  label={permission.name}
+                  )}
                 />
-              )}
-            />
-          ))}
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="submit" variant="contained" color="primary">
+              </Grid>
+            ))}
+          </Grid>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              startIcon={loading && <FaSpinner className="animate-spin" />}
+            >
               Submit
             </Button>
           </Box>
         </form>
       )}
-    </>
+    </Paper>
   );
 }

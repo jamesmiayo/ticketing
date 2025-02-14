@@ -24,6 +24,8 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'category_description' => 'required',
+            'resolution_time' => 'required',
+            'division_id' => 'required',
         ];
     }
 
@@ -31,6 +33,8 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'category_id' => mt_rand(1000, 9999),
+            'division_id' => $this->division_id,
+            'resolution_time' => $this->resolution_time,
             'category_description' => $this->category_description,
             'b_active' => true
         ];

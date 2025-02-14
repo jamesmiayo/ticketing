@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Ticket;
 
+use App\Models\TicketAttachment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 class StoreTicketRequest extends FormRequest
@@ -26,6 +27,9 @@ class StoreTicketRequest extends FormRequest
             'title' => 'required',
             'body' => 'required',
             'b_status' => 'required',
+            'division_id' => 'required',
+            'files' => 'array',
+            'files.*' => 'max:2048'
         ];
     }
 
@@ -41,9 +45,47 @@ class StoreTicketRequest extends FormRequest
         ];
     }
 
+    public function getAttachments($ticket_id , $uploadedFiles)
+    {
+        $attachments = [];
+
+        foreach ($uploadedFiles as $file) {
+            $imageMimeTypes = ['image/jpeg', 'image/png'];
+            $documentMimeTypes = [
+                'application/pdf',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'text/csv',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ];
+
+            $mimeType = $file->getMimeType();
+
+            if (in_array($mimeType, $imageMimeTypes)) {
+                $type = 1;
+            } elseif (in_array($mimeType, $documentMimeTypes)) {
+                $type = 2;
+            } else {
+                return response()->json(['error' => 'Invalid file type.'], 400);
+            }
+
+            $path = $file->store('ticket_file', 'public');
+
+            $attachments[] = [
+                'ticket_attachment_id' => mt_rand(1000, 9999),
+                'ticket_id' => $ticket_id,
+                'type' => $type,
+                'attachments' => $path,
+            ];
+        }
+
+        return $attachments;
+    }
+
+
     public function getTicketStatus($ticket_id): array
     {
         return [
+            'division_id' => $this->division_id,
             'ticket_id' => $ticket_id,
             'status' => $this->b_status,
             'emp_id' => null,

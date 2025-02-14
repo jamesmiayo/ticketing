@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Storage;
 class TicketDocument extends Model
 {
     use HasFactory;
-    protected $fillable = ['ticket_tdl_id', 'attachments'];
+
+    protected $fillable = ['ticket_tdl_id', 'attachments', 'type'];
 
     protected $appends = ['file_url'];
 
@@ -19,7 +20,7 @@ class TicketDocument extends Model
     }
 
     public function getFileUrlAttribute()
-        {
-            return url(Storage::url($this->attachments));
-        }
+    {
+        return url(Storage::url($this->attachments));
+    }
 }

@@ -11,15 +11,20 @@ import {
 } from "../../schema/User/UpdateUserBranchSection";
 import SelectItem from "../../components/common/SelectItem";
 import { User } from "../../api/services/user";
+import { useAuth } from "../../context/AuthContext";
+import InputComponent from "../../components/common/InputComponent";
+import ComboBoxComponent from "../../components/common/ComboBoxComponent";
 
 export default function UpdateUserBranchSection({ onClose }: any) {
   const [branch, setBranch] = useState<any>([]);
   const [division, setDivision] = useState<any>([]);
   const [department, setDepartment] = useState<any>([]);
   const [section, setSection] = useState([]);
+  const { logoutUser } = useAuth();
 
   const toast = useExecuteToast();
   const {
+    register,
     handleSubmit,
     control,
     formState: { errors },
@@ -94,9 +99,12 @@ export default function UpdateUserBranchSection({ onClose }: any) {
       console.error("Failed to fetch data:", error);
     } finally {
       onClose(false);
+      const response:any = await logoutUser();
+      toast.executeToast(response?.message, "top-center", true, {
+        type: "success",
+      });
     }
   };
-
   useEffect(() => {
     fetchBranch();
     fetchDivision();
@@ -113,13 +121,11 @@ export default function UpdateUserBranchSection({ onClose }: any) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <SelectItem
+            <ComboBoxComponent
               label="Branch"
               control={control}
               options={branch}
               name="branch_id"
-              errors={errors}
-              fullWidth
             />
           </Grid>
 
@@ -155,6 +161,25 @@ export default function UpdateUserBranchSection({ onClose }: any) {
               errors={errors}
               name="section_id"
               fullWidth
+            />
+          </Grid> 
+
+          <Grid item xs={12}>
+            <InputComponent
+              label="Viber Number"
+              control={control}
+              errors={errors}
+              name="phone_number"
+              register={register}
+              fullWidth
+              onInput={(e:any) => {
+                const inputValue = e.target.value.replace(/[^0-9]/g, ""); 
+                if (inputValue.length <= 11) {
+                  e.target.value = inputValue; 
+                } else {
+                  e.target.value = inputValue.slice(0, 11);
+                }
+              }}
             />
           </Grid>
 

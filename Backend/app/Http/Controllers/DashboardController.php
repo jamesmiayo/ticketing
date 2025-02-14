@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\SLA;
 use App\Services\TicketHdrRoleDataService;
 
 class DashboardController extends Controller
@@ -28,74 +29,49 @@ class DashboardController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-           'status' => Response::HTTP_OK,
+            'status' => Response::HTTP_OK,
             'latest_ticket' => $this->ticketData()->latest()->take(10)->get(),
             'total_priority' => $this->getTicketPerPriority(),
             'total_ticket_count' => $this->getTicketCountsByStatus(),
             'total_ticket_category' => $this->getTicketPerCategory(),
             'total_ticket_branch' => $this->getTicketPerBranch(),
-           'total_today_created_ticket' => $this->getTicketPerDay(),
+            'total_today_created_ticket' => $this->getTicketPerDay(),
         ], Response::HTTP_OK);
     }
 
     public function ticketData($data = [])
     {
-        switch ($this->role) {
-            case 'Admin':
-                $ticketData = $this->ticketHdr->getTicketLog($data);
-                break;
-            case 'Head':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor.section.department', function ($subQuery) {
-                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
-                    })->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) {
-                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
-                    });
-                });
-                break;
-            case 'Manager':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor.section', function ($subQuery) {
-                        $subQuery->where('department_id', Auth::user()->section->department_id);
-                    })->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) {
-                        $subQuery->where('department_id', Auth::user()->section->department_id);
-                    });
-                });
-                break;
-            case 'Supervisor':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    });
-                });
-                break;
-            default:
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
-                        $subQuery->where('id', Auth::user()->id);
-                    });
-                });
-        }
-        return $ticketData;
+        $ticket = new TicketHdrRoleDataService($this->ticketHdr);
+        return $ticket->ticketData($data);
     }
 
     public function getTicketPerPriority(): array
     {
-        $priorities = GlobalConstants::getPrioritiesType();
+        $priorities = SLA::select('priority_label', 'priority_color', 'SLA_ID')->get();
 
         $ticketCounts = [];
 
-        foreach ($priorities as $key => $label) {
-            $ticketCounts[] = $this->ticketData()->get()->where('priority', $key)->count();
+        foreach ($priorities as $priority) {
+            $count = $this->ticketData()
+                ->where('priority', $priority->SLA_ID)
+                ->count();
+
+            $ticketCounts[] = [
+                'priority_label' => $priority->priority_label,
+                'priority_color' => $priority->priority_color,
+                'value' => $count,
+            ];
         }
 
-        $nullPriorityCount = $this->ticketData()->get()->whereNull('priority')->count();
+        $nullPriorityCount = $this->ticketData()
+            ->whereNull('priority')
+            ->count();
 
-        $ticketCounts[] = $nullPriorityCount;
+        $ticketCounts[] = [
+            'priority_label' => 'Not Yet Priority',
+            'priority_color' => 'rgb(96, 139, 193)',
+            'value' => $nullPriorityCount,
+        ];
 
         return $ticketCounts;
     }
@@ -123,16 +99,27 @@ class DashboardController extends Controller
             $totalTickets += $count;
         }
 
+        $nullEmpCount = (clone $ticketsQuery)->whereHas('ticket_logs_latest', function ($query) {
+            $query->whereNull('emp_id');
+        })->count();
+
         $formattedCounts = array_map(function ($label, $count) {
             return ['label' => $label, 'value' => $count];
         }, array_keys($ticketCounts), $ticketCounts);
-
         $formattedCounts[] = [
             'label' => 'Total Tickets',
             'value' => $totalTickets,
         ];
 
-        return $formattedCounts;
+        $formattedCounts[] = [
+            'label' => 'Total Unassigned Tickets',
+            'value' => $nullEmpCount,
+        ];
+
+        return [
+            'formatted_counts' => $formattedCounts,
+            'unassigned_ticket' => $nullEmpCount
+        ];
     }
 
 
@@ -200,6 +187,9 @@ class DashboardController extends Controller
             })->count(),
             'total_resolved' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
                 $query->whereDate('created_at', $today)->where('status', GlobalConstants::COMPLETED);
+            })->count(),
+            'total_unassigned' => $this->ticketData()->whereHas('ticket_logs_latest', function ($query) use ($today) {
+                $query->whereDate('created_at', $today)->whereNull('emp_id');
             })->count(),
         ];
     }

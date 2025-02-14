@@ -33,7 +33,7 @@ function App() {
                     <Route
                       key={String(route.id)}
                       path={route.path}
-                      element={<PrivateRoute component={route.component} />}
+                      element={<PrivateRoute title={route.title} component={route.component} />}
                     />
                   )
               )}

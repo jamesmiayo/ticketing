@@ -63,13 +63,14 @@ export default function CategoryManagementTable({
     const updatedStatus = selectedCategory.active ? 0 : 1;
     try {
       setLoading(true);
-
       const responseUpdate = await getCategoryAPI.updateCategory({
         id: selectedCategory.id,
         body: {
           b_active: updatedStatus,
           category_description: selectedCategory.label,
+          resolution_time: selectedCategory.resolution_time,
           category_id: selectedCategory.category_id,
+          division_id: selectedCategory.division_id
         },
       });
       toast.executeToast(responseUpdate.message, "top-center", true, {
@@ -77,8 +78,10 @@ export default function CategoryManagementTable({
       });
 
       await getCategoryList();
-    } catch (error) {
-      console.error("Error updating category status:", error);
+    } catch (error:any) {
+      toast.executeToast(error?.response.data.message, "top-center", true, {
+        type: "error",
+      });
     } finally {
       setLoading(false);
       setConfirmOpen(false);
@@ -117,6 +120,8 @@ export default function CategoryManagementTable({
         id: row.id,
         label: row.category_description,
         sub_category: row.sub_category,
+        division_id: row.division.id,
+        resolution_time: row.resolution_time,
         active: row.b_active,
         category_id: row.category_id,
         created_at: row.created_at,
@@ -144,6 +149,7 @@ export default function CategoryManagementTable({
       align: "center",
     },
     { field: "label", headerName: "Description", flex: 1 },
+    { field: "resolution_time", headerName: "Resolution Time", flex: 1 },
     {
       field: "active",
       headerName: "Active",

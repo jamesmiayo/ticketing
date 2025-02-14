@@ -15,4 +15,9 @@ class Section extends Model
     {
         return $this->belongsTo(Department::class , 'department_id' , 'id');
     }
+
+    public function active_section()
+    {
+        return $this->where('b_active', true);
+    }
 }

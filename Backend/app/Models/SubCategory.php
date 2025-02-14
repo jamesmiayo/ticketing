@@ -15,4 +15,9 @@ class SubCategory extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    public function active_sub_category()
+    {
+        return $this->where('b_active', true);
+    }
 }

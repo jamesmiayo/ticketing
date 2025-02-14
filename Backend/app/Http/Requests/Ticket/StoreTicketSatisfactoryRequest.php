@@ -29,6 +29,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
             'satisfactory_3' => 'nullable',
             'satisfactory_4' => 'nullable',
             'satisfactory_5' => 'nullable',
+            'feedback'=> 'nullable',
             'overrall_satisfaction' => 'nullable',
         ];
     }
@@ -37,6 +38,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
     {
         return [
             'ticket_id' => $this->ticket_id,
+            'feedback' => $this->feedback,
             'satisfactory_1' => $this->satisfactory_1,
             'satisfactory_2' => $this->satisfactory_2,
             'satisfactory_3' => $this->satisfactory_3,
@@ -52,7 +54,7 @@ class StoreTicketSatisfactoryRequest extends FormRequest
         return [
             'ticket_id' => $this->ticket_id,
             'status' => GlobalConstants::COMPLETED,
-            'emp_id' => null,
+            'emp_id' => $lastAssignee,
             'remarks' => "Ticket Completed",
             'updated_by' => Auth::user()->id,
         ];

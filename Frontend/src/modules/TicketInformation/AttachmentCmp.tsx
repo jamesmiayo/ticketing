@@ -38,7 +38,7 @@ const schema = yup.object().shape({
     .array()
     .min(1, "At least one file is required")
     .required("Please upload at least one file"),
-  message: yup.string().required("Message is required"),
+  message: yup.string().optional(),
 });
 
 export default function AttachmentCmp({

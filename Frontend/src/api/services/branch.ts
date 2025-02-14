@@ -14,6 +14,19 @@ export const Branch = {
       throw error;
     }
   },
+  getBranchList: async function () {
+    try {
+      const response = await apiClient.request({
+        url: "/list/maintenance/branch",
+        method: "GET",
+      });
+
+      return response.data.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
   newBranch: async function (body: Record<string, any>) {
     try {
       const response = await apiClient.request({

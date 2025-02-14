@@ -13,6 +13,8 @@ import {
   CheckCircleOutline as CheckCircleOutlineIcon,
   AddCircleOutline as AddCircleOutlineIcon,
 } from "@mui/icons-material";
+import { FaUserAltSlash } from "react-icons/fa";
+
 export default function TodaySummaryComponent({ totalTicket, isLoading }: any) {
   return (
     <Box sx={{ maxWidth: 400, width: "100%", mb: 4, height: "auto" }}>
@@ -159,6 +161,38 @@ export default function TodaySummaryComponent({ totalTicket, isLoading }: any) {
                 sx={{ fontWeight: "bold", color: "text.primary" }}
               >
                 {totalTicket?.total_today_created_ticket?.total_created}
+              </Typography>
+            </ListItem>
+            <ListItem
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 1,
+                backgroundColor: "rgba(255, 190, 122, 0.4)",
+                borderRadius: 2,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <ListItemIcon sx={{ minWidth: "auto" }}>
+                  <FaUserAltSlash color="secondary" />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Total Unassigned Ticket"
+                  primaryTypographyProps={{
+                    variant: "body2",
+                    sx: {
+                      color: "text.secondary",
+                      fontWeight: 500,
+                    },
+                  }}
+                />
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", color: "text.primary" }}
+              >
+                {totalTicket?.total_today_created_ticket?.total_unassigned}
               </Typography>
             </ListItem>
           </List>
