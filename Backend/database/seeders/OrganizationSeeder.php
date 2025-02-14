@@ -3,88 +3,205 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Department;
 use App\Models\Division;
-use App\Models\Branch;
+use App\Models\Department;
 use App\Models\Section;
-class DepartmentSeeder extends Seeder
+
+class OrganizationSeeder extends Seeder
 {
     public function run()
     {
-        Branch::create([
-            'branch_id' => 'D0012',
-            'branch_description' => 'Head Office'
-        ]);
-
         $data = [
             [
-                'division' => 'IT GROUP',
+                'division' => 'Sales Re Financing',
                 'departments' => [
                     [
-                        'name' => 'HELPDESK DEPARTMENT',
-                        'sections' => ['L1 HELPDESK', 'L2 HELPDESK'],
+                        'name' => 'Regional South Luzon Sales',
+                        'sections' => ['South Luzon 1', 'South Luzon 2', 'South Luzon 3'],
                     ],
                     [
-                        'name' => 'INFRASTRUCTURE DEPARTMENT',
-                        'sections' => ['DATABASE ADMINISTRATOR', 'SYSTEM ADMINISTRATOR', 'NETWORK ADMINISTRATOR'],
+                        'name' => 'Regional NCR Sales',
+                        'sections' => ['NCR 1', 'NCR 2'],
                     ],
                     [
-                        'name' => 'IT APPLICATION AND SYSTEMS DEPARTMENT',
-                        'sections' => ['APPLICATION DEVELOPER', 'QUALITY ASSURANCE TESTER', 'SYSTEM BUSINESS ANALYST'],
+                        'name' => 'Regional Central North Luzon',
+                        'sections' => ['Central Luzon', 'North Luzon'],
+                    ],
+                    [
+                        'name' => 'Regional Visayas Mindanao Sales',
+                        'sections' => ['Visayas', 'Mindanao'],
                     ],
                 ],
             ],
             [
-                'division' => 'LOANS GROUP',
+                'division' => 'Sales Financing',
                 'departments' => [
                     [
-                        'name' => 'LOANS PROCESS DEPARTMENT',
-                        'sections' => [
-                            'BRANCH GROUP LOAN PROCESSOR',
-                            'SPECIAL ACCOUNT GROUP LOAN PROCESSOR',
-                            'BNCT & REAL ESTATES GROUP LOAN PROCESSOR',
-                            'LOAN PROCESSOR TRAINING',
-                        ],
+                        'name' => 'SAU Sales',
+                        'sections' => ['Area 1', 'Area 2', 'Area 3'],
                     ],
                     [
-                        'name' => 'LOANS DOCUMENTATION AND WAREHOUSING',
-                        'sections' => [
-                            'COLLATERAL CUSTODIAN (HEAD OFFICE VAULT)',
-                            'COLLATERAL CUSTODIAN',
-                            'DOCUMENTATION PROCESSOR',
-                            'LOAN DOCUMENTATION',
-                        ],
+                        'name' => 'Relationship Department',
+                        'sections' => ['Relationship Section'],
+                    ],
+                    [
+                        'name' => 'Operations Department',
+                        'sections' => ['Operations Section'],
                     ],
                 ],
             ],
             [
-                'division' => 'PQA GROUP',
+                'division' => 'Sales Brand new cars',
                 'departments' => [
                     [
-                        'name' => 'PROCESS QUALITY ASSURANCE DEPARTMENT',
-                        'sections' => ['PQA ASSOCIATE'],
+                        'name' => 'Product Department (BNEW CAR)',
+                        'sections' => ['Product Section (BNEW CAR)'],
                     ],
                 ],
             ],
             [
-                'division' => 'CUSTOMER CARE GROUP',
+                'division' => 'Sales Real estate',
                 'departments' => [
                     [
-                        'name' => 'CUSTOMER CARE UNIT (BRANCH HELPDESK)',
-                        'sections' => ['CUSTOMER CARE REPRESENTATIVE'],
-                    ],
-                    [
-                        'name' => 'CUSTOMER CARE UNIT (CUSTOMER AFFAIRS DESK)',
-                        'sections' => ['CUSTOMER AFFAIRS DESK'],
+                        'name' => 'Product Department (REM)',
+                        'sections' => ['Product Section (REM)'],
                     ],
                 ],
             ],
             [
-                'division' => 'INTERNAL COLLECTION GROUP',
+                'division' => 'Sales Trucks',
                 'departments' => [
                     [
-                        'name' => 'INTERNAL COLLECTION DEPARTMENT',
-                        'sections' => ['COLLECTION SPECIALIST'],
+                        'name' => 'Product Department (TRUCKS)',
+                        'sections' => ['Product Section (TRUCKS)'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Marketing Group',
+                'departments' => [
+                    [
+                        'name' => 'Business Development',
+                        'sections' => ['Relationship Section', 'Product Section'],
+                    ],
+                    [
+                        'name' => 'Corp Communication',
+                        'sections' => ['Social Media', 'Digital Marketing'],
+                    ],
+                    [
+                        'name' => 'Customer Service',
+                        'sections' => ['Customer Service'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Operation',
+                'departments' => [
+                    [
+                        'name' => 'Loans Department',
+                        'sections' => ['Loans Section'],
+                    ],
+                    [
+                        'name' => 'Office Admin',
+                        'sections' => ['Admin Section'],
+                    ],
+                    [
+                        'name' => 'Aquired Asset Management and Disposal',
+                        'sections' => ['Aquired Asset', 'Disposal Section'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Finance Group',
+                'departments' => [
+                    [
+                        'name' => 'Tax and Financial Compliance',
+                        'sections' => ['Tax Section', 'Compliance Section'],
+                    ],
+                    [
+                        'name' => 'Finance and Accounting',
+                        'sections' => ['Finance Section', 'Accounting Section'],
+                    ],
+                    [
+                        'name' => 'Treasury',
+                        'sections' => ['Treasury Section'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'HR Group',
+                'departments' => [
+                    [
+                        'name' => 'HR Operations',
+                        'sections' => ['HR Operations Section'],
+                    ],
+                    [
+                        'name' => 'Talent Development',
+                        'sections' => ['Talent Development'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'IT Group',
+                'departments' => [
+                    [
+                        'name' => 'IT Application and Systems Department',
+                        'sections' => ['Business Analyst', 'Developers'],
+                    ],
+                    [
+                        'name' => 'IT Infrastructure',
+                        'sections' => ['Network Admins', 'Database Admins', 'System Admins', 'Application Support'],
+                    ],
+                    [
+                        'name' => 'Helpdesk',
+                        'sections' => ['Technical Support', 'Level 2 Technical Support'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Process Improvement Group',
+                'departments' => [
+                    [
+                        'name' => 'System and Methods',
+                        'sections' => ['System', 'Methods'],
+                    ],
+                    [
+                        'name' => 'Process Quality Assurance',
+                        'sections' => ['Process Quality'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Risk Group',
+                'departments' => [
+                    [
+                        'name' => 'Risk Management',
+                        'sections' => ['Risk Section'],
+                    ],
+                    [
+                        'name' => 'ECL and Data Analytics',
+                        'sections' => ['ECL', 'Analytics'],
+                    ],
+                ],
+            ],
+            [
+                'division' => 'Credit and Collection Group',
+                'departments' => [
+                    [
+                        'name' => 'Credit Commitee',
+                        'sections' => ['Crecom Section'],
+                    ],
+                    [
+                        'name' => 'Credit Review',
+                        'sections' => ['Crd Section'],
+                    ],
+                    [
+                        'name' => 'Credit Investigation',
+                        'sections' => ['Credit Investigation Section'],
+                    ],
+                    [
+                        'name' => 'Internal Collection',
+                        'sections' => ['Internal Collection Section'],
                     ],
                 ],
             ],
@@ -105,8 +222,8 @@ class DepartmentSeeder extends Seeder
 
                 foreach ($departmentData['sections'] as $sectionName) {
                     Section::create([
-                        'department_id' => $department->id,
                         'section_id' => mt_rand(1000, 9999),
+                        'department_id' => $department->id,
                         'section_description' => $sectionName,
                     ]);
                 }
