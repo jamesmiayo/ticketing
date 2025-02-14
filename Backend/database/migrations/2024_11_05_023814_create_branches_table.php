@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('branch_id');
             $table->string('branch_description');
-            $table->boolean('b_active')->default(false);
+            $table->boolean('b_active')->default(true);
             $table->timestamps();
         });
     }

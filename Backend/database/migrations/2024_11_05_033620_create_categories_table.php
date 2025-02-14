@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('category_id');
             $table->string('resolution_time')->nullable();
             $table->string('category_description');
-            $table->boolean('b_active')->default(false);
+            $table->boolean('b_active')->default(true);
             $table->timestamps();
         });
     }

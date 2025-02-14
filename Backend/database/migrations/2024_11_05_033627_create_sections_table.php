@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('section_description');
             $table->unsignedBigInteger('department_id');
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->boolean('b_active')->default(false);
+            $table->boolean('b_active')->default(true);
             $table->timestamps();
         });
     }
