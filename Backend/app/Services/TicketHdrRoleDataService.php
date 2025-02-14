@@ -26,7 +26,7 @@ class TicketHdrRoleDataService
         $userId = $authUser?->id;
 
         $ticketLogsFilter = function ($query) use ($divisionId) {
-            $query->whereNull('emp_id')->orWhere('division_id' , $divisionId);
+            $query->where('division_id' , $divisionId);
         };
 
         switch ($this->role) {
