@@ -72,7 +72,7 @@ class LdapAuthenticationService
         return response()->json([
             'status' => Response::HTTP_OK,
             'message' => 'Login successful.',
-            'user' => $localUser->with('section.department', 'section.department.division')->first(),
+            'user' => $localUser->load('section.department.division'),
             'permissions' => $localUser->roles && count($localUser->roles) > 0 ? $localUser->getAllPermissions()->pluck('name') : null,
             'role' => $localUser->roles->pluck('name')->first(),
             'notifications' => [
