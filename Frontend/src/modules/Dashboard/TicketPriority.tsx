@@ -1,24 +1,37 @@
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function TicketPriority({ ticketPriority, isLoading }: any) {
-  // Ticket priority data
-  const data = {
-    labels: ["Low", "Medium", "High", "Critical","Not Assign Yet"],
-    datasets: [
-      {
-        data: ticketPriority,
-        backgroundColor: ["#4caf50", "#ff9800",  "red", "darkred",   "blue"],
-        hoverBackgroundColor: ["#3e8e41","#e68a00",  "red",  "#a10000",  "blue"],
-      },
-    ],
+  const [chartData, setChartData] = useState<any>(null);
+  const getDataList = async () => {
+    const labels = ticketPriority?.map((item: any) => item.priority_label);
+
+    setChartData({
+      labels,
+      datasets: [
+        {
+          data: ticketPriority?.map((item: any) => item.value),
+          backgroundColor: ticketPriority.map(
+            (item: any) => item.priority_color
+          ),
+          hoverBackgroundColor: ticketPriority?.map(
+            (item: any) => item.priority_color
+          ),
+        },
+      ],
+    });
   };
 
-  const options:any = {
+  useEffect(() => {
+    getDataList();
+  }, [ticketPriority]);
+
+  const options: any = {
     plugins: {
       legend: {
         position: "bottom",
@@ -28,61 +41,48 @@ export default function TicketPriority({ ticketPriority, isLoading }: any) {
   };
 
   return (
-    <Box
+    <Paper
+      elevation={4}
       sx={{
-        maxWidth: 400,
-        width: "100%",
-        mb: 4,
-        mx: "auto",
+        p: 3,
+        background: "white",
+        borderRadius: 3,
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+        height: 340,
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "auto",
       }}
     >
-      <Paper
-        elevation={4}
+      <Typography
+        variant="h6"
+        gutterBottom
         sx={{
-          p: 3,
-          background: "white",
-          borderRadius: 3,
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-          height: 340,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          mb: 2,
+          fontWeight: "600",
+          color: "text.primary",
+          textAlign: "center",
         }}
       >
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            mb: 2,
-            fontWeight: "600",
-            color: "text.primary",
-            textAlign: "center",
-          }}
-        >
-          Ticket Priority Summary
-        </Typography>
-        <Box
-          sx={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <Pie data={data} options={options} />
-          )}
-        </Box>
-      </Paper>
-    </Box>
+        Ticket Priority Summary
+      </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        {isLoading || !chartData ? (
+          <CircularProgress />
+        ) : (
+          <Pie data={chartData} options={options} />
+        )}
+      </Box>
+    </Paper>
   );
 }

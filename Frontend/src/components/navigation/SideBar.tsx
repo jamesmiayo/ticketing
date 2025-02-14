@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -6,22 +6,33 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton"; // Import IconButton
-import { MdDashboard } from "react-icons/md";
+import IconButton from "@mui/material/IconButton";
+import { MdAccessTimeFilled, MdDashboard } from "react-icons/md";
 import { BsTicketDetailed } from "react-icons/bs";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material"; // Import icons for toggle
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 import { useExecuteToast } from "../../context/ToastContext";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { PermissionContext } from "../../helpers/Providers/PermissionProvider";
+import { IoSettingsSharp } from "react-icons/io5";
+import { Tooltip } from "@mui/material";
+import { FaRegQuestionCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
+import { MdAnnouncement } from "react-icons/md";
+import { IoBarChart } from "react-icons/io5";
+import { IoIosStats } from "react-icons/io";
 
 const Sidebar = ({ children }: any) => {
   const { permission } = useContext(PermissionContext);
   const navigate = useNavigate();
   const [activeNavItem, setActiveNavItem] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logoutUser } = useAuth();
+  const { logoutUser , fetchUserNotification } = useAuth();
   const toast = useExecuteToast();
+
+  useEffect(() => {
+    fetchUserNotification();
+  }, []);
 
   const navItems = [
     {
@@ -37,16 +48,45 @@ const Sidebar = ({ children }: any) => {
       show: true,
     },
     {
-      title: "User Ticket",
-      path: "/user-ticket",
-      icon: <BsTicketDetailed />,
-      show: permission?.includes("Can View User Ticket"),
+      title: "FAQs",
+      path: "/faq",
+      icon: <FaRegQuestionCircle />,
+      show: true,
     },
-    { title: "Profile", path: "/profile", icon: <MdDashboard />, show: true },
+    {
+      title: "Announcement",
+      path: "/announcement",
+      icon: <MdAnnouncement />,
+      show: true,
+    },
+    {
+      title: "AHT Report",
+      path: "/average-handle-time",
+      icon: <IoBarChart />,
+      show: permission?.includes("Can View Ticket AHT"),
+    },
+    {
+      title: "CSAT Report",
+      path: "/csat-report",
+      icon: <FaUserCircle />,
+      show: permission?.includes("Can View CSAT Report"),
+    },
+    {
+      title: "SLA Report",
+      path: "/Sla/report",
+      icon: <MdAccessTimeFilled />,
+      show: permission?.includes("Can View SLA Reports"),
+    },
+    {
+      title: "Reports",
+      path: "/reports",
+      icon: <IoIosStats />,
+      show: permission?.includes("Can View Reports"),
+    },
     {
       title: "Maintenance",
       path: "/maintenance",
-      icon: <MdDashboard />,
+      icon: <IoSettingsSharp />,
       show: permission?.includes("Can View Maintenance"),
     },
   ];
@@ -54,11 +94,12 @@ const Sidebar = ({ children }: any) => {
   const handleNavigation = (path: string, title: string) => {
     setActiveNavItem(title);
     navigate(path);
+    fetchUserNotification(); 
   };
 
   const handleLogout = async () => {
     try {
-      const response:any = await logoutUser();
+      const response: any = await logoutUser();
       toast.executeToast(response?.message, "top-center", true, {
         type: "success",
       });
@@ -94,7 +135,7 @@ const Sidebar = ({ children }: any) => {
       >
         <Box
           sx={{
-            backgroundColor: "#010001",
+            backgroundColor: "#103754",
             boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             height: "100vh",
             display: "flex",
@@ -138,52 +179,68 @@ const Sidebar = ({ children }: any) => {
                 flexGrow: 1,
               }}
             >
-              {navItems 
-              .filter(item => item.show) 
-              .map((item, index) => (
-                <ListItem disablePadding key={index} sx={{ marginTop: 1 }}>
-                  <ListItemButton
-                    onClick={() => handleNavigation(item.path, item.title)}
-                    sx={{
-                      margin: 0,
-                      transition:
-                        "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
-                      borderLeft:
-                        item.title === activeNavItem
-                          ? "10px solid white"
-                          : "10px solid transparent",
-                      color: "white",
-                      "&:hover": {
-                        borderLeft: "10px solid white",
-                        color: "white",
-                      },
-                      display: "flex",
-                      justifyContent: sidebarOpen ? "space-between" : "center",
-                      alignItems: "center",
-                      padding: sidebarOpen ? "10px 16px" : "10px",
-                    }}
-                  >
-                    {item.icon && (
-                      <ListItemIcon
-                        sx={{
-                          color: "white",
-                          minWidth: "auto",
-                          marginRight: sidebarOpen ? "8px" : "0",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
+              {navItems
+                .filter((item) => item.show)
+                .map((item, index) => (
+                  <>
+                    <Tooltip
+                      title={item.title}
+                      placement="right"
+                      arrow
+                      sx={{ fontSize: "100px" }}
+                    >
+                      <ListItem
+                        disablePadding
+                        key={index}
+                        sx={{ marginTop: 1 }}
                       >
-                        {item.icon}
-                      </ListItemIcon>
-                    )}
-                    {sidebarOpen && <ListItemText primary={item.title} />}
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                        <ListItemButton
+                          onClick={() =>
+                            handleNavigation(item.path, item.title)
+                          }
+                          sx={{
+                            margin: 0,
+                            transition:
+                              "border-left 0.3s ease-in-out, background-color 0.3s ease-in-out",
+                            borderLeft:
+                              item.title === activeNavItem
+                                ? "10px solid white"
+                                : "10px solid transparent",
+                            color: "white",
+                            "&:hover": {
+                              borderLeft: "10px solid white",
+                              color: "white",
+                            },
+                            display: "flex",
+                            justifyContent: sidebarOpen
+                              ? "space-between"
+                              : "center",
+                            alignItems: "center",
+                            padding: sidebarOpen ? "10px 16px" : "10px",
+                          }}
+                        >
+                          {item.icon && (
+                            <ListItemIcon
+                              sx={{
+                                color: "white",
+                                minWidth: "auto",
+                                marginRight: sidebarOpen ? "8px" : "0",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              {item.icon}
+                            </ListItemIcon>
+                          )}
+                          {sidebarOpen && <ListItemText primary={item.title} />}
+                        </ListItemButton>
+                      </ListItem>
+                    </Tooltip>
+                  </>
+                ))}
             </List>
 
-            {/* Logout button at the bottom */}
             <Box sx={{ marginBottom: "16px", width: "100%" }}>
               <ListItem disablePadding sx={{ marginTop: 1 }}>
                 <ListItemButton

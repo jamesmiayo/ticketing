@@ -16,7 +16,7 @@ class DivisionController extends Controller
      */
     public function index()
     {
-        $data = Division::with('department' , 'department.section')->latest()->get();
+        $data = Division::with('category', 'category.sub_category' , 'department' , 'department.section')->latest()->get();
         return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 
@@ -69,5 +69,10 @@ class DivisionController extends Controller
     {
         $division->delete();
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
+    }
+
+    public function getListDivision(){
+        $data = Division::with('active_category', 'active_category.active_sub_category' , 'active_department' , 'active_department.active_section')->where('b_active' , true)->get();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
     }
 }

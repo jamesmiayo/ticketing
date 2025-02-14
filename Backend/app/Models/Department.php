@@ -20,4 +20,14 @@ class Department extends Model
     {
         return $this->belongsTo(Division::class , 'division_id' , 'id');
     }
+
+    public function active_section()
+    {
+        return $this->section()->where('b_active', true);
+    }
+
+    public function active_department()
+    {
+        return $this->where('b_active', true);
+    }
 }

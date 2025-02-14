@@ -1,5 +1,6 @@
 import React from "react";
 import {  CircularProgress, Grid, Paper, Typography } from "@mui/material";
+import { cardColors } from "../../constants/constants";
 
 // Define the structure of each ticket status item
 interface TicketStatus {
@@ -16,35 +17,25 @@ const TicketList: React.FC<TicketListProps> = ({
   ticketList = [],
   isLoading,
 }) => {
-  const colors = [
-    "#4CAF50",
-    "#2196F3",
-    "#FFC107",
-    "#F44336",
-    "#9C27B0",
-    "#3F51B5",
-    "#009688",
-    "#FF5722",
-  ];
 
   return (
     <Grid container spacing={3}>
       {isLoading
-        ? [...Array(8)].map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+        ? [...Array(10)].map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
               <StatCard
                 title="Loading..."
                 value={<CircularProgress size={20} />}
-                backgroundColor={colors[index % colors.length]}
+                backgroundColor={cardColors[index % cardColors.length]}
               />
             </Grid>
           ))
         : ticketList.map((status, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
               <StatCard
                 title={status.label}
                 value={status.value}
-                backgroundColor={colors[index % colors.length]}
+                backgroundColor={cardColors[index % cardColors.length]}
               />
             </Grid>
           ))}

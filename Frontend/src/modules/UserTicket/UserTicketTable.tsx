@@ -20,7 +20,7 @@ export default function UserTicketTable({ data, isLoading }: any) {
     {
       field: "view",
       headerName: "Options",
-      width: "100%",
+      width: 170,
       sortable: false,
       renderCell: (params: GridRenderCellParams) => (
         <Tooltip title={"View"}>
@@ -47,7 +47,12 @@ export default function UserTicketTable({ data, isLoading }: any) {
       >
         <UserTicketTableRow data={rowData} setOpen={setOpen} />
       </Dialog>
-      <TableComponents rows={data} isLoading={isLoading} columns={columns} height={700}/>
+      <TableComponents
+        rows={data}
+        isLoading={isLoading}
+        columns={columns}
+        height={700}
+      />
     </>
   );
 }

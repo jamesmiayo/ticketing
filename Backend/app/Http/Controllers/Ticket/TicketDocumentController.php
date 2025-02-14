@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\UploadTicketDocumentRequest;
 use App\Models\TicketDtl;
 use App\Models\TicketDocument;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -64,10 +64,21 @@ class TicketDocumentController extends Controller
 
         $uploadedFiles = $request->file('attachments');
         foreach ($uploadedFiles as $file) {
+            $imageMimeTypes = ['image/jpeg', 'image/png'];
+            $documentMimeTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            $mimeType = $file->getMimeType();
+            if (in_array($mimeType, $imageMimeTypes)) {
+                $type = 1;
+            } elseif (in_array($mimeType, $documentMimeTypes)) {
+                $type = 2;
+            } else {
+                return response()->json(['error' => 'Invalid file type.'], 400);
+            }
             $path = $file->store('ticket_documents', 'public');
 
             TicketDocument::create([
                 'ticket_tdl_id' => $ticketDtl->id,
+                'type' => $type,
                 'attachments' => $path,
             ]);
         }
@@ -82,34 +93,33 @@ class TicketDocumentController extends Controller
     {
         $userId = Auth::id();
         $ticketId = $request->input('ticket_id');
-    
+
         if (!$ticketId) {
             return response()->json([
                 'message' => 'Ticket ID is required.',
             ], 400);
         }
-    
+
         $ticketDetail = TicketDtl::where('user_id', $userId)
             ->where('ticket_id', $ticketId)
             ->with(['documents' => function ($query) {
                 $query->select('id', 'ticket_tdl_id', 'attachments');
             }])
             ->first();
-    
+
         if (!$ticketDetail) {
             return response()->json([
                 'message' => 'No ticket details found for the authenticated user with the specified ticket ID.',
             ], 404);
         }
-    
+
         $ticketDetail->documents->each(function ($document) {
             $document->file_url = url($document->attachment_url);
         });
-    
+
         return response()->json([
             'message' => 'Ticket details retrieved successfully.',
             'data' => $ticketDetail,
         ], 200);
     }
-    
 }

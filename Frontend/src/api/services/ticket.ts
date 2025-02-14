@@ -5,6 +5,8 @@ interface TicketData {
   concern: string;
   subcategory_id: string;
   status: string;
+  division_id: string;
+  files:any;
 }
 
 interface Category {
@@ -62,6 +64,9 @@ export const ticketApi = {
           start_date: data?.start_date,
           status: data?.status,
           end_date: data?.end_date,
+          requested_by: data?.requested_by,
+          assigned_by: data?.assigned_by,
+          branch_id: data?.branch_id,
         },
       });
       return response.data.data;
@@ -82,21 +87,21 @@ export const ticketApi = {
     }
   },
 
-  createTicket: async function ({
-    title,
-    concern,
-    subcategory_id,
-    status,
-  }: TicketData) {
+  createTicket: async function (data: TicketData, FormData: any) {
     try {
       const response = await apiClient.request({
         url: "/ticket/ticket-hdr",
         method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         data: {
-          title,
-          body: concern,
-          subcategory_id,
-          b_status: status,
+          division_id: data.division_id,
+          title: data.title,
+          body: data.concern,
+          subcategory_id: data.subcategory_id,
+          b_status: data.status,
+          files: FormData.getAll('files')
         },
       });
       return response.data;
@@ -156,7 +161,6 @@ export const ticketApi = {
           ticket_id,
           message: data.message,
           emp_id: data.emp_id,
-          status: data.status,
           remarks: data.remarks,
         },
       });
@@ -176,6 +180,19 @@ export const ticketApi = {
           ticket_id,
           priority: data.priority,
         },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  },
+  updateRemarks: async function (ticket_id: any, data: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/update-remarks/${ticket_id}`,
+        method: "PUT",
+        data: data,
       });
       return response.data;
     } catch (error) {
@@ -217,6 +234,7 @@ export const ticketApi = {
           satisfactory_3: data.satisfactory_3,
           satisfactory_4: data.satisfactory_4,
           satisfactory_5: data.satisfactory_5,
+          feedback: data.feedback,
           overall_satisfaction: data.overall_satisfaction,
         },
       });
@@ -226,4 +244,18 @@ export const ticketApi = {
       throw error;
     }
   },
+
+  changeStatusTicket: async function (ticket_id: any , data: any) {
+    try {
+      const response = await apiClient.request({
+        url: `/ticket/change-status/${ticket_id}`,
+        method: "PUT",
+        data: data
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      throw error;
+    }
+  }
 };

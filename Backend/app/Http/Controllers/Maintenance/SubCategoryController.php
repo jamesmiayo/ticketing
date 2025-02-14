@@ -46,4 +46,9 @@ class SubCategoryController extends Controller
         $subCategory->delete();
         return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
+
+    public function getListSubCategory(){
+        $data = SubCategory::where('b_active' , true)->latest()->get();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data], Response::HTTP_OK);
+    }
 }

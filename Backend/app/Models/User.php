@@ -9,6 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,10 @@ class User extends Authenticatable
         'emp_id',
         'username',
         'branch_id',
-        'section_id'
+        'section_id',
+        'profile_picture',
+        'phone_number',
+        'b_announcement'
     ];
 
     /**
@@ -52,6 +56,15 @@ class User extends Authenticatable
         ];
     }
 
+    protected function profilePicture(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $value
+                ? asset('storage/' . $value)
+                : asset('storage/default_profile.jpg')
+        );
+    }
+
     public function checkPassword(string $password): bool
     {
         return Hash::check($password, $this->password);
@@ -72,7 +85,17 @@ class User extends Authenticatable
         return $this->belongsTo(Section::class);
     }
 
+    public function ticket_notification()
+    {
+        return $this->hasMany(TicketNotification::class);
+    }
+
     public function tickethdr()
+    {
+        return $this->hasMany(TicketHdr::class, 'emp_id');
+    }
+
+    public function ticketAssigneed()
     {
         return $this->hasMany(TicketHdr::class, 'emp_id');
     }

@@ -25,7 +25,7 @@ class TicketDtlController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $data = TicketDtl::with('user', 'documents')
+        $data = TicketDtl::with(['user', 'documents'])
             ->where('ticket_id', $request->ticket_id)
             ->get();
 
@@ -34,5 +34,6 @@ class TicketDtlController extends Controller
             'data' => $data,
         ], 200);
     }
-    
+
+
 }

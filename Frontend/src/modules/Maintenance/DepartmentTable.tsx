@@ -70,6 +70,7 @@ export default function DepartmentTable({
           b_active: updatedStatus,
           department_description: selectedRow.label,
           department_id: selectedRow.data_id,
+          division_id: selectedRow.division_id,
         },
       });
       toast.executeToast(responseUpdate.message, "top-center", true, {

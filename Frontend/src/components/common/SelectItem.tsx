@@ -15,15 +15,17 @@ const SelectItem = ({
   options,
   defaultValue,
   onChange,
+  disabled, // Add disabled prop
 }: any) => {
   const error = errors?.[name];
+
   return (
     <FormControl
       size="small"
       variant="outlined"
       fullWidth
       error={!!error}
-      style={{ minWidth: '250px' }} 
+      disabled={disabled} 
     >
       <InputLabel>{label}</InputLabel>
       <Controller
@@ -40,6 +42,7 @@ const SelectItem = ({
                 field.onChange(e);
                 if (onChange) onChange(e.target.value);
               }}
+              disabled={disabled} // Pass disabled to Select
             >
               {options.map((option: any) => (
                 <MenuItem key={option.value} value={option.value}>

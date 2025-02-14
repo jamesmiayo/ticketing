@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('division_id');
+            $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');
             $table->string('category_id');
+            $table->string('resolution_time')->nullable();
             $table->string('category_description');
-            $table->boolean('b_active')->default(false);
+            $table->boolean('b_active')->default(true);
             $table->timestamps();
         });
     }

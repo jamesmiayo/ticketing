@@ -23,16 +23,20 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'division_id' => 'required',
             'category_id' => 'required',
             'category_description' => 'required',
             'b_active' => 'required',
+            'resolution_time' => 'required',
         ];
     }
 
     public function getCategoryData(): array
     {
         return [
+            'division_id' => $this->division_id,
             'category_id' => $this->category_id,
+            'resolution_time' => $this->resolution_time,
             'category_description' => $this->category_description,
             'b_active' => $this->b_active,
         ];

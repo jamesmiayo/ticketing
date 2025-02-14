@@ -125,7 +125,7 @@ const DepartmentForm: React.FC<Props> = ({
           )}
           <Grid item xs={12}>
             <SelectItem
-              label="Devision"
+              label="Division"
               control={control}
               options={dataList}
               errors={errors}

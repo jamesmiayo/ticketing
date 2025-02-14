@@ -22,6 +22,7 @@ import okay from "../../assets/svg/okay.svg";
 import good from "../../assets/svg/good.svg";
 import amazing from "../../assets/svg/amazing.svg";
 import { useEffect, useState } from "react";
+import InputComponent from "../../components/common/InputComponent";
 
 export default function TicketStatus({ data, setOpen, refetch }: any) {
   const toast = useExecuteToast();
@@ -36,6 +37,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
     reset,
     formState: { errors },
     setValue,
+    register
   } = useForm<any>({
     resolver: yupResolver(createTicketSatisfactory),
   });
@@ -74,30 +76,30 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
   const ratingTitles = [
     { name: "satisfactory_1", label: "Overall Satisfaction" },
     { name: "satisfactory_2", label: "Customer Support" },
-    { name: "satisfactory_3", label: "Ease of Use" },
-    { name: "satisfactory_4", label: "Features" },
-    { name: "satisfactory_5", label: "Value for Money" },
+    { name: "satisfactory_3", label: "Speed of Response" },
+    { name: "satisfactory_4", label: "Ease of Use" },
+    { name: "satisfactory_5", label: "Features" },
   ];
 
   const userSatisfaction = [
     {
-      value: "Terrible",
+      value: "Very Unsatisfied",
       svg: cry,
     },
     {
-      value: "Bad",
+      value: "Unsatisfied",
       svg: sad,
     },
     {
-      value: "Okay",
+      value: "Neutral",
       svg: okay,
     },
     {
-      value: "Good",
+      value: "Satisfied",
       svg: good,
     },
     {
-      value: "Amazing",
+      value: "Very satisfied",
       svg: amazing,
     },
   ];
@@ -137,6 +139,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                       sx={{
                         textAlign: "center",
                         cursor: "pointer",
+                        minWidth: '80px'
                       }}
                       key={index}
                       onClick={() => setActiveSatisfaction(index)}
@@ -144,8 +147,6 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                       <Box
                         sx={{
                           padding: "1px",
-                          border: "1px solid #8988",
-                          borderRadius: "50%",
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
@@ -157,7 +158,6 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                               : "none",
                           "&:hover": {
                             transform: "scale(1.2)",
-                            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
                           },
                         }}
                       >
@@ -173,7 +173,7 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                 </Box>
               </Container>
             </Container>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ marginBottom: 1 }}>
               {ratingTitles.map((rating, index) => (
                 <Fade
                   in={true}
@@ -247,6 +247,15 @@ export default function TicketStatus({ data, setOpen, refetch }: any) {
                 </Fade>
               ))}
             </Grid>
+            <InputComponent
+                name="feedback"
+                label="Feedback"
+                register={register}
+                errors={errors}
+                multiline
+                rows={5}
+                fullWidth
+            />
             <Button
               type="submit"
               variant="contained"

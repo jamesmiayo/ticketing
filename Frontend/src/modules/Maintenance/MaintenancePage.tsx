@@ -8,6 +8,10 @@ import BranchTable from "./BranchTable";
 import RoleTable from "./RoleTable";
 import UserManagementTable from "./UserManagementTable";
 import DivisionTable from "./DivisionTable";
+import PermissionTable from "./PermissionTable";
+import FAQHdrTable from "./FAQHdrTable";
+import FAQDtlTable from "./FAQDtlTable";
+import SLATable from "./SLATable";
 
 export default function MaintenancePage() {
   const [value, setValue] = useState(0);
@@ -31,8 +35,8 @@ export default function MaintenancePage() {
       <Box
         sx={{
           width: "100%",
-          maxWidth: "800px",
-          backgroundColor: "#010001",
+          maxWidth: "1200px",
+          backgroundColor: "#103754",
           borderRadius: 1,
           display: "flex",
           justifyContent: "center",
@@ -66,6 +70,9 @@ export default function MaintenancePage() {
           <Tab label="Section" />
           <Tab label="Branch" />
           <Tab label="Roles" />
+          <Tab label="Permission" />
+          <Tab label="FAQ" />
+          <Tab label="SLA" />
         </Tabs>
       </Box>
 
@@ -167,6 +174,42 @@ export default function MaintenancePage() {
             <Typography>Manage user roles and permissions.</Typography>
             <Box sx={{ mt: 5 }}>
               <RoleTable />
+            </Box>
+          </>
+        )}
+        {value === 8 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              Permission
+            </Typography>
+            <Typography>Manage Permission List.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <PermissionTable />
+            </Box>
+          </>
+        )}
+        {value === 9 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              FAQ
+            </Typography>
+            <Typography>Manage FAQ List.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <FAQHdrTable />
+            </Box>
+            <Box sx={{ mt: 5 }}>
+              <FAQDtlTable />
+            </Box>
+          </>
+        )}
+        {value === 10 && (
+          <>
+            <Typography variant="h6" gutterBottom>
+              SLA
+            </Typography>
+            <Typography>Manage SLA.</Typography>
+            <Box sx={{ mt: 5 }}>
+              <SLATable />
             </Box>
           </>
         )}

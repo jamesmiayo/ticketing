@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Maintenance;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Models\Role;
+use App\Http\Requests\Maintenance\Permission\StorePermissionRequest;
+use App\Http\Requests\Maintenance\Permission\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
@@ -31,9 +33,10 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePermissionRequest $request)
     {
-        //
+        $data = Permission::create($request->getPermissionData());
+        return new JsonResponse(['status' => Response::HTTP_OK, 'data' => $data , 'message' => 'Created Successfully'], Response::HTTP_OK);
     }
 
     /**
@@ -55,17 +58,19 @@ class PermissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        //
+        $permission->update($request->getRoleData());
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Update Successfully'], Response::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+        return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Deleted Successfully'], Response::HTTP_OK);
     }
 
     public function assignRolePermission(Request $request): JsonResponse

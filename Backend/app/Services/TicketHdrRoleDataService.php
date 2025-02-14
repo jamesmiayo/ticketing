@@ -19,46 +19,71 @@ class TicketHdrRoleDataService
 
     public function ticketData($data = null)
     {
+        $authUser = Auth::user();
+        $divisionId = $authUser?->section?->department?->division_id;
+        $departmentId = $authUser?->section?->department_id;
+        $sectionId = $authUser?->section_id;
+        $userId = $authUser?->id;
+
+        $ticketLogsFilter = function ($query) use ($divisionId) {
+            $query->whereNull('emp_id')->orWhere('division_id' , $divisionId);
+        };
+
         switch ($this->role) {
             case 'Admin':
                 $ticketData = $this->ticketHdr->getTicketLog($data);
                 break;
-            case 'Head':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor.section.department', function ($subQuery) {
-                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
-                    })->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) {
-                        $subQuery->where('division_id', Auth::user()->section->department->division_id);
+                case 'Head':
+                    $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $divisionId) {
+                        $query->whereHas('requestor.section.department.division', function ($subQuery) use ($divisionId) {
+                                $subQuery->where('division_id', $divisionId);
+                            })
+                            ->orWhereHas('ticket_logs_latest.assignee.section.department', function ($subQuery) use ($divisionId) {
+                                $subQuery->where('division_id', $divisionId);
+                            })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
                     });
+                    break;
+                case 'Manager':
+                    $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $departmentId) {
+                            $query->whereHas('requestor.section.department', function ($subQuery) use ($departmentId) {
+                                $subQuery->where('department_id', $departmentId);
+                            })
+                            ->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) use ($departmentId) {
+                                $subQuery->where('department_id', $departmentId);
+                            })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
+                    });
+                    break;
+                case 'Supervisor':
+                    $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
+                        $query->whereHas('requestor.section', function ($subQuery) use ($sectionId) {
+                                $subQuery->where('section_id', $sectionId);
+                            })
+                        ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
+                            $subQuery->where('section_id', $sectionId);
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);
                 });
                 break;
-            case 'Manager':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor.section', function ($subQuery) {
-                        $subQuery->where('department_id', Auth::user()->section->department_id);
-                    })->orWhereHas('ticket_logs_latest.assignee.section', function ($subQuery) {
-                        $subQuery->where('department_id', Auth::user()->section->department_id);
-                    });
-                });
-                break;
-            case 'Supervisor':
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    });
+            case 'Tech':
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $sectionId) {
+                    $query->whereHas('requestor.section', function ($subQuery) use ($sectionId) {
+                        $subQuery->where('section_id', $sectionId);
+                    })
+                        ->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($sectionId) {
+                            $subQuery->where('section_id', $sectionId);
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);
                 });
                 break;
             default:
-                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) {
-                    $query->whereHas('requestor', function ($subQuery) {
-                        $subQuery->where('section_id', Auth::user()->section_id);
-                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) {
-                        $subQuery->where('id', Auth::user()->id);
-                    });
+                $ticketData = $this->ticketHdr->getTicketLog($data)->where(function ($query) use ($ticketLogsFilter, $userId) {
+                    $query->whereHas('requestor', function ($subQuery) use ($userId) {
+                        $subQuery->where('id', $userId);
+                    })->orWhereHas('ticket_logs_latest.assignee', function ($subQuery) use ($userId) {
+                            $subQuery->where('id', $userId);
+                        })->orWhereHas('ticket_logs_latest', $ticketLogsFilter);;
                 });
+                break;
         }
-        return $ticketData;
+
+        return $ticketData->with(['sla']);
     }
 }
